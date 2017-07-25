@@ -1,8 +1,8 @@
 {
-  "name": "angtheod/planet4-plugin-engagingnetworks",
+  "name": "greenpeace/planet4-plugin-engagingnetworks",
   "description": "This repository contains the wordpress plugin that connects Planet 4 with the Engaging Networks platform.",
   "type": "wordpress-plugin",
-  "version": "0.0.1",
+  "version": "0.1",
   "license": "GPL-3",
   "authors": [
     {
