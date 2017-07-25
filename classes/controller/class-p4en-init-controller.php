@@ -49,6 +49,7 @@ if (!class_exists('P4EN_Init_Controller')) {
 
 			add_action( 'plugins_loaded', array($this, 'P4EN_init_i18n') );    // Initialize internationalization
 			add_action( 'admin_menu', array($this, 'P4EN_admin_menu_load') );
+			add_action( 'admin_enqueue_scripts', array($this, 'load_admin_assets') );
 		}
 
 		/**
@@ -64,17 +65,17 @@ if (!class_exists('P4EN_Init_Controller')) {
 					P4EN_PLUGIN_SHORT_NAME,
 					P4EN_PLUGIN_SHORT_NAME,
 					'edit_dashboard',
-					'engaging-networks',
+					P4EN_PLUGIN_SLUG_NAME,
 					array($this->view, 'render_dashboard'),
 					'none'
 				);
 
 				add_submenu_page(
-					'engaging-networks',
-					esc_html__( 'Settings', P4EN_PLUGIN_TEXTDOMAIN ),
-					esc_html__( 'Settings', P4EN_PLUGIN_TEXTDOMAIN ),
+					P4EN_PLUGIN_SLUG_NAME,
+					__( 'Settings', P4EN_PLUGIN_TEXTDOMAIN ),
+					__( 'Settings', P4EN_PLUGIN_TEXTDOMAIN ),
 					'manage_options',
-					'engaging-networks-settings',
+					P4EN_PLUGIN_SLUG_NAME . '-settings',
 					array($this->view, 'render_settings')
 				);
 			}
@@ -112,6 +113,18 @@ if (!class_exists('P4EN_Init_Controller')) {
 			if (version_compare(phpversion(), $this->P4EN_minimum_php_version) < 0)
 				return false;
 			return true;
+		}
+
+		/**
+		 * @param $hook
+		 */
+		public function load_admin_assets($hook) {
+			// Load only on ?page=P4EN_PLUGIN_TEXTDOMAIN
+			if(strpos( $hook, P4EN_PLUGIN_SLUG_NAME) === false ) {
+				return;
+			}
+			wp_enqueue_style( 'p4en_admin_style', P4EN_ADMIN_DIR . '/css/admin.css', array(), '0.1' );
+			wp_enqueue_script( 'p4en_admin_script', P4EN_ADMIN_DIR . '/js/admin.js', array(), '0.1', true );
 		}
 
 		/**

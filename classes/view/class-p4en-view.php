@@ -21,7 +21,7 @@ if (!class_exists('P4EN_View')) {
 		}
 
 		/**
-		 * Creates the plugin's controller object.
+		 * Creates the plugin's View object.
 		 */
 		private function __construct() {}
 
@@ -30,8 +30,6 @@ if (!class_exists('P4EN_View')) {
 		 */
 		public function render_dashboard() {
 			require_once P4EN_INCLUDES_DIR . '/dashboard.twig';
-			new P4EN_Uninstall_Controller();
-
 		}
 
 		/**

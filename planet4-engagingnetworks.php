@@ -3,7 +3,7 @@
  * Plugin Name: Planet4 - EngagingNetworks
  * Description: Connects Planet4 with the Engaging Networks platform.
  * Plugin URI: http://github.com/greenpeace/planet4-plugin-engagingnetworks
- * Version: 0.0.1
+ * Version: 0.1
  * Php Version: 7.0
  *
  * Author: Greenpeace International
@@ -16,7 +16,7 @@
 
 
 /**
- * TODO - Replace Singleton with by Dependency Injection (DI).
+ * TODO - Replace Singleton with Dependency Injection (DI).
  * TODO - Namespace the plugin.
  * TODO - Use Codesniffer and WPC to check Wordpress Coding Standards
  * TODO - Check security - https://developer.wordpress.org/plugins/security/
@@ -31,15 +31,18 @@ defined('ABSPATH') OR die('Direct access is forbidden !');
 	  C O N S T A N T S
    ======================== */
 
-if (!defined('P4EN_MIN_PHP_VERSION'))   define('P4EN_MIN_PHP_VERSION',  '7.0');
-if (!defined('WP_UNINSTALL_PLUGIN'))    define('WP_PLUGIN_BASENAME',    plugin_basename(__FILE__));
-if (!defined('P4EN_PLUGIN_DIRNAME'))    define('P4EN_PLUGIN_DIRNAME',   dirname(WP_PLUGIN_BASENAME));
-if (!defined('P4EN_PLUGIN_DIR'))        define('P4EN_PLUGIN_DIR',       WP_PLUGIN_DIR.'/'.P4EN_PLUGIN_DIRNAME);
-if (!defined('P4EN_PLUGIN_NAME'))       define('P4EN_PLUGIN_NAME',      'Planet4 - EngagingNetworks');
-if (!defined('P4EN_PLUGIN_SHORT_NAME')) define('P4EN_PLUGIN_SHORT_NAME','EngagingNetworks');
-if (!defined('P4EN_PLUGIN_TEXTDOMAIN')) define('P4EN_PLUGIN_TEXTDOMAIN','planet4-engagingnetworks');
-if (!defined('P4EN_INCLUDES_DIR'))      define('P4EN_INCLUDES_DIR',     P4EN_PLUGIN_DIR.'/includes');
-if (!defined('WP_UNINSTALL_PLUGIN'))    define('WP_UNINSTALL_PLUGIN',   dirname(WP_PLUGIN_BASENAME));
+if (!defined('P4EN_MIN_PHP_VERSION'))   define('P4EN_MIN_PHP_VERSION',      '7.0');
+if (!defined('P4EN_PLUGIN_BASENAME'))   define('P4EN_PLUGIN_BASENAME',      plugin_basename(__FILE__));
+if (!defined('P4EN_PLUGIN_DIRNAME'))    define('P4EN_PLUGIN_DIRNAME',       dirname(P4EN_PLUGIN_BASENAME));
+if (!defined('P4EN_PLUGIN_DIR'))        define('P4EN_PLUGIN_DIR',           WP_PLUGIN_DIR.'/'.P4EN_PLUGIN_DIRNAME);
+if (!defined('P4EN_PLUGIN_NAME'))       define('P4EN_PLUGIN_NAME',          'Planet4 - EngagingNetworks');
+if (!defined('P4EN_PLUGIN_SHORT_NAME')) define('P4EN_PLUGIN_SHORT_NAME',    'EngagingNetworks');
+if (!defined('P4EN_PLUGIN_SLUG_NAME'))  define('P4EN_PLUGIN_SLUG_NAME',     'planet4-engagingnetworks');
+if (!defined('P4EN_PLUGIN_TEXTDOMAIN')) define('P4EN_PLUGIN_TEXTDOMAIN',    P4EN_PLUGIN_SLUG_NAME);
+if (!defined('P4EN_INCLUDES_DIR'))      define('P4EN_INCLUDES_DIR',         P4EN_PLUGIN_DIR.'/includes');
+if (!defined('P4EN_ADMIN_DIR'))         define('P4EN_ADMIN_DIR',            plugins_url(P4EN_PLUGIN_DIRNAME.'/admin'));
+if (!defined('P4EN_PUBLIC_DIR'))        define('P4EN_PUBLIC_DIR',           plugins_url(P4EN_PLUGIN_DIRNAME.'/public'));
+if (!defined('WP_UNINSTALL_PLUGIN'))    define('WP_UNINSTALL_PLUGIN',       P4EN_PLUGIN_BASENAME);
 
 
 /* ========================
