@@ -16,16 +16,19 @@
 
 
 /**
+ * Followed php coding standards from https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/
+ * Followed wp plugins best practices from https://developer.wordpress.org/plugins/the-basics/best-practices/
+ *
  * TODO - Replace Singleton with Dependency Injection (DI).
  * TODO - Namespace the plugin.
- * TODO - Use Codesniffer and WPC to check Wordpress Coding Standards
+ * TODO - Use Codesniffer and WPC to check WordPress Coding Standards
  * TODO - Check security - https://developer.wordpress.org/plugins/security/
  * TODO - Code review - https://vip.wordpress.com/documentation/code-review-what-we-look-for/
  */
 
 
 // Exit if accessed directly.
-defined('ABSPATH') OR die('Direct access is forbidden !');
+defined( 'ABSPATH' ) or die( 'Direct access is forbidden !' );
 
 /* ========================
 	  C O N S T A N T S
@@ -55,21 +58,24 @@ if (!defined('WP_UNINSTALL_PLUGIN'))    define('WP_UNINSTALL_PLUGIN',       P4EN
  * separated by underscores. Any acronyms should be all upper case.
  * https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/#naming-conventions
  */
-spl_autoload_register(function ($class_name) {
+spl_autoload_register(
+	function ( $class_name ) {
 
-	if(strpos( $class_name, 'P4EN' ) !== false) {
-		$file_name = '/class-' . str_replace( "_", "-", strtolower( $class_name ) );
+		if ( strpos( $class_name, 'P4EN' ) !== false ) {
+			$file_name = '/class-' . str_replace( '_', '-', strtolower( $class_name ) );
 
-		if(strpos( $class_name, 'Controller' ) !== false)
-			require_once 'classes/controller/' . $file_name . '.php';
-		else if(strpos( $class_name, 'View' ) !== false)
-			require_once 'classes/view/' . $file_name . '.php';
-		else if(strpos( $class_name, 'Model' ) !== false)
-			require_once 'classes/model/' . $file_name . '.php';
-		else
-			require_once 'classes/' . $file_name . '.php';
+			if ( strpos( $class_name, 'Controller' ) !== false ) {
+				require_once 'classes/controller/' . $file_name . '.php';
+			} elseif ( strpos( $class_name, 'View' ) !== false ) {
+				require_once 'classes/view/' . $file_name . '.php';
+			} elseif ( strpos( $class_name, 'Model' ) !== false ) {
+				require_once 'classes/model/' . $file_name . '.php';
+			} else {
+				require_once 'classes/' . $file_name . '.php';
+			}
+		}
 	}
-});
+);
 
 
 /* =================================
@@ -83,4 +89,4 @@ spl_autoload_register(function ($class_name) {
 // $model      = P4EN_Model::get_instance();
 $view       = P4EN_View::get_instance();
 $controller = P4EN_Init_Controller::get_instance();
-$controller->init($view);
+$controller->init( $view );

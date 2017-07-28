@@ -1,6 +1,6 @@
 <?php
 
-if (!class_exists('P4EN_View')) {
+if ( ! class_exists( 'P4EN_View' ) ) {
 
 	/**
 	 * Class P4EN_View
@@ -16,7 +16,7 @@ if (!class_exists('P4EN_View')) {
 		 */
 		public static function get_instance() {
 
-			!isset( self::$instance ) AND self::$instance = new self;
+			! isset( self::$instance ) and self::$instance = new self;
 			return  self::$instance;
 		}
 

@@ -1,6 +1,6 @@
 <?php
 
-if (!class_exists('P4EN_Uninstall_Controller')) {
+if ( ! class_exists( 'P4EN_Uninstall_Controller' ) ) {
 	/**
 	 * Planet4 - EngagingNetworks uninstaller
 	 *

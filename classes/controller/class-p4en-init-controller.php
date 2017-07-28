@@ -1,26 +1,27 @@
 <?php
 
-if (!class_exists('P4EN_Init_Controller')) {
+if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 
 	/**
 	 * Class P4EN_Init_Controller
 	 */
 	final class P4EN_Init_Controller {
 
-		// Properties
+		/** @var P4EN_Init_Controller $instance */
 		private static $instance;
-		public $P4EN_minimum_php_version = P4EN_MIN_PHP_VERSION;
+		/** @var string $minimum_php_version */
+		public $minimum_php_version = P4EN_MIN_PHP_VERSION;
 
-
+		/** @var P4EN_View $view*/
 		private $view;
 
 		/**
-		 * Singleton Creational patern.
+		 * Singleton creational patern.
 		 * Makes sure there is only one instance at all times.
 		 */
 		public static function get_instance() {
 
-			!isset( self::$instance ) AND self::$instance = new self;
+			! isset( self::$instance ) and self::$instance = new self;
 			return  self::$instance;
 		}
 
@@ -34,12 +35,15 @@ if (!class_exists('P4EN_Init_Controller')) {
 		 * Checks requirements and if its ok it hooks the init_plugin method on the 'init' action which fires
 		 * after WordPress has finished loading but before any headers are sent.
 		 * Most of WP is loaded at this stage (but not all) and the user is authenticated.
+		 *
+		 * @param null $view The P4EN_View instance injected in the controller.
 		 */
-		public function init($view = null) {
+		public function init( $view = null ) {
 			$this->check_requirements();
 
-			if(!is_null($view))
+			if ( ! is_null( $view ) ) {
 				$this->view = $view;
+			}
 		}
 
 		/**
@@ -47,27 +51,30 @@ if (!class_exists('P4EN_Init_Controller')) {
 		 */
 		public function init_plugin() {
 
-			add_action( 'plugins_loaded', array($this, 'P4EN_init_i18n') );    // Initialize internationalization
-			add_action( 'admin_menu', array($this, 'P4EN_admin_menu_load') );
-			add_action( 'admin_enqueue_scripts', array($this, 'load_admin_assets') );
+			add_action( 'plugins_loaded', array( $this, 'init_i18n' ) );    // Initialize internationalization.
+			add_action( 'admin_menu', array( $this, 'admin_menu_load' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets' ) );
+
+			// Provide hook for other plugins.
+			do_action( 'planet4_engagingnetworks_loaded' );
 		}
 
 		/**
 		 * Load the menu & submenus for the plugin
 		 */
-		public function P4EN_admin_menu_load() {
+		public function admin_menu_load() {
 
 			$current_user = wp_get_current_user();
 
-			if(in_array("administrator", $current_user->roles) || in_array("editor", $current_user->roles)) {
+			if ( in_array( 'administrator', $current_user->roles ) || in_array( 'editor', $current_user->roles ) ) {
 
 				add_menu_page(
-					P4EN_PLUGIN_SHORT_NAME,
-					P4EN_PLUGIN_SHORT_NAME,
+					'EngagingNetworks',
+					'EngagingNetworks',
 					'edit_dashboard',
 					P4EN_PLUGIN_SLUG_NAME,
-					array($this->view, 'render_dashboard'),
-					'none'
+					array( $this->view, 'render_dashboard' ),
+					P4EN_ADMIN_DIR . '/images/logo_menu_page_16x16.jpg'
 				);
 
 				add_submenu_page(
@@ -76,7 +83,7 @@ if (!class_exists('P4EN_Init_Controller')) {
 					__( 'Settings', P4EN_PLUGIN_TEXTDOMAIN ),
 					'manage_options',
 					P4EN_PLUGIN_SLUG_NAME . '-settings',
-					array($this->view, 'render_settings')
+					array( $this->view, 'render_settings' )
 				);
 			}
 		}
@@ -85,42 +92,47 @@ if (!class_exists('P4EN_Init_Controller')) {
 		 * Checks plugin requirements.
 		 */
 		public function check_requirements() {
-			// If we are on the admin panel
-			if ( is_admin() ) {
-				// Run the version check.
-				// If it is successful, continue with initialization for this plugin
-				if ( $this->P4EN_php_version_check() ) {
-					add_action('init', array($this, 'init_plugin'));
-					// Provide hook for other plugins
-					do_action( 'planet4_engagingnetworks_loaded' );
+
+			if ( is_admin() ) {         // If we are on the admin panel.
+				// Run the version check. If it is successful, continue with initialization for this plugin.
+				if ( $this->php_version_check() ) {
+					add_action( 'init', array( $this, 'init_plugin' ) );
 
 				} else {
-					wp_die('<div class="updated fade">' .
-					       __( '<u>Error!</u><br/><br/>Plugin <strong>'.P4EN_PLUGIN_NAME.'</strong> requires a newer version of PHP to be running.', P4EN_PLUGIN_TEXTDOMAIN ) .
-					       '<br/>' . __( 'Minimum version of PHP required: ', P4EN_PLUGIN_TEXTDOMAIN ) . '<strong>' . $this->P4EN_minimum_php_version . '</strong>' .
-					       '<br/>' . __( 'Your server\'s PHP version: ', P4EN_PLUGIN_TEXTDOMAIN ) . '<strong>' . phpversion() . '</strong>' .
-					       '</div>', 'Plugin Activation Error', array( 'response'=>200, 'back_link'=>TRUE ) );
+					wp_die(
+						'<div class="updated fade">' .
+						   __( '<u>Error!</u><br/><br/>Plugin <strong>' . P4EN_PLUGIN_NAME . '</strong> requires a newer version of PHP to be running.', P4EN_PLUGIN_TEXTDOMAIN ) .
+						   '<br/>' . __( 'Minimum version of PHP required: ', P4EN_PLUGIN_TEXTDOMAIN ) . '<strong>' . $this->minimum_php_version . '</strong>' .
+						   '<br/>' . __( 'Your server\'s PHP version: ', P4EN_PLUGIN_TEXTDOMAIN ) . '<strong>' . phpversion() . '</strong>' .
+						   '</div>', 'Plugin Activation Error', array(
+							   'response' => 200,
+							   'back_link' => true,
+						   )
+					);
 				}
 			}
 		}
 
 		/**
-		 * Check the PHP version and give a useful error message if the user's version is less than the required version
+		 * Check if the user's version is less than the required php version
 		 *
-		 * @return boolean true if version check passed. If false, displays an error.
+		 * @return boolean true if version check passed or false otherwise.
 		 */
-		public function P4EN_php_version_check() {
-			if (version_compare(phpversion(), $this->P4EN_minimum_php_version) < 0)
+		public function php_version_check() {
+			if ( version_compare( phpversion(), $this->minimum_php_version ) < 0 ) {
 				return false;
+			}
 			return true;
 		}
 
 		/**
-		 * @param $hook
+		 * Load assets only on the admin pages of the plugin.
+		 *
+		 * @param string $hook The slug name of the current admin page.
 		 */
-		public function load_admin_assets($hook) {
-			// Load only on ?page=P4EN_PLUGIN_TEXTDOMAIN
-			if(strpos( $hook, P4EN_PLUGIN_SLUG_NAME) === false ) {
+		public function load_admin_assets( $hook ) {
+			// Load only on ?page=P4EN_PLUGIN_SLUG_NAME.
+			if ( strpos( $hook, P4EN_PLUGIN_SLUG_NAME ) === false ) {
 				return;
 			}
 			wp_enqueue_style( 'p4en_admin_style', P4EN_ADMIN_DIR . '/css/admin.css', array(), '0.1' );
@@ -131,9 +143,19 @@ if (!class_exists('P4EN_Init_Controller')) {
 		 * Initialize internationalization (i18n) for this plugin.
 		 * References: http://codex.wordpress.org/I18n_for_WordPress_Developers
 		 */
-		public function P4EN_init_i18n() {
-			load_plugin_textdomain(P4EN_PLUGIN_TEXTDOMAIN, false, P4EN_PLUGIN_DIRNAME . '/languages/');
+		public function init_i18n() {
+			load_plugin_textdomain( P4EN_PLUGIN_TEXTDOMAIN, false, P4EN_PLUGIN_DIRNAME . '/languages/' );
 		}
+
+		/**
+		 * Make clone magic method private, so nobody can clone instance.
+		 */
+		private function __clone() {}
+
+		/**
+		 * Make wakeup magic method private, so nobody can unserialize instance.
+		 */
+		private function __wakeup() {}
 	}
 
 }

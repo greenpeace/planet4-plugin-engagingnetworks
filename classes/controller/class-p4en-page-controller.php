@@ -1,6 +1,6 @@
 <?php
 
-if (!class_exists('P4EN_Page_Controller')) {
+if ( ! class_exists( 'P4EN_Page_Controller' ) ) {
 
 	/**
 	 * Class P4EN_Page_Controller
