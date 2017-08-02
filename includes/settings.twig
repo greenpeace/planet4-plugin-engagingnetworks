@@ -1,1 +1,45 @@
-<p>Settings Page</p>
+{% block settings_content %}
+
+    <div class="wrap">
+        <h2>{{ __( 'Settings', P4EN_TEXTDOMAIN ) }}</h2>
+    </div>
+
+    <form id="p4en_settings_form" name="p4en_settings_form" method="post" action="options.php"> {# ../../../../wp-admin/options.php #}
+
+        {{ fn( 'settings_fields', 'p4en_options' ) }}
+        {{ fn( 'do_settings_sections', 'p4en_options' ) }}
+
+        <table class="form-table">
+            <tr valign="top">
+                <th scope="row">{{ __( 'Language', P4EN_TEXTDOMAIN ) }}:</th>
+                <td>
+                    <select id="p4en_lang" name="p4en_settings[p4en_lang]">
+                        <option selected disabled>- {{ fn( '_e', 'Select Language', P4EN_TEXTDOMAIN ) }} -</option>
+                        {% for key, lang in langs %}
+                            {% if key == settings.p4en_lang %}
+                                <option value="{{ key|e('html_attr') }}" selected="selected" >{{ lang|e('html') }}</option>
+                            {% else %}
+                                <option value="{{ key|e('html_attr') }}">{{ lang|e('html') }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row">{{ __( 'Public', P4EN_TEXTDOMAIN ) }} API:</th>
+                <td>
+                    <input id="p4en_public_api" name="p4en_settings[p4en_public_api]" value="{{ settings.p4en_public_api|e('html_attr') }}" size="50" placeholder="{{ __( 'Enter your Engaging Networks account public token', P4EN_TEXTDOMAIN ) }}" />
+                </td>
+            </tr>
+            <tr valign="top">
+                <th scope="row">{{ __( 'Private', P4EN_TEXTDOMAIN ) }} API:</th>
+                <td>
+                    <input id="p4en_private_api" name="p4en_settings[p4en_private_api]" value="{{ settings.p4en_private_api|e('html_attr') }}" size="50" placeholder="{{ __( 'Enter your Engaging Networks account private token', P4EN_TEXTDOMAIN ) }}" />
+                </td>
+            </tr>
+        </table>
+        {{ fn( 'submit_button', __( 'Save Changes', P4EN_TEXTDOMAIN ), 'primary', 'p4en_settings_save_button' ) }}
+    </form>
+    <div class="clear"></div>
+
+{% endblock %}

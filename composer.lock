@@ -10,16 +10,16 @@
     "packages-dev": [
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
-            "version": "v0.4.0",
+            "version": "v0.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DealerDirect/phpcodesniffer-composer-installer.git",
-                "reference": "0abc65eb5174cfd943b4d68a696e16dd849251f5"
+                "reference": "b437eb358b5e592668502a79d95c6d18f8c41ee8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DealerDirect/phpcodesniffer-composer-installer/zipball/0abc65eb5174cfd943b4d68a696e16dd849251f5",
-                "reference": "0abc65eb5174cfd943b4d68a696e16dd849251f5",
+                "url": "https://api.github.com/repos/DealerDirect/phpcodesniffer-composer-installer/zipball/b437eb358b5e592668502a79d95c6d18f8c41ee8",
+                "reference": "b437eb358b5e592668502a79d95c6d18f8c41ee8",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "stylecheck",
                 "tests"
             ],
-            "time": "2017-05-11 08:06:08"
+            "time": "2017-08-01 12:43:41"
         },
         {
             "name": "frenck/php-compatibility",
