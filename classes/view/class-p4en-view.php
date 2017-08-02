@@ -34,12 +34,11 @@ if ( ! class_exists( 'P4EN_View' ) ) {
 
 		/**
 		 * Render the settings page of the plugin.
+		 *
+		 * @param $data array All the data needed to render the template.
 		 */
-		public function settings() {
-			$this->view_template( __FUNCTION__, [
-				'settings' => get_option( 'p4en_settings' ),
-				'langs' => P4EN_LANGUAGES,
-			] );
+		public function settings( $data ) {
+			$this->view_template( __FUNCTION__, $data );
 		}
 
 		/**

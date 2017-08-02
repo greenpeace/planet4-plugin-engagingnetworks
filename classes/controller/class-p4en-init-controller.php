@@ -96,7 +96,7 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 						__( 'Settings', P4EN_TEXTDOMAIN ),
 						'manage_options',
 						P4EN_PLUGIN_SLUG_NAME . '-settings',
-						array( $this->view, 'settings' )
+						array( $this, 'prepare_settings' )
 					);
 				} else {
 					wp_die( __( 'You do not have sufficient permissions to access this page.', P4EN_TEXTDOMAIN ),'Permission Denied Error',
@@ -109,6 +109,16 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 
 				add_action( 'admin_init', array( $this->controller, 'register_settings' ) );
 			}
+		}
+
+		/**
+		 * Render the settings page of the plugin.
+		 */
+		public function prepare_settings() {
+			$this->view->settings( [
+				'settings' => get_option( 'p4en_settings' ),
+				'langs' => P4EN_LANGUAGES,
+			] );
 		}
 
 		/**
