@@ -38,6 +38,7 @@ if ( ! class_exists( 'P4EN_Uninstall_Controller' ) ) {
 		 */
 		protected static function clean_options() {
 			// Delete options.
+			delete_option( 'p4en_settings' );
 		}
 
 		/**

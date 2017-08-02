@@ -11,7 +11,8 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 		private static $instance;
 		/** @var string $minimum_php_version */
 		public $minimum_php_version = P4EN_MIN_PHP_VERSION;
-
+		/** @var P4EN_Base_Controller $controller*/
+		private $controller;
 		/** @var P4EN_View $view*/
 		private $view;
 
@@ -36,14 +37,22 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 		 * after WordPress has finished loading but before any headers are sent.
 		 * Most of WP is loaded at this stage (but not all) and the user is authenticated.
 		 *
-		 * @param null $view The P4EN_View instance injected in the controller.
+		 * @param $controller P4EN_Base_Controller The main controller of the plugin.
+		 * @param $view P4EN_View The P4EN_View instance injected in the controller.
+		 * @throws
 		 */
-		public function init( $view = null ) {
+		public function init( $controller, $view ) {
 			$this->check_requirements();
 
-			if ( ! is_null( $view ) ) {
+			// Property injection
+			if ( $controller instanceof P4EN_Base_Controller && $view instanceof P4EN_View ) {
+				$this->controller = $controller;
 				$this->view = $view;
+
+			} else {
+				throw new \Exception( 'View object must be an P4EN_View instance.' );
 			}
+
 		}
 
 		/**
@@ -51,9 +60,11 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 		 */
 		public function init_plugin() {
 
+			Timber::$locations = P4EN_INCLUDES_DIR;
+
 			add_action( 'plugins_loaded', array( $this, 'init_i18n' ) );    // Initialize internationalization.
-			add_action( 'admin_menu', array( $this, 'admin_menu_load' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets' ) );
+			add_action( 'admin_menu', array( $this, 'load_admin_menu' ) );
 
 			// Provide hook for other plugins.
 			do_action( 'planet4_engagingnetworks_loaded' );
@@ -62,29 +73,41 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 		/**
 		 * Load the menu & submenus for the plugin
 		 */
-		public function admin_menu_load() {
+		public function load_admin_menu() {
 
 			$current_user = wp_get_current_user();
 
-			if ( in_array( 'administrator', $current_user->roles ) || in_array( 'editor', $current_user->roles ) ) {
+			if ( in_array( 'administrator', $current_user->roles, true ) || in_array( 'editor', $current_user->roles, true ) ) {
 
 				add_menu_page(
 					'EngagingNetworks',
 					'EngagingNetworks',
 					'edit_dashboard',
 					P4EN_PLUGIN_SLUG_NAME,
-					array( $this->view, 'render_dashboard' ),
+					array( $this->view, 'dashboard' ),
 					P4EN_ADMIN_DIR . '/images/logo_menu_page_16x16.jpg'
 				);
 
-				add_submenu_page(
-					P4EN_PLUGIN_SLUG_NAME,
-					__( 'Settings', P4EN_PLUGIN_TEXTDOMAIN ),
-					__( 'Settings', P4EN_PLUGIN_TEXTDOMAIN ),
-					'manage_options',
-					P4EN_PLUGIN_SLUG_NAME . '-settings',
-					array( $this->view, 'render_settings' )
-				);
+				if ( current_user_can( 'manage_options' ) ) {
+
+					add_submenu_page(
+						P4EN_PLUGIN_SLUG_NAME,
+						__( 'Settings', P4EN_TEXTDOMAIN ),
+						__( 'Settings', P4EN_TEXTDOMAIN ),
+						'manage_options',
+						P4EN_PLUGIN_SLUG_NAME . '-settings',
+						array( $this->view, 'settings' )
+					);
+				} else {
+					wp_die( __( 'You do not have sufficient permissions to access this page.', P4EN_TEXTDOMAIN ),'Permission Denied Error',
+						array(
+							'response' => 200,
+							'back_link' => true,
+						)
+					);
+				}
+
+				add_action( 'admin_init', array( $this->controller, 'register_settings' ) );
 			}
 		}
 
@@ -101,9 +124,9 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 				} else {
 					wp_die(
 						'<div class="updated fade">' .
-						   __( '<u>Error!</u><br/><br/>Plugin <strong>' . P4EN_PLUGIN_NAME . '</strong> requires a newer version of PHP to be running.', P4EN_PLUGIN_TEXTDOMAIN ) .
-						   '<br/>' . __( 'Minimum version of PHP required: ', P4EN_PLUGIN_TEXTDOMAIN ) . '<strong>' . $this->minimum_php_version . '</strong>' .
-						   '<br/>' . __( 'Your server\'s PHP version: ', P4EN_PLUGIN_TEXTDOMAIN ) . '<strong>' . phpversion() . '</strong>' .
+						   __( '<u>Error!</u><br/><br/>Plugin <strong>' . P4EN_PLUGIN_NAME . '</strong> requires a newer version of PHP to be running.', P4EN_TEXTDOMAIN ) .
+						   '<br/>' . __( 'Minimum version of PHP required: ', P4EN_TEXTDOMAIN ) . '<strong>' . $this->minimum_php_version . '</strong>' .
+						   '<br/>' . __( 'Your server\'s PHP version: ', P4EN_TEXTDOMAIN ) . '<strong>' . phpversion() . '</strong>' .
 						   '</div>', 'Plugin Activation Error', array(
 							   'response' => 200,
 							   'back_link' => true,
@@ -144,7 +167,7 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 		 * References: http://codex.wordpress.org/I18n_for_WordPress_Developers
 		 */
 		public function init_i18n() {
-			load_plugin_textdomain( P4EN_PLUGIN_TEXTDOMAIN, false, P4EN_PLUGIN_DIRNAME . '/languages/' );
+			load_plugin_textdomain( P4EN_TEXTDOMAIN, false, P4EN_PLUGIN_DIRNAME . '/languages/' );
 		}
 
 		/**
