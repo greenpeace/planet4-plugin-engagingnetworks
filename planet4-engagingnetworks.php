@@ -40,7 +40,6 @@ if ( ! defined( 'P4EN_PLUGIN_DIR' ) )       define( 'P4EN_PLUGIN_DIR',          
 if ( ! defined( 'P4EN_PLUGIN_NAME' ) )      define( 'P4EN_PLUGIN_NAME',         'Planet4 - EngagingNetworks' );
 if ( ! defined( 'P4EN_PLUGIN_SHORT_NAME' ) )define( 'P4EN_PLUGIN_SHORT_NAME',   'EngagingNetworks' );
 if ( ! defined( 'P4EN_PLUGIN_SLUG_NAME' ) ) define( 'P4EN_PLUGIN_SLUG_NAME',    'planet4-engagingnetworks' );
-if ( ! defined( 'P4EN_TEXTDOMAIN' ) )       define( 'P4EN_TEXTDOMAIN',          'planet4-engagingnetworks' );
 if ( ! defined( 'P4EN_INCLUDES_DIR' ) )     define( 'P4EN_INCLUDES_DIR',        P4EN_PLUGIN_DIR . '/includes' );
 if ( ! defined( 'P4EN_ADMIN_DIR' ) )        define( 'P4EN_ADMIN_DIR',           plugins_url( P4EN_PLUGIN_DIRNAME . '/admin' ) );
 if ( ! defined( 'P4EN_PUBLIC_DIR' ) )       define( 'P4EN_PUBLIC_DIR',          plugins_url( P4EN_PLUGIN_DIRNAME . '/public' ) );

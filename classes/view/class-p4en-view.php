@@ -26,9 +26,9 @@ if ( ! class_exists( 'P4EN_View' ) ) {
 		private function __construct() {}
 
 		/**
-		 * Render the main dashboard page of the plugin.
+		 * Render the main page of the plugin.
 		 */
-		public function dashboard() {
+		public function pages() {
 			$this->view_template( __FUNCTION__, [] );
 		}
 
