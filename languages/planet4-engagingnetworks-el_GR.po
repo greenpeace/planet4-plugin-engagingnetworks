@@ -40,3 +40,35 @@ msgstr "Η ελάχιστη έκδοση της PHP που απαιτείται 
 #: classes/controller/class-p4en-init-controller.php:148
 msgid "Your server's PHP version: "
 msgstr "Η έκδοση της PHP που χρησιμοποείται είναι: "
+
+#: includes/settings.twig
+msgid "Language"
+msgstr "Γλώσσα"
+
+#: includes/settings.twig
+msgid "Select Language"
+msgstr "Επίλεξε Γλώσσα"
+
+#: includes/settings.twig
+msgid "Public"
+msgstr "Κοινόχρηστο"
+
+#: includes/settings.twig
+msgid "Private"
+msgstr "Κρυφό"
+
+#: includes/settings.twig
+msgid "Save Changes"
+msgstr "Αποθήκευση"
+
+#: includes/settings.twig
+msgid "Enter your Engaging Networks account public token"
+msgstr "Εισαγωγή κλειδιού για το κοινόχρηστο API"
+
+#: includes/settings.twig
+msgid "Enter your Engaging Networks account private token"
+msgstr "Εισαγωγή κλειδιού για το κρυφό API"
+
+#: includes/dashboad.twig
+msgid "EN Pages"
+msgstr "EN Σελίδες"

@@ -85,7 +85,7 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 					'EngagingNetworks',
 					'edit_dashboard',
 					P4EN_PLUGIN_SLUG_NAME,
-					array( $this->view, 'dashboard' ),
+					array( $this->view, 'pages' ),
 					P4EN_ADMIN_DIR . '/images/logo_menu_page_16x16.jpg'
 				);
 
@@ -93,14 +93,14 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 
 					add_submenu_page(
 						P4EN_PLUGIN_SLUG_NAME,
-						__( 'Settings', P4EN_TEXTDOMAIN ),
-						__( 'Settings', P4EN_TEXTDOMAIN ),
+						__( 'Settings', 'planet4-engagingnetworks' ),
+						__( 'Settings', 'planet4-engagingnetworks' ),
 						'manage_options',
 						P4EN_PLUGIN_SLUG_NAME . '-settings',
 						array( $this, 'prepare_settings' )
 					);
 				} else {
-					wp_die( __( 'You do not have sufficient permissions to access this page.', P4EN_TEXTDOMAIN ),'Permission Denied Error',
+					wp_die( __( 'You do not have sufficient permissions to access this page.', 'planet4-engagingnetworks' ),'Permission Denied Error',
 						array(
 							'response' => 200,
 							'back_link' => true,
@@ -118,7 +118,7 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 		public function prepare_settings() {
 			$this->view->settings( [
 				'settings' => get_option( 'p4en_settings' ),
-				'langs' => P4EN_LANGUAGES,
+				'available_languages' => P4EN_LANGUAGES,
 			] );
 		}
 
@@ -143,9 +143,9 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 				} else {
 					wp_die(
 						'<div class="updated fade">' .
-						   __( '<u>Error!</u><br/><br/>Plugin <strong>' . P4EN_PLUGIN_NAME . '</strong> requires a newer version of PHP to be running.', P4EN_TEXTDOMAIN ) .
-						   '<br/>' . __( 'Minimum version of PHP required: ', P4EN_TEXTDOMAIN ) . '<strong>' . $this->minimum_php_version . '</strong>' .
-						   '<br/>' . __( 'Your server\'s PHP version: ', P4EN_TEXTDOMAIN ) . '<strong>' . phpversion() . '</strong>' .
+						   __( '<u>Error!</u><br/><br/>Plugin <strong>' . P4EN_PLUGIN_NAME . '</strong> requires a newer version of PHP to be running.', 'planet4-engagingnetworks' ) .
+						   '<br/>' . __( 'Minimum version of PHP required: ', 'planet4-engagingnetworks' ) . '<strong>' . $this->minimum_php_version . '</strong>' .
+						   '<br/>' . __( 'Your server\'s PHP version: ', 'planet4-engagingnetworks' ) . '<strong>' . phpversion() . '</strong>' .
 						   '</div>', 'Plugin Activation Error', array(
 							   'response' => 200,
 							   'back_link' => true,
@@ -186,7 +186,7 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 		 * References: http://codex.wordpress.org/I18n_for_WordPress_Developers
 		 */
 		public function init_i18n() {
-			load_plugin_textdomain( P4EN_TEXTDOMAIN, false, P4EN_PLUGIN_DIRNAME . '/languages/' );
+			load_plugin_textdomain( 'planet4-engagingnetworks', false, P4EN_PLUGIN_DIRNAME . '/languages/' );
 		}
 
 		/**
