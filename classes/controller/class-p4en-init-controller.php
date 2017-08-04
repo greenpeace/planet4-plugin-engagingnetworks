@@ -39,7 +39,7 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 		 *
 		 * @param $controller P4EN_Base_Controller The main controller of the plugin.
 		 * @param $view P4EN_View The P4EN_View instance injected in the controller.
-		 * @throws
+		 * @throws \Exception Controller must be P4EN_Base_Controller and View must be P4EN_View.
 		 */
 		public function init( $controller, $view ) {
 			$this->check_requirements();
@@ -50,7 +50,7 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 				$this->view = $view;
 
 			} else {
-				throw new \Exception( 'View object must be an P4EN_View instance.' );
+				throw new \Exception( 'Controller must be P4EN_Base_Controller and View must be P4EN_View.' );
 			}
 
 		}
@@ -62,9 +62,10 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 
 			Timber::$locations = P4EN_INCLUDES_DIR;
 
-			add_action( 'plugins_loaded', array( $this, 'init_i18n' ) );    // Initialize internationalization.
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets' ) );
+			add_action( 'admin_menu', array( $this, 'init_i18n' ) );    // Initialize internationalization.
 			add_action( 'admin_menu', array( $this, 'load_admin_menu' ) );
+			add_filter( 'locale', array( $this, 'load_locale' ), 11, 1 );
 
 			// Provide hook for other plugins.
 			do_action( 'planet4_engagingnetworks_loaded' );
@@ -119,6 +120,14 @@ if ( ! class_exists( 'P4EN_Init_Controller' ) ) {
 				'settings' => get_option( 'p4en_settings' ),
 				'langs' => P4EN_LANGUAGES,
 			] );
+		}
+
+		/**
+		 *
+		 */
+		public function load_locale() {
+			$settings = get_option( 'p4en_settings' );
+			return $settings['p4en_lang'];
 		}
 
 		/**
