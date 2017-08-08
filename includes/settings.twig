@@ -4,6 +4,8 @@
         <h2>{{ __( 'Settings', 'planet4-engagingnetworks' ) }}</h2>
     </div>
 
+    {{ fn( 'settings_errors' ) }}
+
     <form id="p4en_settings_form" name="p4en_settings_form" method="post" action="options.php"> {# ../../../../wp-admin/options.php #}
 
         {{ fn( 'settings_fields', 'p4en_options' ) }}
@@ -14,7 +16,7 @@
                 <th scope="row">{{ __( 'Language', 'planet4-engagingnetworks' ) }}:</th>
                 <td>
                     <select id="p4en_lang" name="p4en_settings[p4en_lang]">
-                        <option selected disabled>- {{ fn( '_e', 'Select Language', 'planet4-engagingnetworks' ) }} -</option>
+                        <option selected disabled>- {{ _e( 'Select Language', 'planet4-engagingnetworks' ) }} -</option>
                         {% for key, language in available_languages %}
                             {% if key == settings.p4en_lang %}
                                 <option value="{{ key|e('html_attr') }}" selected="selected" >{{ language|e('html') }}</option>
