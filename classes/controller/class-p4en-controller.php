@@ -52,7 +52,7 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 						array( $this, 'prepare_settings' )
 					);
 				} else {
-					wp_die( __( 'You do not have sufficient permissions to access this page.', 'planet4-engagingnetworks' ),'Permission Denied Error',
+					wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'planet4-engagingnetworks' ),'Permission Denied Error',
 						array(
 							'response' => 200,
 							'back_link' => true,

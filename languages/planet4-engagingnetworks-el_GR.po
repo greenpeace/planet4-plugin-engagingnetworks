@@ -19,56 +19,56 @@ msgstr ""
 "Plural-Forms: \n"
 "X-Generator: Eazy Po 0.9.5.3\n"
 
-#: classes/class-p4en-loader.php:67 classes/class-p4en-loader.php:80
-msgid "<u>Plugin Requirements Error!</u><br /><br />"
-msgstr "<u>Σφάλμα απαιτήσεων!</u><br /><br />"
+#: classes/class-p4en-loader.php:78 classes/class-p4en-loader.php:91
+msgid "Plugin Requirements Error!"
+msgstr "Σφάλμα απαιτήσεων!"
 
-#: classes/class-p4en-loader.php:67
-msgid " requires a newer version of the following plugin.<br />"
-msgstr "απαιτεί μια νεότερη έκδοση του παρακάτω plugin.<br />"
+#: classes/class-p4en-loader.php:78
+msgid " requires a newer version of the following plugin."
+msgstr "απαιτεί μια νεότερη έκδοση του παρακάτω plugin."
 
-#: classes/class-p4en-loader.php:68
+#: classes/class-p4en-loader.php:78
 msgid "Minimum required version of "
 msgstr "Η ελάχιστη απαιτούμενη έκδοση του"
 
-#: classes/class-p4en-loader.php:69
+#: classes/class-p4en-loader.php:80
 msgid "Installed version of "
 msgstr "Η εγκατεστημένη έκδοση του"
 
-#: classes/class-p4en-loader.php:80
-msgid " requires a newer version of PHP.<br />"
-msgstr "απαιτεί νεότερη έκδοση της PHP.<br />"
+#: classes/class-p4en-loader.php:91
+msgid " requires a newer version of PHP."
+msgstr "απαιτεί νεότερη έκδοση της PHP."
 
-#: classes/class-p4en-loader.php:81
+#: classes/class-p4en-loader.php:92
 msgid "Minimum required version of PHP: "
 msgstr "Η ελάχιστη έκδοση της PHP που απαιτείται είναι: "
 
-#: classes/class-p4en-loader.php:82
+#: classes/class-p4en-loader.php:93
 msgid "Running version of PHP: "
 msgstr "Η τρέχουσα έκδοση της PHP είναι:"
 
-#: classes/class-p4en-loader.php:137
-msgid ""
-"<u>Plugin Conflict Error!</u><br /><br />Class <strong>P4EN_Loader</strong> "
-"already exists.<br />"
-msgstr ""
-"<u>Σφάλμα!</u><br /><br />Η κλάση <strong>P4EN_Loader</strong> υπάρχει ήδη.<"
-"br />"
+#: classes/class-p4en-loader.php:148
+msgid "Plugin Conflict Error!"
+msgstr "Σφάλμα!"
+
+#: classes/class-p4en-loader.php:148
+msgid "Class <strong>P4EN_Loader</strong> already exists."
+msgstr "Η κλάση <strong>P4EN_Loader</strong> υπάρχει ήδη."
 
 #: classes/controller/class-p4en-controller.php:64
 #: classes/controller/class-p4en-controller.php:65
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-#: classes/controller/class-p4en-controller.php:71
+#: classes/controller/class-p4en-controller.php:55
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Δεν έχετε επαρκή δικαιώματα για να δείτε αυτή τη σελίδα."
 
-#: classes/controller/class-p4en-controller.php:144
+#: classes/controller/class-p4en-controller.php:128
 msgid "Invalid value for Public API"
 msgstr "Λανθασμένη τιμή για Κοινόχρηστο API"
 
-#: classes/controller/class-p4en-controller.php:153
+#: classes/controller/class-p4en-controller.php:137
 msgid "Invalid value for Private API"
 msgstr "Λανθασμένη τιμή για Κρυφό API"
 
