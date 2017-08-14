@@ -9,6 +9,42 @@ if ( ! class_exists( 'P4EN_Page_Controller' ) ) {
 	 * different types of EN Pages (donations, petitions, events, signups, ...)
 	 */
 	abstract class P4EN_Page_Controller {
+		const SUBTYPES = [
+			'DCF'   => [
+				'type' => 'Data capture',
+				'subType' => 'Data capture form',
+			],
+			'MEM'   => [
+				'type' => 'Fundraising',
+				'subType' => 'Membership',
+			],
+			'EMS'   => [
+				'type' => 'List management',
+				'subType' => 'Email subscribe',
+			],
+			'UNSUB' => [
+				'type' => 'List management',
+				'subType' => 'Email unsubscribe',
+			],
+			'PET'   => [
+				'type' => 'Advocacy',
+				'subType' => 'Petition',
+			],
+			'ET'    => [
+				'type' => 'Advocacy',
+				'subType' => 'Email to target',
+			],
+			'ND'    => [
+				'type' => 'Fundraising',
+				'subType' => 'Donation',
+			],
+		];
 
+		const STATUSES = [
+			'all'       => 'All',
+			'new'       => 'New',
+			'live'      => 'Live',
+			'tested'    => 'Tested',
+		];
 	}
 }

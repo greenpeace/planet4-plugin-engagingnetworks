@@ -11,12 +11,12 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 
 		/** @var P4EN_Loader $instance */
 		private static $instance;
+		/** @var P4EN_Controller $controller */
+		private $controller;
 		/** @var string $required_php */
 		private $required_php = P4EN_REQUIRED_PHP;
 		/** @var array $required_plugins */
 		private $required_plugins = P4EN_REQUIRED_PLUGINS;
-		/** @var P4EN_Controller $controller */
-		private $controller;
 
 
 		/**
@@ -47,9 +47,9 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 		/**
 		 * Hooks the plugin.
 		 */
-		public function hook_plugin() {
+		private function hook_plugin() {
 
-			Timber::$locations = P4EN_INCLUDES_DIR;
+			//Timber::$locations = P4EN_INCLUDES_DIR;
 
 			add_action( 'admin_menu', array( $this->controller, 'load_admin_menu' ) );
 			add_action( 'admin_menu', array( $this->controller, 'init_i18n' ) );
@@ -57,7 +57,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 			add_filter( 'locale', array( $this->controller, 'load_locale' ), 11, 1 );
 
 			// Provide hook for other plugins.
-			do_action( 'planet4_engagingnetworks_loaded' );
+			do_action( 'p4en_action_loaded' );
 		}
 
 		/**
@@ -70,16 +70,16 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 				// Run the version check. If it is successful, continue with hooking under 'init' the initialization of this plugin.
 				if ( $this->check_required_php() ) {
 					if ( $this->check_required_plugins( $plugin ) ) {
-						add_action( 'init', array( $this, 'hook_plugin' ) );
+						$this->hook_plugin();
 					} else {
 						deactivate_plugins( P4EN_PLUGIN_BASENAME );
 						wp_die(
-							'<div class="updated fade">' .
-							'<u>' . esc_html__( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME ) . esc_html__( ' requires a newer version of the following plugin.', 'planet4-engagingnetworks' ) . '<br />' .
-							'<br/>' . esc_html__( 'Minimum required version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['min_version'] ) . '</strong>' .
-							'<br/>' . esc_html__( 'Installed version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['Version'] ) . '</strong>' .
+							'<div class="error fade">' .
+							'<u>' . __( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME ) . __( ' requires a newer version of the following plugin.', 'planet4-engagingnetworks' ) . '<br />' .
+							'<br/>' . __( 'Minimum required version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['min_version'] ) . '</strong>' .
+							'<br/>' . __( 'Installed version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['Version'] ) . '</strong>' .
 							'</div>', 'Plugin Requirements Error', array(
-								'response' => 200,
+								'response' => WP_Http::OK,
 								'back_link' => true,
 							)
 						);
@@ -87,12 +87,12 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 				} else {
 					deactivate_plugins( P4EN_PLUGIN_BASENAME );
 					wp_die(
-						'<div class="updated fade">' .
-						'<u>' . esc_html__( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME ) . esc_html__( ' requires a newer version of PHP.', 'planet4-engagingnetworks' ) . '<br />' .
-						'<br/>' . esc_html__( 'Minimum required version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( $this->required_php ) . '</strong>' .
-						'<br/>' . esc_html__( 'Running version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( phpversion() ) . '</strong>' .
+						'<div class="error fade">' .
+						'<u>' . __( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME . __( ' requires a newer version of PHP.', 'planet4-engagingnetworks' ) ) . '<br />' .
+						'<br/>' . __( 'Minimum required version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( $this->required_php ) . '</strong>' .
+						'<br/>' . __( 'Running version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( phpversion() ) . '</strong>' .
 						'</div>', 'Plugin Requirements Error', array(
-							'response' => 200,
+							'response' => WP_Http::OK,
 							'back_link' => true,
 						)
 					);
@@ -144,10 +144,10 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 } else {
 	deactivate_plugins( P4EN_PLUGIN_BASENAME );
 	wp_die(
-		'<div class="updated fade">' .
-		'<u>' . esc_html__( 'Plugin Conflict Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html__( 'Class <strong>P4EN_Loader</strong> already exists.', 'planet4-engagingnetworks' ) . '<br />' .
+		'<div class="error fade">' .
+		'<u>' . __( 'Plugin Conflict Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . __( 'Class <strong>P4EN_Loader</strong> already exists.', 'planet4-engagingnetworks' ) . '<br />' .
 		'</div>', 'Plugin Conflict Error', array(
-			'response' => 200,
+			'response' => WP_Http::OK,
 			'back_link' => true,
 		)
 	);

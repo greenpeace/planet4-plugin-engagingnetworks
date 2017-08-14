@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6c22fb033fb3b3a0712b0b5dc4f006c2",
-    "content-hash": "3e7c1620fc109e95b81d5c30f56ab254",
+    "hash": "f194f5e0378859a704ac6d4dabda7245",
+    "content-hash": "febb9fe1514c75cad11e4abdde7aaa3c",
     "packages": [],
     "packages-dev": [
         {
@@ -201,16 +201,16 @@
         },
         {
             "name": "wp-coding-standards/wpcs",
-            "version": "0.13.0",
+            "version": "0.13.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git",
-                "reference": "2d693836586866412dd910ede4b097a8445222cb"
+                "reference": "1f64b1a0b5b789822d0303436ee4e30e0135e4dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/WordPress-Coding-Standards/WordPress-Coding-Standards/zipball/2d693836586866412dd910ede4b097a8445222cb",
-                "reference": "2d693836586866412dd910ede4b097a8445222cb",
+                "url": "https://api.github.com/repos/WordPress-Coding-Standards/WordPress-Coding-Standards/zipball/1f64b1a0b5b789822d0303436ee4e30e0135e4dc",
+                "reference": "1f64b1a0b5b789822d0303436ee4e30e0135e4dc",
                 "shasum": ""
             },
             "require": {
@@ -237,7 +237,7 @@
                 "standards",
                 "wordpress"
             ],
-            "time": "2017-08-03 02:00:57"
+            "time": "2017-08-05 16:08:58"
         }
     ],
     "aliases": [],

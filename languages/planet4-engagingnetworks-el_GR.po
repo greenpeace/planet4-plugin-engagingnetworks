@@ -104,5 +104,34 @@ msgstr "Εισαγωγή κλειδιού για το κρυφό API"
 msgid "EN Pages"
 msgstr "EN Σελίδες"
 
-msgid "Settings saved"
-msgstr "Οι Ρυθμίσεις αποθηκεύτηκαν"
+#: includes/pages.twig
+msgid "Type"
+msgstr "Κατηγορία"
+
+#: includes/pages.twig
+msgid "Name"
+msgstr "Όνομα"
+
+#: includes/pages.twig
+msgid "Created"
+msgstr "Δημιουργήθηκε"
+
+#: includes/pages.twig
+msgid "Modified"
+msgstr "Τροποποιήθηκε"
+
+#: includes/pages.twig
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: includes/pages.twig
+msgid "Title"
+msgstr "Τίτλος"
+
+#: includes/pages.twig
+msgid "Subtype"
+msgstr "Υποκατηγορία"
+
+#: includes/pages.twig
+msgid "Actions"
+msgstr "Ενέργειες"

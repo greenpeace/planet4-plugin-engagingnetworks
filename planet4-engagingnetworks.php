@@ -3,7 +3,7 @@
  * Plugin Name: Planet4 - EngagingNetworks
  * Description: Connects Planet4 with the Engaging Networks platform.
  * Plugin URI: http://github.com/greenpeace/planet4-plugin-engagingnetworks
- * Version: 0.1.4
+ * Version: 0.1.8
  * Php Version: 7.0
  *
  * Author: Greenpeace International
@@ -29,7 +29,7 @@ defined( 'ABSPATH' ) or die( 'Direct access is forbidden !' );
 
 
 /* ========================
-	  C O N S T A N T S
+      C O N S T A N T S
    ======================== */
 if ( ! defined( 'P4EN_REQUIRED_PHP' ) )         define( 'P4EN_REQUIRED_PHP',        '7.0' );
 if ( ! defined( 'P4EN_REQUIRED_PLUGINS' ) )     define( 'P4EN_REQUIRED_PLUGINS',    [
@@ -43,19 +43,21 @@ if ( ! defined( 'P4EN_PLUGIN_DIRNAME' ) )       define( 'P4EN_PLUGIN_DIRNAME',  
 if ( ! defined( 'P4EN_PLUGIN_DIR' ) )           define( 'P4EN_PLUGIN_DIR',          WP_PLUGIN_DIR . '/' . P4EN_PLUGIN_DIRNAME );
 if ( ! defined( 'P4EN_PLUGIN_NAME' ) )          define( 'P4EN_PLUGIN_NAME',         'Planet4 - EngagingNetworks' );
 if ( ! defined( 'P4EN_PLUGIN_SHORT_NAME' ) )    define( 'P4EN_PLUGIN_SHORT_NAME',   'EngagingNetworks' );
-if ( ! defined( 'P4EN_PLUGIN_SLUG_NAME' ) )     define( 'P4EN_PLUGIN_SLUG_NAME',    'planet4-engagingnetworks' );
-if ( ! defined( 'P4EN_INCLUDES_DIR' ) )         define( 'P4EN_INCLUDES_DIR',        P4EN_PLUGIN_DIR . '/includes' );
-if ( ! defined( 'P4EN_ADMIN_DIR' ) )            define( 'P4EN_ADMIN_DIR',           plugins_url( P4EN_PLUGIN_DIRNAME . '/admin' ) );
-if ( ! defined( 'P4EN_PUBLIC_DIR' ) )           define( 'P4EN_PUBLIC_DIR',          plugins_url( P4EN_PLUGIN_DIRNAME . '/public' ) );
+if ( ! defined( 'P4EN_PLUGIN_SLUG_NAME' ) )     define( 'P4EN_PLUGIN_SLUG_NAME',    'engagingnetworks' );
+if ( ! defined( 'P4EN_INCLUDES_DIR' ) )         define( 'P4EN_INCLUDES_DIR',        P4EN_PLUGIN_DIR . '/includes/' );
+if ( ! defined( 'P4EN_ADMIN_DIR' ) )            define( 'P4EN_ADMIN_DIR',           plugins_url( P4EN_PLUGIN_DIRNAME . '/admin/' ) );
+if ( ! defined( 'P4EN_PUBLIC_DIR' ) )           define( 'P4EN_PUBLIC_DIR',          plugins_url( P4EN_PLUGIN_DIRNAME . '/public/' ) );
 if ( ! defined( 'P4EN_LANGUAGES' ) )            define( 'P4EN_LANGUAGES',           [
 	'en_US' => 'English',
 	'el_GR' => 'Ελληνικά',
 ] );
+if ( ! defined( 'ENS_AUTH_URL' ) )              define( 'ENS_AUTH_URL',             'https://www.e-activist.com/ens/service/authenticate' );
+if ( ! defined( 'ENS_GET_PAGES' ) )             define( 'ENS_GET_PAGES',            'https://www.e-activist.com/ens/service/page' );
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) )       define( 'WP_UNINSTALL_PLUGIN',      P4EN_PLUGIN_BASENAME );
 
 
 /* ========================
-	  L O A D  F I L E S
+      L O A D  F I L E S
    ======================== */
 /**
  * Auto-loads files whose classes have Controller, View, Model in their names.
@@ -84,11 +86,7 @@ spl_autoload_register(
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 
-/* =================================
-      I N I T I A L I Z A T I O N
-   ================================= */
-// $model = new P4EN_Model();
-$view = new P4EN_View();
-$controller = new P4EN_Controller( $view );
-
-$loader = P4EN_Loader::get_instance( $controller );
+/* ==========================
+      L O A D  P L U G I N
+   ========================== */
+P4EN_Loader::get_instance( new P4EN_Controller( new P4EN_View() ) );
