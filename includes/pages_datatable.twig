@@ -15,7 +15,7 @@
                     <option selected disabled>- {{ _e( 'Select Subtype', 'planet4-engagingnetworks' ) }} -</option>
                     {% for key, subtype in subtypes %}
                         {% if key == pages_settings.p4en_pages_subtype %}
-                            <option value="{{ key|e('html_attr') }}" selected="selected" >{{ subtype['subType']|e('html') }}</option>
+                            <option value="{{ key|e('html_attr') }}" selected >{{ subtype['subType']|e('html') }}</option>
                         {% else %}
                             <option value="{{ key|e('html_attr') }}">{{ subtype['subType']|e('html') }}</option>
                         {% endif %}
@@ -26,7 +26,7 @@
                     <option selected disabled>- {{ _e( 'Select Status', 'planet4-engagingnetworks' ) }} -</option>
                     {% for key, status in statuses %}
                         {% if key == pages_settings.p4en_pages_status %}
-                            <option value="{{ key|e('html_attr') }}" selected="selected" >{{ status|e('html') }}</option>
+                            <option value="{{ key|e('html_attr') }}" selected >{{ status|e('html') }}</option>
                         {% else %}
                             <option value="{{ key|e('html_attr') }}">{{ status|e('html') }}</option>
                         {% endif %}
@@ -111,8 +111,6 @@
 
 <script type="application/javascript">
     jQuery(document).ready(function() {
-        $('#en_pages_table').DataTable( {
-            select: true
-        } );
+        $('#en_pages_table').DataTable();
     } );
 </script>

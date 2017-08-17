@@ -1,14 +1,14 @@
 <?php
 
-if ( ! class_exists( 'P4EN_Page_Controller' ) ) {
+if ( ! class_exists( 'P4EN_Pages_Controller' ) ) {
 
 	/**
-	 * Class P4EN_Page_Controller
+	 * Class P4EN_Pages_Controller
 	 *
-	 * This class will be the base controller for handling all the
-	 * different types of EN Pages (donations, petitions, events, signups, ...)
+	 * This class will be the base controller for handling various ways listing EN Pages tables
 	 */
-	abstract class P4EN_Page_Controller {
+	abstract class P4EN_Pages_Controller {
+
 		const SUBTYPES = [
 			'DCF'   => [
 				'type' => 'Data capture',

@@ -5,7 +5,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 	/**
 	 * Class P4EN_Loader
 	 *
-	 * This class loads the plugin.
+	 * This class checks requirements and if all are met then it hooks the plugin.
 	 */
 	final class P4EN_Loader {
 
@@ -22,6 +22,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 		/**
 		 * Singleton creational pattern.
 		 * Makes sure there is only one instance at all times.
+		 *
 		 * @param P4EN_Controller $controller   The main controller of the plugin.
 		 *
 		 * @return P4EN_Loader
@@ -48,13 +49,10 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 		 * Hooks the plugin.
 		 */
 		private function hook_plugin() {
-
-			//Timber::$locations = P4EN_INCLUDES_DIR;
-
-			add_action( 'admin_menu', array( $this->controller, 'load_admin_menu' ) );
-			add_action( 'admin_menu', array( $this->controller, 'init_i18n' ) );
-			add_action( 'admin_enqueue_scripts', array( $this->controller, 'load_admin_assets' ) );
-			add_filter( 'locale', array( $this->controller, 'load_locale' ), 11, 1 );
+			add_action( 'admin_menu', array( $this, 'load_i18n' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets' ) );
+			add_action( 'admin_menu', array( $this->controller, 'create_admin_menu' ) );
+			add_filter( 'locale', array( $this->controller, 'set_locale' ), 11, 1 );
 
 			// Provide hook for other plugins.
 			do_action( 'p4en_action_loaded' );
@@ -75,9 +73,9 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 						deactivate_plugins( P4EN_PLUGIN_BASENAME );
 						wp_die(
 							'<div class="error fade">' .
-							'<u>' . __( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME ) . __( ' requires a newer version of the following plugin.', 'planet4-engagingnetworks' ) . '<br />' .
-							'<br/>' . __( 'Minimum required version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['min_version'] ) . '</strong>' .
-							'<br/>' . __( 'Installed version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['Version'] ) . '</strong>' .
+							'<u>' . esc_html__( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME ) . esc_html__( ' requires a newer version of the following plugin.', 'planet4-engagingnetworks' ) . '<br />' .
+							'<br/>' . esc_html__( 'Minimum required version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['min_version'] ) . '</strong>' .
+							'<br/>' . esc_html__( 'Installed version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['Version'] ) . '</strong>' .
 							'</div>', 'Plugin Requirements Error', array(
 								'response' => WP_Http::OK,
 								'back_link' => true,
@@ -88,9 +86,9 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 					deactivate_plugins( P4EN_PLUGIN_BASENAME );
 					wp_die(
 						'<div class="error fade">' .
-						'<u>' . __( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME . __( ' requires a newer version of PHP.', 'planet4-engagingnetworks' ) ) . '<br />' .
-						'<br/>' . __( 'Minimum required version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( $this->required_php ) . '</strong>' .
-						'<br/>' . __( 'Running version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( phpversion() ) . '</strong>' .
+						'<u>' . esc_html__( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME . __( ' requires a newer version of PHP.', 'planet4-engagingnetworks' ) ) . '<br />' .
+						'<br/>' . esc_html__( 'Minimum required version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( $this->required_php ) . '</strong>' .
+						'<br/>' . esc_html__( 'Running version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( phpversion() ) . '</strong>' .
 						'</div>', 'Plugin Requirements Error', array(
 							'response' => WP_Http::OK,
 							'back_link' => true,
@@ -111,6 +109,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 
 		/**
 		 * Check if the version of a plugin is less than the required version.
+		 *
 		 * @param array $plugin Will contain information for those plugins whose requirements are not met.
 		 * @return bool true if version check passed or false otherwise.
 		 */
@@ -120,6 +119,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 			if ( is_array( $required_plugins ) && $required_plugins ) {
 				foreach ( $required_plugins as $required_plugin ) {
 					$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $required_plugin['rel_path'] );
+
 					if ( ! is_plugin_active( $required_plugin['rel_path'] ) ||
 					     ! version_compare( $plugin_data['Version'], $required_plugin['min_version'], '>=' ) ) {
 						$plugin = array_merge( $plugin_data, $required_plugin );
@@ -128,6 +128,37 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 				}
 			}
 			return true;
+		}
+
+		/**
+		 * Load assets only on the admin pages of the plugin.
+		 *
+		 * @param string $hook The slug name of the current admin page.
+		 */
+		public function load_admin_assets( $hook ) {
+			// Load the assets only on the plugin's pages.
+			if ( strpos( $hook, P4EN_PLUGIN_SLUG_NAME ) === false ) {
+				return;
+			}
+
+			wp_enqueue_script( 'p4en_jquery', '//code.jquery.com/jquery-3.2.1.min.js', array(), '3.2.1', true );
+			if ( strpos( $hook, 'pages-datatable' ) !== false ) {
+				wp_enqueue_style( 'p4en_bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css', array(), '4.0.0-alpha.6' );
+				wp_enqueue_style( 'p4en_datatables_bootstrap', 'https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap4.min.css', array( 'p4en_bootstrap' ), '1.10.15' );
+
+				wp_enqueue_script( 'p4en_datatables', 'https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js', array( 'p4en_jquery' ), '1.10.15', true );
+				wp_enqueue_script( 'p4en_datatables_bootstrap', 'https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js', array( 'p4en_datatables' ), '1.10.15', true );
+			}
+			wp_enqueue_style( 'p4en_admin_style', P4EN_ADMIN_DIR . 'css/admin.css', array(), '0.1' );
+			wp_enqueue_script( 'p4en_admin_script', P4EN_ADMIN_DIR . 'js/admin.js', array(), '0.1', true );
+		}
+
+		/**
+		 * Load internationalization (i18n) for this plugin.
+		 * References: http://codex.wordpress.org/I18n_for_WordPress_Developers
+		 */
+		public function load_i18n() {
+			load_plugin_textdomain( 'planet4-engagingnetworks', false, P4EN_PLUGIN_DIRNAME . '/languages/' );
 		}
 
 		/**
@@ -145,7 +176,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 	deactivate_plugins( P4EN_PLUGIN_BASENAME );
 	wp_die(
 		'<div class="error fade">' .
-		'<u>' . __( 'Plugin Conflict Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . __( 'Class <strong>P4EN_Loader</strong> already exists.', 'planet4-engagingnetworks' ) . '<br />' .
+		'<u>' . esc_html__( 'Plugin Conflict Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html__( 'Class P4EN_Loader already exists.', 'planet4-engagingnetworks' ) . '<br />' .
 		'</div>', 'Plugin Conflict Error', array(
 			'response' => WP_Http::OK,
 			'back_link' => true,

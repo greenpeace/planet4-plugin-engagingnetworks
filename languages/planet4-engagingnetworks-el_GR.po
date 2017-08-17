@@ -52,8 +52,8 @@ msgid "Plugin Conflict Error!"
 msgstr "Σφάλμα!"
 
 #: classes/class-p4en-loader.php:148
-msgid "Class <strong>P4EN_Loader</strong> already exists."
-msgstr "Η κλάση <strong>P4EN_Loader</strong> υπάρχει ήδη."
+msgid "Class P4EN_Loader already exists."
+msgstr "Η κλάση P4EN_Loader υπάρχει ήδη."
 
 #: classes/controller/class-p4en-controller.php:64
 #: classes/controller/class-p4en-controller.php:65

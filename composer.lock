@@ -4,22 +4,22 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "f194f5e0378859a704ac6d4dabda7245",
-    "content-hash": "febb9fe1514c75cad11e4abdde7aaa3c",
+    "hash": "9d78e0fcc0942ba278a6c37de3f1da7e",
+    "content-hash": "8582c0b42721b2531fa7fe10d9a36f3b",
     "packages": [],
     "packages-dev": [
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
-            "version": "v0.4.1",
+            "version": "v0.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DealerDirect/phpcodesniffer-composer-installer.git",
-                "reference": "b437eb358b5e592668502a79d95c6d18f8c41ee8"
+                "reference": "17130f536db62570bcfc5cce59464b36e82eb092"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DealerDirect/phpcodesniffer-composer-installer/zipball/b437eb358b5e592668502a79d95c6d18f8c41ee8",
-                "reference": "b437eb358b5e592668502a79d95c6d18f8c41ee8",
+                "url": "https://api.github.com/repos/DealerDirect/phpcodesniffer-composer-installer/zipball/17130f536db62570bcfc5cce59464b36e82eb092",
+                "reference": "17130f536db62570bcfc5cce59464b36e82eb092",
                 "shasum": ""
             },
             "require": {
@@ -72,7 +72,7 @@
                 "stylecheck",
                 "tests"
             ],
-            "time": "2017-08-01 12:43:41"
+            "time": "2017-08-16 10:25:17"
         },
         {
             "name": "frenck/php-compatibility",
