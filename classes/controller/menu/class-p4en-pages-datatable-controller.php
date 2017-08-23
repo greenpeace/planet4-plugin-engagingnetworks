@@ -62,10 +62,10 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 					if ( is_array( $response ) ) {
 						$pages = json_decode( $response['body'], true );
 					} else {
-						echo esc_html( $response );
+						$this->error( $response );
 					}
 				} else {
-					echo esc_html( $response );
+					$this->error( $response );
 				}
 			} else {
 				wp_die(

@@ -90,5 +90,14 @@ if ( ! class_exists( 'P4EN_View' ) ) {
 		public function settings( $data ) {
 			$this->view_template( __FUNCTION__, $data );
 		}
+
+		/**
+		 * Displays a message.
+		 *
+		 * @param array $data All the data needed to render the template.
+		 */
+		public function message( $data ) {
+			$this->view_template( __FUNCTION__, $data );
+		}
 	}
 }

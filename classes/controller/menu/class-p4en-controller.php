@@ -102,5 +102,65 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 			}
 			return $settings;
 		}
+
+		/**
+		 * Display an error message inside the admin panel.
+		 *
+		 * @param string $msg The message to display.
+		 */
+		public function error( $msg ) {
+			if ( is_string( $msg ) ) {
+				$this->view->message( [
+					'msg'     => $msg,
+					'type'    => self::ERROR,
+					'classes' => 'p4en_error',
+				] );
+			}
+		}
+
+		/**
+		 * Display a warning message inside the admin panel.
+		 *
+		 * @param string $msg The message to display.
+		 */
+		public function warning( $msg ) {
+			if ( is_string( $msg ) ) {
+				$this->view->message( [
+					'msg'     => $msg,
+					'type'    => self::WARNING,
+					'classes' => 'p4en_warning',
+				] );
+			}
+		}
+
+		/**
+		 * Display a notice message inside the admin panel.
+		 *
+		 * @param string $msg The message to display.
+		 */
+		public function notice( $msg ) {
+			if ( is_string( $msg ) ) {
+				$this->view->message( [
+					'msg'     => $msg,
+					'type'    => self::NOTICE,
+					'classes' => 'p4en_notice',
+				] );
+			}
+		}
+
+		/**
+		 * Display a success message inside the admin panel.
+		 *
+		 * @param string $msg The message to display.
+		 */
+		public function success( $msg ) {
+			if ( is_string( $msg ) ) {
+				$this->view->message( [
+					'msg'     => $msg,
+					'type'    => self::SUCCESS,
+					'classes' => 'p4en_success',
+				] );
+			}
+		}
 	}
 }
