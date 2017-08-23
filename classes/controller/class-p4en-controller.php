@@ -10,23 +10,26 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 	class P4EN_Controller {
 
 		/** @var P4EN_View $view */
-		private $view;
+		protected $view;
+		/** @var P4EN_Pages_Datatable_Controller $pages_datatable_controller */
+		protected $pages_datatable_controller;
 
 
 		/**
 		 * Creates the plugin's controller object.
 		 * Avoid putting hooks inside the constructor, to make testing easier.
 		 *
-		 * @param P4EN_View $view
+		 * @param P4EN_View $view The view object.
 		 */
 		public function __construct( P4EN_View $view ) {
 			$this->view = $view;
+			$this->pages_datatable_controller = new P4EN_Pages_Datatable_Controller( $view );
 		}
 
 		/**
-		 * Load the menu & submenus for the plugin
+		 * Create the menu for the plugin
 		 */
-		public function load_admin_menu() {
+		public function create_admin_menu() {
 
 			$current_user = wp_get_current_user();
 
@@ -35,10 +38,19 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 				add_menu_page(
 					'EngagingNetworks',
 					'EngagingNetworks',
-					'edit_dashboard',
+					'edit_pages',
 					P4EN_PLUGIN_SLUG_NAME,
-					array( $this->view, 'pages' ),
-					P4EN_ADMIN_DIR . '/images/logo_menu_page_16x16.jpg'
+					array( $this, 'prepare_pages' ),
+					P4EN_ADMIN_DIR . 'images/logo_menu_page_16x16.jpg'
+				);
+
+				add_submenu_page(
+					P4EN_PLUGIN_SLUG_NAME,
+					__( 'EN Pages DataTable', 'planet4-engagingnetworks' ),
+					__( 'EN Pages DataTable', 'planet4-engagingnetworks' ),
+					'edit_pages',
+					'pages-datatable',
+					array( $this->pages_datatable_controller, 'prepare_pages_datatable' )
 				);
 
 				if ( current_user_can( 'manage_options' ) ) {
@@ -48,13 +60,13 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 						__( 'Settings', 'planet4-engagingnetworks' ),
 						__( 'Settings', 'planet4-engagingnetworks' ),
 						'manage_options',
-						P4EN_PLUGIN_SLUG_NAME . '-settings',
+						'settings',
 						array( $this, 'prepare_settings' )
 					);
 				} else {
 					wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'planet4-engagingnetworks' ),'Permission Denied Error',
 						array(
-							'response' => 200,
+							'response' => WP_Http::OK,
 							'back_link' => true,
 						)
 					);
@@ -65,41 +77,61 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		}
 
 		/**
+		 * Loads the saved language.
+		 */
+		public function set_locale() : string {
+			$main_settings = get_option( 'p4en_main_settings' );
+			return isset( $main_settings['p4en_lang'] ) ? $main_settings['p4en_lang'] : '';
+		}
+
+		/**
+		 * Pass all needed data to the view object for the main page.
+		 */
+		public function prepare_pages() {
+			$this->view->pages( [
+				'pages' => [],
+			] );
+		}
+
+		/**
 		 * Render the settings page of the plugin.
 		 */
 		public function prepare_settings() {
 			$this->view->settings( [
-				'settings' => get_option( 'p4en_settings' ),
+				'settings' => get_option( 'p4en_main_settings' ),
 				'available_languages' => P4EN_LANGUAGES,
 			] );
 		}
 
 		/**
-		 * Loads the saved language.
-		 */
-		public function load_locale() : string {
-			$settings = get_option( 'p4en_settings' );
-			return isset( $settings['p4en_lang'] ) ? $settings['p4en_lang'] : '';
-		}
-
-		/**
 		 * Register and store the settings and their data.
 		 */
-		function register_settings() {
+		public function register_settings() {
 			$args = array(
 				'type'              => 'string',
-				'group'             => 'p4en_options',
+				'group'             => 'p4en_main_settings_group',
 				'description'       => 'Planet 4 - EngagingNetworks settings',
 				'sanitize_callback' => array( $this, 'valitize' ),
 				'show_in_rest'      => false,
 			);
 
-			register_setting( 'p4en_options', 'p4en_settings', $args );
+			register_setting( 'p4en_main_settings_group', 'p4en_main_settings', $args );
+
+			$args2 = array(
+				'type'              => 'string',
+				'group'             => 'p4en_pages_settings_group',
+				'description'       => 'Planet 4 - EngagingNetworks settings',
+				'sanitize_callback' => array( $this, 'valitize' ),
+				'show_in_rest'      => false,
+			);
+
+			register_setting( 'p4en_pages_settings_group', 'p4en_pages_settings', $args2 );
 		}
 
 		/**
 		 * Validates and sanitizes the settings input.
-		 * @param $settings array
+		 *
+		 * @param array $settings The associative array with the settings that are registered for the plugin.
 		 *
 		 * @return mixed
 		 */
@@ -113,42 +145,41 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 
 		/**
 		 * Validates the settings input.
-		 * @param $settings array
+		 *
+		 * @param array $settings The associative array with the settings that are registered for the plugin.
 		 *
 		 * @return bool
 		 */
 		public function validate( $settings ) : bool {
-			if ( $settings ) {
+			$has_errors = false;
 
-				$has_errors = false;
-				if ( 36 !== strlen( $settings['p4en_public_api'] ) ) {
+			if ( $settings ) {
+				if ( isset( $settings['p4en_public_api'] ) && 36 !== strlen( $settings['p4en_public_api'] ) ) {
 					add_settings_error(
-						'p4en_settings-p4en_public_api',
-						esc_attr( 'p4en_settings-p4en_public_api' ),
+						'p4en_main_settings-p4en_public_api',
+						esc_attr( 'p4en_main_settings-p4en_public_api' ),
 						__( 'Invalid value for Public API', 'planet4-engagingnetworks' ),
 						'error'
 					);
 					$has_errors = true;
 				}
-				if ( 36 !== strlen( $settings['p4en_private_api'] ) ) {
+				if ( isset( $settings['p4en_private_api'] ) && 36 !== strlen( $settings['p4en_private_api'] ) ) {
 					add_settings_error(
-						'p4en_settings-p4en_private_api',
-						esc_attr( 'p4en_settings-p4en_private_api' ),
+						'p4en_main_settings-p4en_private_api',
+						esc_attr( 'p4en_main_settings-p4en_private_api' ),
 						__( 'Invalid value for Private API', 'planet4-engagingnetworks' ),
 						'error'
 					);
 					$has_errors = true;
 				}
-				if ( $has_errors ) {
-					return false;
-				}
 			}
-			return true;
+			return ! $has_errors;
 		}
 
 		/**
 		 * Sanitizes the settings input.
-		 * @param $settings array
+		 *
+		 * @param array $settings The associative array with the settings that are registered for the plugin.
 		 *
 		 * @return array
 		 */
@@ -159,28 +190,6 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 				}
 			}
 			return $settings;
-		}
-
-		/**
-		 * Load assets only on the admin pages of the plugin.
-		 *
-		 * @param string $hook The slug name of the current admin page.
-		 */
-		public function load_admin_assets( $hook ) {
-			// Load the assets only on the plugin's pages.
-			if ( strpos( $hook, P4EN_PLUGIN_SLUG_NAME ) === false ) {
-				return;
-			}
-			wp_enqueue_style( 'p4en_admin_style', P4EN_ADMIN_DIR . '/css/admin.css', array(), '0.1' );
-			wp_enqueue_script( 'p4en_admin_script', P4EN_ADMIN_DIR . '/js/admin.js', array(), '0.1', true );
-		}
-
-		/**
-		 * Initialize internationalization (i18n) for this plugin.
-		 * References: http://codex.wordpress.org/I18n_for_WordPress_Developers
-		 */
-		public function init_i18n() {
-			load_plugin_textdomain( 'planet4-engagingnetworks', false, P4EN_PLUGIN_DIRNAME . '/languages/' );
 		}
 	}
 }
