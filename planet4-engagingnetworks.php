@@ -3,7 +3,7 @@
  * Plugin Name: Planet4 - EngagingNetworks
  * Description: Connects Planet4 with the Engaging Networks platform.
  * Plugin URI: http://github.com/greenpeace/planet4-plugin-engagingnetworks
- * Version: 0.1.9
+ * Version: 0.2.0
  * Php Version: 7.0
  *
  * Author: Greenpeace International
@@ -19,9 +19,7 @@
  * Followed WordPress plugins best practices from https://developer.wordpress.org/plugins/the-basics/best-practices/
  * Followed WordPress-Core coding standards https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/
  * Followed WordPress-VIP coding standards https://vip.wordpress.com/documentation/code-review-what-we-look-for/
- *
- * TODO - Namespace the plugin.
- * TODO - Check security - https://developer.wordpress.org/plugins/security/
+ * Added namespacing and PSR-4 auto-loading.
  */
 
 // Exit if accessed directly.
@@ -53,38 +51,14 @@ if ( ! defined( 'P4EN_LANGUAGES' ) )            define( 'P4EN_LANGUAGES',       
 ] );
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) )       define( 'WP_UNINSTALL_PLUGIN',      P4EN_PLUGIN_BASENAME );
 
-
-/* ========================
-      L O A D  F I L E S
-   ======================== */
-/**
- * Auto-loads files whose classes have Controller, View, Model in their names.
- * Class names need to be prefixed with P4EN and should use capitalized words separated by underscores.
- * Any acronyms should be all upper case.
- * https://make.wordpress.org/core/handbook/best-practices/coding-standards/php/#naming-conventions
- */
-spl_autoload_register(
-	function ( $class_name ) {
-
-		if ( strpos( $class_name, 'P4EN' ) !== false ) {
-			$file_name = 'class-' . str_replace( '_', '-', strtolower( $class_name ) );
-
-			if ( strpos( $class_name, 'Controller' ) !== false ) {
-				require_once 'classes/controller/' . $file_name . '.php';
-			} elseif ( strpos( $class_name, 'View' ) !== false ) {
-				require_once 'classes/view/' . $file_name . '.php';
-			} elseif ( strpos( $class_name, 'Model' ) !== false ) {
-				require_once  'classes/model/' . $file_name . '.php';
-			} else {
-				require_once 'classes/' . $file_name . '.php';
-			}
-		}
-	}
-);
+require_once __DIR__ . '/vendor/autoload.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
-
 
 /* ==========================
       L O A D  P L U G I N
    ========================== */
-P4EN_Loader::get_instance( new P4EN_Controller( new P4EN_View() ) );
+P4EN\P4EN_Loader::get_instance( [
+	'P4EN\Controllers\Menu\P4EN_Pages_Standard_Controller',
+	'P4EN\Controllers\Menu\P4EN_Pages_Datatable_Controller',
+	'P4EN\Controllers\Menu\P4EN_Settings_Controller',
+], 'P4EN\Views\P4EN_View' );

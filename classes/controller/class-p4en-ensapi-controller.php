@@ -1,5 +1,7 @@
 <?php
 
+namespace P4EN\Controllers;
+
 if ( ! class_exists( 'P4EN_Ensapi_Controller' ) ) {
 
 	/**
@@ -7,15 +9,12 @@ if ( ! class_exists( 'P4EN_Ensapi_Controller' ) ) {
 	 */
 	class P4EN_Ensapi_Controller {
 
-		const ENS_AUTH_URL  = 'https://www.e-activist.com/ens/service/authenticate';
-		const ENS_PAGES_URL = 'https://www.e-activist.com/ens/service/page';
-		const ENS_PAGES_DEFAULT = 'PET';      // Retrieve all petitions by default.
-		const ENS_CALL_TIMEOUT = 7;
+		const ENS_BASE_URL      = 'https://www.e-activist.com/ens/service';
+		const ENS_AUTH_URL      = self::ENS_BASE_URL . '/authenticate';
+		const ENS_PAGES_URL     = self::ENS_BASE_URL . '/page';
+		const ENS_PAGES_DEFAULT = 'PET';        // Retrieve all petitions by default.
+		const ENS_CALL_TIMEOUT  = 7;            // Seconds after which the api call will timeout if not responded.
 
-		/**
-		 * P4EN_Ensapi_Controller constructor.
-		 */
-		public function __construct() {}
 
 		/**
 		 * Authenticates usage of ENS API calls.
@@ -39,9 +38,9 @@ if ( ! class_exists( 'P4EN_Ensapi_Controller' ) ) {
 
 			// Authentication failure.
 			if ( is_wp_error( $response ) ) {
-				return $response->get_error_message();
+				return $response->get_error_message() . ' ' . $response->get_error_code();
 
-			} elseif ( is_array( $response ) && WP_Http::OK !== $response['response']['code'] ) {
+			} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
 				return $response['response']['message'] . ' ' . $response['response']['code'];
 
 			}
@@ -71,9 +70,9 @@ if ( ! class_exists( 'P4EN_Ensapi_Controller' ) ) {
 			] );
 
 			if ( is_wp_error( $response ) ) {
-				return $response->get_error_message();
+				return $response->get_error_message() . ' ' . $response->get_error_code();
 
-			} elseif ( is_array( $response ) && WP_Http::OK !== $response['response']['code'] ) {
+			} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
 				return $response['response']['message'] . ' ' . $response['response']['code'];         // Authentication failed.
 
 			}

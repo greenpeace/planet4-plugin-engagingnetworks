@@ -1,5 +1,9 @@
 <?php
 
+namespace P4EN\Controllers\Menu;
+
+use P4EN\Controllers\P4EN_Ensapi_Controller;
+
 if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 
 	/**
@@ -7,16 +11,23 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 	 */
 	class P4EN_Pages_Datatable_Controller extends P4EN_Pages_Controller {
 
-		/** @var P4EN_View $view */
-		protected $view;
-
 		/**
-		 * P4EN_Pages_Datatable_Controller constructor.
-		 *
-		 * @param P4EN_View $view
+		 * Create menu/submenu entry.
 		 */
-		public function __construct( P4EN_View $view ) {
-			$this->view = $view;
+		public function create_admin_menu() {
+
+			$current_user = wp_get_current_user();
+
+			if ( in_array( 'administrator', $current_user->roles, true ) || in_array( 'editor', $current_user->roles, true ) ) {
+				add_submenu_page(
+					P4EN_PLUGIN_SLUG_NAME,
+					__( 'EN Pages DataTable', 'planet4-engagingnetworks' ),
+					__( 'EN Pages DataTable', 'planet4-engagingnetworks' ),
+					'edit_pages',
+					'pages-datatable',
+					array( $this, 'prepare_pages_datatable' )
+				);
+			}
 		}
 
 		/**
@@ -61,7 +72,7 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 					'<div class="error is-dismissible">' .
 					'<u>' . esc_html__( 'Plugin Settings Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html__( 'Plugin Settings are not configured well!', 'planet4-engagingnetworks' ) . '<br />' .
 					'</div>', 'Plugin Settings Error', array(
-						'response' => WP_Http::OK,
+						'response' => \WP_Http::OK,
 						'back_link' => true,
 					)
 				);

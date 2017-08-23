@@ -1,5 +1,7 @@
 <?php
 
+namespace P4EN\Controllers;
+
 if ( ! class_exists( 'P4EN_Uninstall_Controller' ) ) {
 	/**
 	 * Planet4 - EngagingNetworks uninstaller

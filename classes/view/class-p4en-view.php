@@ -1,5 +1,9 @@
 <?php
 
+namespace P4EN\Views;
+
+use Timber\Timber;
+
 if ( ! class_exists( 'P4EN_View' ) ) {
 
 	/**

@@ -1,5 +1,7 @@
 <?php
 
+namespace P4EN;
+
 if ( ! class_exists( 'P4EN_Loader' ) ) {
 
 	/**
@@ -11,8 +13,8 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 
 		/** @var P4EN_Loader $instance */
 		private static $instance;
-		/** @var P4EN_Controller $controller */
-		private $controller;
+		/** @var array $services */
+		private $services;
 		/** @var string $required_php */
 		private $required_php = P4EN_REQUIRED_PHP;
 		/** @var array $required_plugins */
@@ -23,12 +25,13 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 		 * Singleton creational pattern.
 		 * Makes sure there is only one instance at all times.
 		 *
-		 * @param P4EN_Controller $controller   The main controller of the plugin.
+		 * @param array  $services The Controller services to inject.
+		 * @param string $view_class The View class name.
 		 *
 		 * @return P4EN_Loader
 		 */
-		public static function get_instance( P4EN_Controller $controller ) : P4EN_Loader {
-			! isset( self::$instance ) and self::$instance = new self( $controller );
+		public static function get_instance( $services = array(), $view_class ) : P4EN_Loader {
+			! isset( self::$instance ) and self::$instance = new self( $services, $view_class );
 			return  self::$instance;
 		}
 
@@ -38,10 +41,18 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 		 * after WordPress has finished loading but before any headers are sent.
 		 * Most of WP is loaded at this stage (but not all) and the user is authenticated.
 		 *
-		 * @param P4EN_Controller $controller   The main controller of the plugin.
+		 * @param array  $services The Controller services to inject.
+		 * @param string $view_class The View class name.
 		 */
-		private function __construct( P4EN_Controller $controller ) {
-			$this->controller = $controller;
+		private function __construct( $services = array(), $view_class ) {
+			$this->services = $services;
+			$view = new $view_class();
+
+			if ( $this->services ) {
+				foreach ( $this->services as $service ) {
+					( new $service( $view ) )->load();
+				}
+			}
 			$this->check_requirements();
 		}
 
@@ -51,9 +62,6 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 		private function hook_plugin() {
 			add_action( 'admin_menu', array( $this, 'load_i18n' ) );
 			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets' ) );
-			add_action( 'admin_menu', array( $this->controller, 'create_admin_menu' ) );
-			add_filter( 'locale', array( $this->controller, 'set_locale' ), 11, 1 );
-
 			// Provide hook for other plugins.
 			do_action( 'p4en_action_loaded' );
 		}
@@ -77,7 +85,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 							'<br/>' . esc_html__( 'Minimum required version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['min_version'] ) . '</strong>' .
 							'<br/>' . esc_html__( 'Installed version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['Version'] ) . '</strong>' .
 							'</div>', 'Plugin Requirements Error', array(
-								'response' => WP_Http::OK,
+								'response' => \WP_Http::OK,
 								'back_link' => true,
 							)
 						);
@@ -90,7 +98,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 						'<br/>' . esc_html__( 'Minimum required version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( $this->required_php ) . '</strong>' .
 						'<br/>' . esc_html__( 'Running version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( phpversion() ) . '</strong>' .
 						'</div>', 'Plugin Requirements Error', array(
-							'response' => WP_Http::OK,
+							'response' => \WP_Http::OK,
 							'back_link' => true,
 						)
 					);
@@ -178,7 +186,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 		'<div class="error fade">' .
 		'<u>' . esc_html__( 'Plugin Conflict Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html__( 'Class P4EN_Loader already exists.', 'planet4-engagingnetworks' ) . '<br />' .
 		'</div>', 'Plugin Conflict Error', array(
-			'response' => WP_Http::OK,
+			'response' => \WP_Http::OK,
 			'back_link' => true,
 		)
 	);
