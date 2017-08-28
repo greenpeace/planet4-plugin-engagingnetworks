@@ -38,43 +38,48 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 			$data   = [];
 			$pages  = [];
 			$params = [];
+			$pages_settings = [];
 
 			$current_user = wp_get_current_user();
-			$this->handle_submit( $current_user, $data );
+			$validated = $this->handle_submit( $current_user, $data );
 
-			$pages_settings = get_user_meta( $current_user->ID, 'p4en_pages_datatable_settings', true );
-			if ( isset( $pages_settings['p4en_pages_subtype'] ) && $pages_settings['p4en_pages_subtype'] ) {
-				$params['type'] = $pages_settings['p4en_pages_subtype'];
+			if ( $validated ) {
+				$pages_settings = get_user_meta( $current_user->ID, 'p4en_pages_datatable_settings', true );
+				if ( isset( $pages_settings['p4en_pages_subtype'] ) && $pages_settings['p4en_pages_subtype'] ) {
+					$params['type'] = $pages_settings['p4en_pages_subtype'];
 
-				if ( isset( $pages_settings['p4en_pages_status'] ) && 'all' !== $pages_settings['p4en_pages_status'] ) {
-					$params['status'] = $pages_settings['p4en_pages_status'];
-				}
+					if ( isset( $pages_settings['p4en_pages_status'] ) && 'all' !== $pages_settings['p4en_pages_status'] ) {
+						$params['status'] = $pages_settings['p4en_pages_status'];
+					}
 
-				$main_settings = get_option( 'p4en_main_settings' );
-				if ( isset( $main_settings['p4en_private_api'] ) && $main_settings['p4en_private_api'] ) {
-					$ens_api = new P4EN_Ensapi_Controller();
-					$ens_private_token = $main_settings['p4en_private_api'];
-					$response = $ens_api->authenticate( $ens_private_token );
+					$main_settings = get_option( 'p4en_main_settings' );
+					if ( isset( $main_settings['p4en_private_api'] ) && $main_settings['p4en_private_api'] ) {
+						$ens_api           = new P4EN_Ensapi_Controller();
+						$ens_private_token = $main_settings['p4en_private_api'];
+						$response          = $ens_api->authenticate( $ens_private_token );
 
-					if ( is_array( $response ) && $response['body'] ) {
-						// Communication with ENS API is authenticated.
-						$body = json_decode( $response['body'], true );
-						$ens_auth_token = $body['ens-auth-token'];
-						$response = $ens_api->get_pages( $ens_auth_token, $params );
+						if ( is_array( $response ) && $response['body'] ) {
+							// Communication with ENS API is authenticated.
+							$body           = json_decode( $response['body'], true );
+							$ens_auth_token = $body['ens-auth-token'];
+							$response       = $ens_api->get_pages( $ens_auth_token, $params );
 
-						if ( is_array( $response ) ) {
-							$pages = json_decode( $response['body'], true );
+							if ( is_array( $response ) ) {
+								$pages = json_decode( $response['body'], true );
+							} else {
+								$this->error( $response );
+							}
 						} else {
 							$this->error( $response );
 						}
 					} else {
-						$this->error( $response );
+						$this->warning( __( 'Plugin Settings are not configured well!', 'planet4-engagingnetworks' ) );
 					}
 				} else {
-					$this->warning( __( 'Plugin Settings are not configured well!', 'planet4-engagingnetworks' ) );
+					$this->notice( __( 'Select Subtype', 'planet4-engagingnetworks' ) );
 				}
 			} else {
-				$this->notice( __( 'Select Subtype', 'planet4-engagingnetworks' ) );
+				$this->error( __( 'Changes are not saved!', 'planet4-engagingnetworks' ) );
 			}
 
 			$data = array_merge( $data, [
@@ -97,29 +102,36 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 		 *
 		 * @param $current_user
 		 * @param $data
+		 *
+		 * @return bool Array if validation is ok, false if validation fails.
 		 */
-		public function handle_submit( $current_user, &$data ) {
+		public function handle_submit( $current_user, &$data ) : bool {
 			// CSRF protection.
 			$nonce_action = 'pages_datatable_submit';
 			$nonce = wp_create_nonce( $nonce_action );
-			$form_submit = 0;
+			$data['nonce_action'] = $nonce_action;
+			$data['form_submit'] = 0;
 
 			if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+				$data['form_submit']  = 1;
+
 				if ( ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 					$this->error( __( 'Nonce verification failed!', 'planet4-engagingnetworks' ) );
+					return false;
 				} else {
 					$pages_datatable_settings = $_POST['p4en_pages_datatable_settings'];
 
 					$pages_datatable_settings = $this->valitize( $pages_datatable_settings );
+					if ( false === $pages_datatable_settings ) {
+						return false;
+					}
 
 					update_user_meta( $current_user->ID, 'p4en_pages_datatable_settings', $pages_datatable_settings );
 
 					$this->success( __( 'Changes saved!', 'planet4-engagingnetworks' ) );
 				}
-				$form_submit = 1;
 			}
-			$data['nonce_action'] = $nonce_action;
-			$data['form_submit']  = $form_submit;
+			return true;
 		}
 
 		/**
@@ -129,28 +141,30 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 		 */
 		public function filter_pages_datatable( &$data ) {
 
-			foreach ( $data['pages'] as &$page ) {
-				$page['campaignStatus'] = ucfirst( $page['campaignStatus'] );
-				if ( ! $page['subType'] ) {
-					$page['subType'] = strtoupper( $page['type'] );
-				}
+			if ( $data ) {
+				foreach ( $data['pages'] as &$page ) {
+					$page['campaignStatus'] = ucfirst( $page['campaignStatus'] );
+					if ( ! $page['subType'] ) {
+						$page['subType'] = strtoupper( $page['type'] );
+					}
 
-				switch ( $page['type'] ) {
-					case 'dc':
-						switch ( $page['subType'] ) {
-							case 'DCF':
-								$page['url'] = esc_url( $page['campaignBaseUrl'] . '/page/' . $page['id'] . '/data/1' );
-								break;
-							case 'PET':
-								$page['url'] = esc_url( $page['campaignBaseUrl'] . '/page/' . $page['id'] . '/petition/1' );
-								break;
-							default:
-								$page['url'] = esc_url( $page['campaignBaseUrl'] . '/page/' . $page['id'] . '/petition/1' );
-						}
-						break;
-					case 'nd':
-						$page['url'] = esc_url( $page['campaignBaseUrl'] . '/page/' . $page['id'] . '/donation/1' );
-						break;
+					switch ( $page['type'] ) {
+						case 'dc':
+							switch ( $page['subType'] ) {
+								case 'DCF':
+									$page['url'] = esc_url( $page['campaignBaseUrl'] . '/page/' . $page['id'] . '/data/1' );
+									break;
+								case 'PET':
+									$page['url'] = esc_url( $page['campaignBaseUrl'] . '/page/' . $page['id'] . '/petition/1' );
+									break;
+								default:
+									$page['url'] = esc_url( $page['campaignBaseUrl'] . '/page/' . $page['id'] . '/petition/1' );
+							}
+							break;
+						case 'nd':
+							$page['url'] = esc_url( $page['campaignBaseUrl'] . '/page/' . $page['id'] . '/donation/1' );
+							break;
+					}
 				}
 			}
 		}

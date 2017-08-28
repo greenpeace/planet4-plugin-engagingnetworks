@@ -31,15 +31,7 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 					'settings',
 					array( $this, 'prepare_settings' )
 				);
-			} else {
-				wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'planet4-engagingnetworks' ),'Permission Denied Error',
-					array(
-						'response' => \WP_Http::OK,
-						'back_link' => true,
-					)
-				);
 			}
-
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
 		}
 

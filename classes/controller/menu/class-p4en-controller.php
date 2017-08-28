@@ -44,14 +44,15 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		 *
 		 * @param array $settings The associative array with the settings that are registered for the plugin.
 		 *
-		 * @return mixed
+		 * @return mixed Array if validation is ok, false if validation fails.
 		 */
-		public function valitize( $settings ) : array {
+		public function valitize( $settings ) {
 			if ( $this->validate( $settings ) ) {
 				$this->sanitize( $settings );
+				return $settings;
+			} else {
+				return false;
 			}
-
-			return $settings;
 		}
 
 		/**
