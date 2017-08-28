@@ -3,7 +3,6 @@
 namespace P4EN\Controllers\Menu;
 
 use P4EN\Controllers\P4EN_Ensapi_Controller;
-use P4EN\Controllers\Menu\P4EN_Pages_Controller;
 
 if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 
@@ -52,25 +51,42 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 						$params['status'] = $pages_settings['p4en_pages_status'];
 					}
 
+					$ens_api = new P4EN_Ensapi_Controller();
 					$main_settings = get_option( 'p4en_main_settings' );
+
 					if ( isset( $main_settings['p4en_private_api'] ) && $main_settings['p4en_private_api'] ) {
-						$ens_api           = new P4EN_Ensapi_Controller();
-						$ens_private_token = $main_settings['p4en_private_api'];
-						$response          = $ens_api->authenticate( $ens_private_token );
+						// Check if the authentication API call is cached.
+						$ens_auth_token = get_transient( 'ens_auth_token' );
 
-						if ( is_array( $response ) && $response['body'] ) {
-							// Communication with ENS API is authenticated.
-							$body           = json_decode( $response['body'], true );
-							$ens_auth_token = $body['ens-auth-token'];
-							$response       = $ens_api->get_pages( $ens_auth_token, $params );
+						if ( false !== $ens_auth_token ) {
+							$response = $ens_api->get_pages( $ens_auth_token, $params );
 
-							if ( is_array( $response ) ) {
+							if ( is_array( $response ) && $response['body'] ) {
 								$pages = json_decode( $response['body'], true );
 							} else {
 								$this->error( $response );
 							}
 						} else {
-							$this->error( $response );
+							$ens_private_token = $main_settings['p4en_private_api'];
+							$response = $ens_api->authenticate( $ens_private_token );
+
+							if ( is_array( $response ) && $response['body'] ) {
+								// Communication with ENS API is authenticated.
+								$body           = json_decode( $response['body'], true );
+								$ens_auth_token = $body['ens-auth-token'];
+								$expiration     = $body['expires'];
+								set_transient( 'ens_auth_token', $ens_auth_token, $expiration );
+
+								$response = $ens_api->get_pages( $ens_auth_token, $params );
+
+								if ( is_array( $response ) && $response['body'] ) {
+									$pages = json_decode( $response['body'], true );
+								} else {
+									$this->error( $response );
+								}
+							} else {
+								$this->error( $response );
+							}
 						}
 					} else {
 						$this->warning( __( 'Plugin Settings are not configured well!', 'planet4-engagingnetworks' ) );
