@@ -36,5 +36,27 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 				'pages' => [],
 			] );
 		}
+
+		/**
+		 * Validates the settings input.
+		 *
+		 * @param array $settings The associative array with the settings that are registered for the plugin.
+		 *
+		 * @return bool
+		 */
+		public function validate( $settings ) : bool {
+			// TODO: Implement validate() method.
+			$has_errors = false;
+			return ! $has_errors;
+		}
+
+		/**
+		 * Sanitizes the settings input.
+		 *
+		 * @param array $settings The associative array with the settings that are registered for the plugin (Call by Reference).
+		 */
+		public function sanitize( &$settings ) {
+			// TODO: Implement sanitize() method.
+		}
 	}
 }

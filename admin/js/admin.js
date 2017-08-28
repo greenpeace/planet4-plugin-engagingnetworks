@@ -1,13 +1,13 @@
 jQuery(document).ready(function() {
 
-    $('.notice.is-dismissible').animate({"margin-left" : '+=20', "opacity" : '+=0.9'}, 800);
-    $('#p4en_message').animate({"opacity" : '+=0.9'}, 800);
+    $('#setting-error-settings_updated').animate({"margin-left" : '+=20', "opacity" : '+=0.9'}, 800);
+    $('#p4en_message_text').animate({"opacity" : '+=0.9'}, 800);
     
     setTimeout(function() {
-        $('.notice.is-dismissible, #p4en_message').fadeOut(2000, function () {
+        $('#setting-error-settings_updated, #p4en_message_text').fadeOut(2000, function () {
             $(this).remove();
         });
-    }, 3200);
+    }, 3500);
 
     $('.do_copy').off('click').on('click', function(e){
         e.preventDefault();

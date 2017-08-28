@@ -9,7 +9,7 @@ if ( ! class_exists( 'P4EN_Pages_Controller' ) ) {
 	 *
 	 * This class will be the base controller for handling various ways listing EN Pages tables
 	 */
-	class P4EN_Pages_Controller extends P4EN_Controller {
+	abstract class P4EN_Pages_Controller extends P4EN_Controller {
 
 		const SUBTYPES = [
 			'DCF'   => [

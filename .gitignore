@@ -1,4 +1,7 @@
 
+vendor
+!vendor/composer
+
 # Logs #
 ########
 *.log

@@ -11,7 +11,7 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 	 *
 	 * This class will control all the main functions of the plugin.
 	 */
-	class P4EN_Controller {
+	abstract class P4EN_Controller {
 
 		const ERROR   = 0;
 		const WARNING = 1;
@@ -61,57 +61,26 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		 *
 		 * @return bool
 		 */
-		public function validate( $settings ) : bool {
-			$has_errors = false;
-
-			if ( $settings ) {
-				if ( isset( $settings['p4en_public_api'] ) && 36 !== strlen( $settings['p4en_public_api'] ) ) {
-					add_settings_error(
-						'p4en_main_settings-p4en_public_api',
-						esc_attr( 'p4en_main_settings-p4en_public_api' ),
-						__( 'Invalid value for Public API', 'planet4-engagingnetworks' ),
-						'error'
-					);
-					$has_errors = true;
-				}
-				if ( isset( $settings['p4en_private_api'] ) && 36 !== strlen( $settings['p4en_private_api'] ) ) {
-					add_settings_error(
-						'p4en_main_settings-p4en_private_api',
-						esc_attr( 'p4en_main_settings-p4en_private_api' ),
-						__( 'Invalid value for Private API', 'planet4-engagingnetworks' ),
-						'error'
-					);
-					$has_errors = true;
-				}
-			}
-			return ! $has_errors;
-		}
+		abstract public function validate( $settings ) : bool;
 
 		/**
 		 * Sanitizes the settings input.
 		 *
-		 * @param array $settings The associative array with the settings that are registered for the plugin.
-		 *
-		 * @return array
+		 * @param array $settings The associative array with the settings that are registered for the plugin (Call by Reference).
 		 */
-		public function sanitize( $settings ) : array {
-			if ( $settings ) {
-				foreach ( $settings as $name => $setting ) {
-					$settings[ $name ] = sanitize_text_field( $setting );
-				}
-			}
-			return $settings;
-		}
+		abstract public function sanitize( &$settings );
 
 		/**
-		 * Display an error message inside the admin panel.
+		 * Display an escaped error message inside the admin panel.
 		 *
-		 * @param string $msg The message to display.
+		 * @param string $msg   The message to display.
+		 * @param string $title The title of the message.
 		 */
-		public function error( $msg ) {
+		public function error( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
 				$this->view->message( [
-					'msg'     => $msg,
+					'msg'     => esc_html( $msg ),
+					'title'   => $title ? esc_html( $title ) : esc_html__( 'Error', 'planet4-engagingnetworks' ),
 					'type'    => self::ERROR,
 					'classes' => 'p4en_error',
 				] );
@@ -119,14 +88,16 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		}
 
 		/**
-		 * Display a warning message inside the admin panel.
+		 * Display an escaped warning message inside the admin panel.
 		 *
-		 * @param string $msg The message to display.
+		 * @param string $msg   The message to display.
+		 * @param string $title The title of the message.
 		 */
-		public function warning( $msg ) {
+		public function warning( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
 				$this->view->message( [
-					'msg'     => $msg,
+					'msg'     => esc_html( $msg ),
+					'title'   => $title ? esc_html( $title ) : esc_html__( 'Warning', 'planet4-engagingnetworks' ),
 					'type'    => self::WARNING,
 					'classes' => 'p4en_warning',
 				] );
@@ -134,14 +105,16 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		}
 
 		/**
-		 * Display a notice message inside the admin panel.
+		 * Display an escaped notice message inside the admin panel.
 		 *
-		 * @param string $msg The message to display.
+		 * @param string $msg   The message to display.
+		 * @param string $title The title of the message.
 		 */
-		public function notice( $msg ) {
+		public function notice( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
 				$this->view->message( [
-					'msg'     => $msg,
+					'msg'     => esc_html( $msg ),
+					'title'   => $title ? esc_html( $title ) : esc_html__( 'Notice', 'planet4-engagingnetworks' ),
 					'type'    => self::NOTICE,
 					'classes' => 'p4en_notice',
 				] );
@@ -149,14 +122,16 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		}
 
 		/**
-		 * Display a success message inside the admin panel.
+		 * Display an escaped success message inside the admin panel.
 		 *
-		 * @param string $msg The message to display.
+		 * @param string $msg   The message to display.
+		 * @param string $title The title of the message.
 		 */
-		public function success( $msg ) {
+		public function success( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
 				$this->view->message( [
-					'msg'     => $msg,
+					'msg'     => esc_html( $msg ),
+					'title'   => $title ? esc_html( $title ) : esc_html__( 'Success', 'planet4-engagingnetworks' ),
 					'type'    => self::SUCCESS,
 					'classes' => 'p4en_success',
 				] );
