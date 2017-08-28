@@ -31,15 +31,7 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 					'settings',
 					array( $this, 'prepare_settings' )
 				);
-			} else {
-				wp_die( esc_html__( 'You do not have sufficient permissions to access this page.', 'planet4-engagingnetworks' ),'Permission Denied Error',
-					array(
-						'response' => \WP_Http::OK,
-						'back_link' => true,
-					)
-				);
 			}
-
 			add_action( 'admin_init', array( $this, 'register_settings' ) );
 		}
 
@@ -50,6 +42,7 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 			$this->view->settings( [
 				'settings' => get_option( 'p4en_main_settings' ),
 				'available_languages' => P4EN_LANGUAGES,
+				'domain' => 'planet4-engagingnetworks',
 			] );
 		}
 
@@ -64,18 +57,53 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 				'sanitize_callback' => array( $this, 'valitize' ),
 				'show_in_rest'      => false,
 			);
-
 			register_setting( 'p4en_main_settings_group', 'p4en_main_settings', $args );
+		}
 
-			$args2 = array(
-				'type'              => 'string',
-				'group'             => 'p4en_pages_settings_group',
-				'description'       => 'Planet 4 - EngagingNetworks settings',
-				'sanitize_callback' => array( $this, 'valitize' ),
-				'show_in_rest'      => false,
-			);
+		/**
+		 * Validates the settings input.
+		 *
+		 * @param array $settings The associative array with the settings that are registered for the plugin.
+		 *
+		 * @return bool
+		 */
+		public function validate( $settings ) : bool {
+			$has_errors = false;
 
-			register_setting( 'p4en_pages_settings_group', 'p4en_pages_settings', $args2 );
+			if ( $settings ) {
+				if ( isset( $settings['p4en_public_api'] ) && 36 !== strlen( $settings['p4en_public_api'] ) ) {
+					add_settings_error(
+						'p4en_main_settings-p4en_public_api',
+						esc_attr( 'p4en_main_settings-p4en_public_api' ),
+						__( 'Invalid value for Public API', 'planet4-engagingnetworks' ),
+						'error'
+					);
+					$has_errors = true;
+				}
+				if ( isset( $settings['p4en_private_api'] ) && 36 !== strlen( $settings['p4en_private_api'] ) ) {
+					add_settings_error(
+						'p4en_main_settings-p4en_private_api',
+						esc_attr( 'p4en_main_settings-p4en_private_api' ),
+						__( 'Invalid value for Private API', 'planet4-engagingnetworks' ),
+						'error'
+					);
+					$has_errors = true;
+				}
+			}
+			return ! $has_errors;
+		}
+
+		/**
+		 * Sanitizes the settings input.
+		 *
+		 * @param array $settings The associative array with the settings that are registered for the plugin.
+		 */
+		public function sanitize( &$settings ) {
+			if ( $settings ) {
+				foreach ( $settings as $name => $setting ) {
+					$settings[ $name ] = sanitize_text_field( $setting );
+				}
+			}
 		}
 
 		/**

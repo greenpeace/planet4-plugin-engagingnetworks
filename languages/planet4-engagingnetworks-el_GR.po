@@ -19,119 +19,116 @@ msgstr ""
 "Plural-Forms: \n"
 "X-Generator: Eazy Po 0.9.5.3\n"
 
-#: classes/class-p4en-loader.php:78 classes/class-p4en-loader.php:91
 msgid "Plugin Requirements Error!"
 msgstr "Σφάλμα απαιτήσεων!"
 
-#: classes/class-p4en-loader.php:78
 msgid " requires a newer version of the following plugin."
 msgstr "απαιτεί μια νεότερη έκδοση του παρακάτω plugin."
 
-#: classes/class-p4en-loader.php:78
 msgid "Minimum required version of "
 msgstr "Η ελάχιστη απαιτούμενη έκδοση του"
 
-#: classes/class-p4en-loader.php:80
 msgid "Installed version of "
 msgstr "Η εγκατεστημένη έκδοση του"
 
-#: classes/class-p4en-loader.php:91
 msgid " requires a newer version of PHP."
 msgstr "απαιτεί νεότερη έκδοση της PHP."
 
-#: classes/class-p4en-loader.php:92
 msgid "Minimum required version of PHP: "
 msgstr "Η ελάχιστη έκδοση της PHP που απαιτείται είναι: "
 
-#: classes/class-p4en-loader.php:93
 msgid "Running version of PHP: "
 msgstr "Η τρέχουσα έκδοση της PHP είναι:"
 
-#: classes/class-p4en-loader.php:148
 msgid "Plugin Conflict Error!"
 msgstr "Σφάλμα!"
 
-#: classes/class-p4en-loader.php:148
 msgid "Class P4EN_Loader already exists."
 msgstr "Η κλάση P4EN_Loader υπάρχει ήδη."
 
-#: classes/controller/class-p4en-controller.php:64
-#: classes/controller/class-p4en-controller.php:65
 msgid "Settings"
 msgstr "Ρυθμίσεις"
 
-#: classes/controller/class-p4en-controller.php:55
 msgid "You do not have sufficient permissions to access this page."
 msgstr "Δεν έχετε επαρκή δικαιώματα για να δείτε αυτή τη σελίδα."
 
-#: classes/controller/class-p4en-controller.php:128
 msgid "Invalid value for Public API"
 msgstr "Λανθασμένη τιμή για Κοινόχρηστο API"
 
-#: classes/controller/class-p4en-controller.php:137
 msgid "Invalid value for Private API"
 msgstr "Λανθασμένη τιμή για Κρυφό API"
 
-#: includes/settings.twig
 msgid "Language"
 msgstr "Γλώσσα"
 
-#: includes/settings.twig
 msgid "Select Language"
 msgstr "Επίλεξε Γλώσσα"
 
-#: includes/settings.twig
 msgid "Public"
 msgstr "Κοινόχρηστο"
 
-#: includes/settings.twig
 msgid "Private"
 msgstr "Κρυφό"
 
-#: includes/settings.twig
 msgid "Save Changes"
 msgstr "Αποθήκευση"
 
-#: includes/settings.twig
 msgid "Enter your Engaging Networks account public token"
 msgstr "Εισαγωγή κλειδιού για το κοινόχρηστο API"
 
-#: includes/settings.twig
 msgid "Enter your Engaging Networks account private token"
 msgstr "Εισαγωγή κλειδιού για το κρυφό API"
 
-#: includes/dashboad.twig
 msgid "EN Pages"
 msgstr "EN Σελίδες"
 
-#: includes/pages.twig
 msgid "Type"
 msgstr "Κατηγορία"
 
-#: includes/pages.twig
 msgid "Name"
 msgstr "Όνομα"
 
-#: includes/pages.twig
 msgid "Created"
 msgstr "Δημιουργήθηκε"
 
-#: includes/pages.twig
 msgid "Modified"
 msgstr "Τροποποιήθηκε"
 
-#: includes/pages.twig
 msgid "Status"
 msgstr "Κατάσταση"
 
-#: includes/pages.twig
 msgid "Title"
 msgstr "Τίτλος"
 
-#: includes/pages.twig
 msgid "Subtype"
 msgstr "Υποκατηγορία"
 
-#: includes/pages.twig
 msgid "Actions"
 msgstr "Ενέργειες"
+
+msgid "Error"
+msgstr "Σφάλμα"
+
+msgid "Warning"
+msgstr "Προσοχή"
+
+msgid "Notice"
+msgstr "Ειδοποίηση"
+
+msgid "Success"
+msgstr "Επιτυχία"
+
+msgid "Plugin Settings are not configured well!"
+msgstr "Οι ρυθμίσεις δεν έχουν γίνει σωστά!"
+
+msgid "Changes saved!"
+msgstr "Οι αλλαγές αποθηκεύτηκαν!"
+
+msgid "Nonce verification failed!"
+msgstr "Ο έλεγχος για την επιβεβαίωση του Nonce απέτυχε!"
+
+msgid "Select Subtype"
+msgstr "Επίλεξε Υποκατηγορία"
+
+msgid "Select Status"
+msgstr "Επίλεξε Κατάσταση"

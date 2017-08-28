@@ -41,7 +41,7 @@ if ( ! class_exists( 'P4EN_Uninstall_Controller' ) ) {
 		protected static function clean_options() {
 			// Delete options.
 			delete_option( 'p4en_main_settings' );
-			delete_option( 'p4en_pages_settings' );
+			delete_option( 'p4en_pages_datatable_settings' );
 		}
 
 		/**

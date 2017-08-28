@@ -1,8 +1,12 @@
 {% block message_content %}
 
     <div id="p4en_message_container">
-        <div id="p4en_message" class="{{ classes }}">
-            {{ msg }}
+        <div id="p4en_message_text" class="{{ classes|e('html_attr') }}">
+            {% if ( title ) %}
+                <strong>- {{ title|e('html') }} -</strong>
+                <br />
+            {% endif %}
+            {{ msg|e('html') }}
         </div>
     </div>
     <div class="clear"></div>

@@ -1,7 +1,7 @@
 {% block settings_content %}
 
     <div id="settings_div" class="wrap">
-        <h2>{{ __( 'Settings', 'planet4-engagingnetworks' ) }}</h2>
+        <h2>{{ __( 'Settings', domain ) }}</h2>
     </div>
 
     {{ fn( 'settings_errors' ) }}
@@ -11,15 +11,16 @@
         {{ fn( 'settings_fields', 'p4en_main_settings_group' ) }}
         {{ fn( 'do_settings_sections', 'p4en_main_settings_group' ) }}
 
+        <br /><br />
         <table class="form-table">
             <tr valign="top">
-                <th>{{ __( 'Language', 'planet4-engagingnetworks' ) }}:</th>
+                <th>{{ __( 'Language', domain ) }}:</th>
                 <td>
                     <select id="p4en_lang" name="p4en_main_settings[p4en_lang]">
-                        <option selected disabled>- {{ _e( 'Select Language', 'planet4-engagingnetworks' ) }} -</option>
+                        <option selected disabled>- {{ __( 'Select Language', domain ) }} -</option>
                         {% for key, language in available_languages %}
                             {% if key == settings.p4en_lang %}
-                                <option value="{{ key|e('html_attr') }}" selected >{{ language|e('html') }}</option>
+                                <option value="{{ key|e('html_attr') }}" selected>{{ language|e('html') }}</option>
                             {% else %}
                                 <option value="{{ key|e('html_attr') }}">{{ language|e('html') }}</option>
                             {% endif %}
@@ -28,19 +29,19 @@
                 </td>
             </tr>
             <tr valign="top">
-                <th>{{ __( 'Public', 'planet4-engagingnetworks' ) }} API:</th>
+                <th>{{ __( 'Public', domain ) }} API:</th>
                 <td>
-                    <input id="p4en_public_api" name="p4en_main_settings[p4en_public_api]" value="{{ settings.p4en_public_api|e('html_attr') }}" size="50" placeholder="{{ __( 'Enter your Engaging Networks account public token', 'planet4-engagingnetworks' ) }}" />
+                    <input id="p4en_public_api" name="p4en_main_settings[p4en_public_api]" value="{{ settings.p4en_public_api|e('html_attr') }}" size="50" placeholder="{{ __( 'Enter your Engaging Networks account public token', domain ) }}" />
                 </td>
             </tr>
             <tr valign="top">
-                <th>{{ __( 'Private', 'planet4-engagingnetworks' ) }} API:</th>
+                <th>{{ __( 'Private', domain ) }} API:</th>
                 <td>
-                    <input id="p4en_private_api" name="p4en_main_settings[p4en_private_api]" value="{{ settings.p4en_private_api|e('html_attr') }}" size="50" placeholder="{{ __( 'Enter your Engaging Networks account private token', 'planet4-engagingnetworks' ) }}" />
+                    <input id="p4en_private_api" name="p4en_main_settings[p4en_private_api]" value="{{ settings.p4en_private_api|e('html_attr') }}" size="50" placeholder="{{ __( 'Enter your Engaging Networks account private token', domain ) }}" />
                 </td>
             </tr>
         </table>
-        {{ fn( 'submit_button', __( 'Save Changes', 'planet4-engagingnetworks' ), 'primary', 'p4en_main_settings_save_button' ) }}
+        {{ fn( 'submit_button', __( 'Save Changes', domain ), 'primary', 'p4en_main_settings_save_button' ) }}
     </form>
     <div class="clear"></div>
 

@@ -13,7 +13,7 @@ if ( ! class_exists( 'P4EN_Ensapi_Controller' ) ) {
 		const ENS_AUTH_URL      = self::ENS_BASE_URL . '/authenticate';
 		const ENS_PAGES_URL     = self::ENS_BASE_URL . '/page';
 		const ENS_PAGES_DEFAULT = 'PET';        // Retrieve all petitions by default.
-		const ENS_CALL_TIMEOUT  = 7;            // Seconds after which the api call will timeout if not responded.
+		const ENS_CALL_TIMEOUT  = 10;            // Seconds after which the api call will timeout if not responded.
 
 
 		/**
