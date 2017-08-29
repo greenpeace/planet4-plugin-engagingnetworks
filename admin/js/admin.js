@@ -7,7 +7,7 @@ jQuery(document).ready(function() {
         $('#setting-error-settings_updated, #p4en_message_text').fadeOut(2000, function () {
             $(this).remove();
         });
-    }, 8520);
+    }, 3600);
 
     $('.do_copy').off('click').on('click', function(e){
         e.preventDefault();
