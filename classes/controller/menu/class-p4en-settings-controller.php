@@ -42,6 +42,7 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 			$this->view->settings( [
 				'settings' => get_option( 'p4en_main_settings' ),
 				'available_languages' => P4EN_LANGUAGES,
+				'messages' => $this->messages,
 				'domain' => 'planet4-engagingnetworks',
 			] );
 		}
@@ -58,6 +59,20 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 				'show_in_rest'      => false,
 			);
 			register_setting( 'p4en_main_settings_group', 'p4en_main_settings', $args );
+		}
+
+		/**
+		 * Validates and sanitizes the settings input.
+		 *
+		 * @param array $settings The associative array with the settings that are registered for the plugin.
+		 *
+		 * @return mixed Array if validation is ok, false if validation fails.
+		 */
+		public function valitize( $settings ) {
+			if ( $this->validate( $settings ) ) {
+				$this->sanitize( $settings );
+			}
+			return $settings;
 		}
 
 		/**

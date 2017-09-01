@@ -124,6 +124,9 @@ msgstr "Οι ρυθμίσεις δεν έχουν γίνει σωστά!"
 msgid "Changes saved!"
 msgstr "Οι αλλαγές αποθηκεύτηκαν!"
 
+msgid "Changes are not saved!"
+msgstr "Οι αλλαγές δεν αποθηκεύτηκαν!"
+
 msgid "Nonce verification failed!"
 msgstr "Ο έλεγχος για την επιβεβαίωση του Nonce απέτυχε!"
 

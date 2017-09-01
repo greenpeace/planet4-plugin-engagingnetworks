@@ -74,8 +74,10 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 								// Communication with ENS API is authenticated.
 								$body           = json_decode( $response['body'], true );
 								$ens_auth_token = $body['ens-auth-token'];
-								$expiration     = $body['expires'];
-								set_transient( 'ens_auth_token', $ens_auth_token, $expiration );
+								// Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
+								$expiration     = (int)($body['expires'] / 1000) - time();
+
+								set_transient( 'ens_auth_token', $ens_auth_token, $expiration - time() );
 
 								$response = $ens_api->get_pages( $ens_auth_token, $params );
 
@@ -103,6 +105,7 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 				'pages_settings' => $pages_settings,
 				'subtypes'       => self::SUBTYPES,
 				'statuses'       => self::STATUSES,
+				'messages'       => $this->messages,
 				'domain'         => 'planet4-engagingnetworks',
 			] );
 

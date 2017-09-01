@@ -1,14 +1,18 @@
 {% block message_content %}
 
+    {% if ( messages ) %}
     <div id="p4en_message_container">
-        <div id="p4en_message_text" class="{{ classes|e('html_attr') }}">
-            {% if ( title ) %}
-                <strong>- {{ title|e('html') }} -</strong>
-                <br />
-            {% endif %}
-            {{ msg|e('html') }}
-        </div>
+        {% for message in messages %}
+            <div class="p4en_message {{ message.classes|e('html_attr') }}">
+                {% if ( message.title ) %}
+                    <strong>- {{ message.title|e('html') }} -</strong>
+                    <br />
+                {% endif %}
+                {{ message.msg|e('html') }}
+            </div>
+        {% endfor %}
     </div>
+    {% endif %}
     <div class="clear"></div>
 
 {% endblock %}

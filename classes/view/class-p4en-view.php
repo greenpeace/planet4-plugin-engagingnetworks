@@ -13,6 +13,8 @@ if ( ! class_exists( 'P4EN_View' ) ) {
 
 		/** @var string $template_dir The path to the template files. */
 		private $template_dir = P4EN_INCLUDES_DIR;
+
+
 		/**
 		 * Creates the plugin's View object.
 		 */
@@ -28,7 +30,8 @@ if ( ! class_exists( 'P4EN_View' ) ) {
 		 * @return bool|string The returned output
 		 */
 		private function get_template( $template_name, $data, $sub_dir = '' ) {
-			return Timber::compile( [ $this->template_dir . $sub_dir . $template_name . '.twig' ], $data );
+			Timber::$locations = $this->template_dir;
+			return Timber::compile( [ $sub_dir . $template_name . '.twig' ], $data );
 		}
 
 		/**
@@ -61,7 +64,8 @@ if ( ! class_exists( 'P4EN_View' ) ) {
 		 * @param string       $sub_dir The path to a subdirectory where the template is located (relative to $template_dir).
 		 */
 		private function view_template( $template_name, $data, $sub_dir = '' ) {
-			Timber::render( [ $this->template_dir . $sub_dir . $template_name . '.twig' ], $data );
+			Timber::$locations = $this->template_dir;
+			Timber::render( [ $sub_dir . $template_name . '.twig' ], $data );
 		}
 
 		/**

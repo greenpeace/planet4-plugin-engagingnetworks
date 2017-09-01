@@ -20,6 +20,8 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 
 		/** @var P4EN_View $view */
 		protected $view;
+		/** @var array $messages */
+		protected $messages = [];
 
 
 		/**
@@ -51,7 +53,7 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 				$this->sanitize( $settings );
 				return $settings;
 			} else {
-				return false;
+				return $settings;
 			}
 		}
 
@@ -79,11 +81,11 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		 */
 		public function error( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
-				$this->view->message( [
+				array_push($this->messages, [
 					'msg'     => esc_html( $msg ),
 					'title'   => $title ? esc_html( $title ) : esc_html__( 'Error', 'planet4-engagingnetworks' ),
 					'type'    => self::ERROR,
-					'classes' => 'p4en_error',
+					'classes' => 'p4en_error_message',
 				] );
 			}
 		}
@@ -96,11 +98,11 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		 */
 		public function warning( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
-				$this->view->message( [
+				array_push($this->messages, [
 					'msg'     => esc_html( $msg ),
 					'title'   => $title ? esc_html( $title ) : esc_html__( 'Warning', 'planet4-engagingnetworks' ),
 					'type'    => self::WARNING,
-					'classes' => 'p4en_warning',
+					'classes' => 'p4en_warning_message',
 				] );
 			}
 		}
@@ -113,11 +115,11 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		 */
 		public function notice( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
-				$this->view->message( [
+				array_push($this->messages, [
 					'msg'     => esc_html( $msg ),
 					'title'   => $title ? esc_html( $title ) : esc_html__( 'Notice', 'planet4-engagingnetworks' ),
 					'type'    => self::NOTICE,
-					'classes' => 'p4en_notice',
+					'classes' => 'p4en_notice_message',
 				] );
 			}
 		}
@@ -130,11 +132,11 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		 */
 		public function success( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
-				$this->view->message( [
+				array_push($this->messages, [
 					'msg'     => esc_html( $msg ),
 					'title'   => $title ? esc_html( $title ) : esc_html__( 'Success', 'planet4-engagingnetworks' ),
 					'type'    => self::SUCCESS,
-					'classes' => 'p4en_success',
+					'classes' => 'p4en_success_message',
 				] );
 			}
 		}
