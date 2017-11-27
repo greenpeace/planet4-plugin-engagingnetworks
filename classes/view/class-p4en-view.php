@@ -4,12 +4,12 @@ namespace P4EN\Views;
 
 use Timber\Timber;
 
-if ( ! class_exists( 'P4EN_View' ) ) {
+if ( ! class_exists( 'View' ) ) {
 
 	/**
-	 * Class P4EN_View
+	 * Class View
 	 */
-	class P4EN_View {
+	class View {
 
 		/** @var string $template_dir The path to the template files. */
 		private $template_dir = P4EN_INCLUDES_DIR;

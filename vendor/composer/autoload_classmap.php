@@ -6,14 +6,14 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'P4EN\\Controllers\\Menu\\P4EN_Controller' => $baseDir . '/classes/controller/menu/class-p4en-controller.php',
-    'P4EN\\Controllers\\Menu\\P4EN_Pages_Controller' => $baseDir . '/classes/controller/menu/class-p4en-pages-controller.php',
-    'P4EN\\Controllers\\Menu\\P4EN_Pages_Datatable_Controller' => $baseDir . '/classes/controller/menu/class-p4en-pages-datatable-controller.php',
-    'P4EN\\Controllers\\Menu\\P4EN_Pages_Standard_Controller' => $baseDir . '/classes/controller/menu/class-p4en-pages-standard-controller.php',
-    'P4EN\\Controllers\\Menu\\P4EN_Settings_Controller' => $baseDir . '/classes/controller/menu/class-p4en-settings-controller.php',
-    'P4EN\\Controllers\\P4EN_Ensapi_Controller' => $baseDir . '/classes/controller/class-p4en-ensapi-controller.php',
-    'P4EN\\Controllers\\P4EN_Uninstall_Controller' => $baseDir . '/classes/controller/class-p4en-uninstall-controller.php',
-    'P4EN\\Models\\P4EN_Model' => $baseDir . '/classes/model/class-p4en-model.php',
-    'P4EN\\P4EN_Loader' => $baseDir . '/classes/class-p4en-loader.php',
-    'P4EN\\Views\\P4EN_View' => $baseDir . '/classes/view/class-p4en-view.php',
+    'P4EN\\Controllers\\Ensapi_Controller' => $baseDir . '/classes/controller/class-p4en-ensapi-controller.php',
+    'P4EN\\Controllers\\Menu\\Controller' => $baseDir . '/classes/controller/menu/class-p4en-controller.php',
+    'P4EN\\Controllers\\Menu\\Pages_Controller' => $baseDir . '/classes/controller/menu/class-p4en-pages-controller.php',
+    'P4EN\\Controllers\\Menu\\Pages_Datatable_Controller' => $baseDir . '/classes/controller/menu/class-p4en-pages-datatable-controller.php',
+    'P4EN\\Controllers\\Menu\\Pages_Standard_Controller' => $baseDir . '/classes/controller/menu/class-p4en-pages-standard-controller.php',
+    'P4EN\\Controllers\\Menu\\Settings_Controller' => $baseDir . '/classes/controller/menu/class-p4en-settings-controller.php',
+    'P4EN\\Controllers\\Uninstall_Controller' => $baseDir . '/classes/controller/class-p4en-uninstall-controller.php',
+    'P4EN\\Loader' => $baseDir . '/classes/class-p4en-loader.php',
+    'P4EN\\Models\\Model' => $baseDir . '/classes/model/class-p4en-model.php',
+    'P4EN\\Views\\View' => $baseDir . '/classes/view/class-p4en-view.php',
 );

@@ -1,5 +1,6 @@
-jQuery(document).ready(function() {
+$ = jQuery;
 
+$(document).ready(function() {
     $('.notice.is-dismissible').animate({"margin-left" : '+=20', "opacity" : '+=0.9'}, 800);
     $('.p4en_message').animate({"opacity" : '+=0.9'}, 800);
     

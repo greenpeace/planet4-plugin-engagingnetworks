@@ -2,23 +2,23 @@
 
 namespace P4EN\Controllers\Menu;
 
-use P4EN\Views\P4EN_View;
+use P4EN\Views\View;
 
-if ( ! class_exists( 'P4EN_Controller' ) ) {
+if ( ! class_exists( 'Controller' ) ) {
 
 	/**
-	 * Class P4EN_Controller
+	 * Class Controller
 	 *
 	 * This class will control all the main functions of the plugin.
 	 */
-	abstract class P4EN_Controller {
+	abstract class Controller {
 
 		const ERROR   = 0;
 		const WARNING = 1;
 		const NOTICE  = 2;
 		const SUCCESS = 3;
 
-		/** @var P4EN_View $view */
+		/** @var View $view */
 		protected $view;
 		/** @var array $messages */
 		protected $messages = [];
@@ -28,9 +28,9 @@ if ( ! class_exists( 'P4EN_Controller' ) ) {
 		 * Creates the plugin's controller object.
 		 * Avoid putting hooks inside the constructor, to make testing easier.
 		 *
-		 * @param P4EN_View $view The view object.
+		 * @param View $view The view object.
 		 */
-		public function __construct( P4EN_View $view ) {
+		public function __construct( View $view ) {
 			$this->view = $view;
 		}
 

@@ -2,19 +2,19 @@
 
 namespace P4EN\Controllers\Menu;
 
-if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
+if ( ! class_exists( 'Settings_Controller' ) ) {
 
 	/**
-	 * Class P4EN_Settings_Controller
+	 * Class Settings_Controller
 	 */
-	class P4EN_Settings_Controller extends P4EN_Controller {
+	class Settings_Controller extends Controller {
 
 		/**
 		 * Hooks the method that Creates the menu item for the current controller.
 		 */
 		public function load() {
 			parent::load();
-			add_filter( 'locale', array( $this, 'set_locale' ), 11, 1 );
+			add_filter( 'plugin_locale', array( $this, 'set_locale' ), 11, 1 );
 		}
 
 		/**
@@ -122,11 +122,16 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 		}
 
 		/**
-		 * Loads the saved language.
+		 * Sets selected language.
+		 *
+		 * @param string $locale Current locale.
+		 *
+		 * @return string The new locale.
 		 */
-		public function set_locale() : string {
+		public function set_locale( $locale ) : string {
 			$main_settings = get_option( 'p4en_main_settings' );
-			return isset( $main_settings['p4en_lang'] ) ? $main_settings['p4en_lang'] : '';
+			$locale = $main_settings['p4en_lang'] ?? '';
+			return $locale;
 		}
 	}
 }
