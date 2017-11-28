@@ -2,12 +2,12 @@
 
 namespace P4EN\Controllers\Menu;
 
-if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
+if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 
 	/**
-	 * Class P4EN_Pages_Standard_Controller
+	 * Class Pages_Standard_Controller
 	 */
-	class P4EN_Pages_Standard_Controller extends P4EN_Pages_Controller {
+	class Pages_Standard_Controller extends Pages_Controller {
 
 		/**
 		 * Create menu/submenu entry.

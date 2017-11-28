@@ -2,12 +2,12 @@
 
 namespace P4EN\Controllers;
 
-if ( ! class_exists( 'P4EN_Ensapi_Controller' ) ) {
+if ( ! class_exists( 'Ensapi_Controller' ) ) {
 
 	/**
-	 * Class P4EN_Ensapi_Controller
+	 * Class Ensapi_Controller
 	 */
-	class P4EN_Ensapi_Controller {
+	class Ensapi_Controller {
 
 		const ENS_BASE_URL      = 'https://www.e-activist.com/ens/service';
 		const ENS_AUTH_URL      = self::ENS_BASE_URL . '/authenticate';
