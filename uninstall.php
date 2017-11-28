@@ -5,4 +5,4 @@
  * Used when clicking "Delete" from inside of WordPress's plugins page.
  */
 
-new P4EN_Uninstall_Controller();
+new Uninstall_Controller();

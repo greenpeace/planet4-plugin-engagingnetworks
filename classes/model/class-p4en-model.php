@@ -2,12 +2,12 @@
 
 namespace P4EN\Models;
 
-if ( ! class_exists( 'P4EN_Model' ) ) {
+if ( ! class_exists( 'Model' ) ) {
 
 	/**
-	 * Class P4EN_Model
+	 * Class Model
 	 */
-	class P4EN_Model {
+	class Model {
 
 		/**
 		 * Creates the plugin's Model object.

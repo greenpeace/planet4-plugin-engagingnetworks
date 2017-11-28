@@ -2,16 +2,16 @@
 
 namespace P4EN;
 
-if ( ! class_exists( 'P4EN_Loader' ) ) {
+if ( ! class_exists( 'Loader' ) ) {
 
 	/**
-	 * Class P4EN_Loader
+	 * Class Loader
 	 *
 	 * This class checks requirements and if all are met then it hooks the plugin.
 	 */
-	final class P4EN_Loader {
+	final class Loader {
 
-		/** @var P4EN_Loader $instance */
+		/** @var Loader $instance */
 		private static $instance;
 		/** @var array $services */
 		private $services;
@@ -28,9 +28,9 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 		 * @param array  $services The Controller services to inject.
 		 * @param string $view_class The View class name.
 		 *
-		 * @return P4EN_Loader
+		 * @return Loader
 		 */
-		public static function get_instance( $services = array(), $view_class ) : P4EN_Loader {
+		public static function get_instance( $services = array(), $view_class ) : Loader {
 			! isset( self::$instance ) and self::$instance = new self( $services, $view_class );
 			return  self::$instance;
 		}
@@ -145,20 +145,20 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 		 */
 		public function load_admin_assets( $hook ) {
 			// Load the assets only on the plugin's pages.
-			if ( strpos( $hook, P4EN_PLUGIN_SLUG_NAME ) === false ) {
+			if ( false === strpos( $hook, P4EN_PLUGIN_SLUG_NAME ) ) {
 				return;
 			}
 
 			wp_enqueue_script( 'p4en_jquery', '//code.jquery.com/jquery-3.2.1.min.js', array(), '3.2.1', true );
-			if ( strpos( $hook, 'pages-datatable' ) !== false ) {
+			if ( false !== strpos( $hook, P4EN_PLUGIN_SLUG_NAME ) ) {
 				wp_enqueue_style( 'p4en_bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css', array(), '4.0.0-alpha.6' );
 				wp_enqueue_style( 'p4en_datatables_bootstrap', 'https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap4.min.css', array( 'p4en_bootstrap' ), '1.10.15' );
 
 				wp_enqueue_script( 'p4en_datatables', 'https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js', array( 'p4en_jquery' ), '1.10.15', true );
 				wp_enqueue_script( 'p4en_datatables_bootstrap', 'https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js', array( 'p4en_datatables' ), '1.10.15', true );
 			}
-			wp_enqueue_style( 'p4en_admin_style', P4EN_ADMIN_DIR . 'css/admin.css', array(), '0.1' );
-			wp_enqueue_script( 'p4en_admin_script', P4EN_ADMIN_DIR . 'js/admin.js', array(), '0.1', true );
+			wp_enqueue_style( 'p4en_admin_style', P4EN_ADMIN_DIR . 'css/admin.css', array(), '0.2' );
+			wp_enqueue_script( 'p4en_admin_script', P4EN_ADMIN_DIR . 'js/admin.js', array(), '0.2', true );
 		}
 
 		/**
@@ -184,7 +184,7 @@ if ( ! class_exists( 'P4EN_Loader' ) ) {
 	deactivate_plugins( P4EN_PLUGIN_BASENAME );
 	wp_die(
 		'<div class="error fade">' .
-		'<u>' . esc_html__( 'Plugin Conflict Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html__( 'Class P4EN_Loader already exists.', 'planet4-engagingnetworks' ) . '<br />' .
+		'<u>' . esc_html__( 'Plugin Conflict Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html__( 'Class Loader already exists.', 'planet4-engagingnetworks' ) . '<br />' .
 		'</div>', 'Plugin Conflict Error', array(
 			'response' => \WP_Http::OK,
 			'back_link' => true,

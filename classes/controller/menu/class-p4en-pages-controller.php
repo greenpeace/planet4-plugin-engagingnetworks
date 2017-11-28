@@ -2,14 +2,14 @@
 
 namespace P4EN\Controllers\Menu;
 
-if ( ! class_exists( 'P4EN_Pages_Controller' ) ) {
+if ( ! class_exists( 'Pages_Controller' ) ) {
 
 	/**
-	 * Class P4EN_Pages_Controller
+	 * Class Pages_Controller
 	 *
 	 * This class will be the base controller for handling various ways listing EN Pages tables
 	 */
-	abstract class P4EN_Pages_Controller extends P4EN_Controller {
+	abstract class Pages_Controller extends Controller {
 
 		const SUBTYPES = [
 			'DCF'   => [

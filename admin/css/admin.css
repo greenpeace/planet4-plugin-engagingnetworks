@@ -12,10 +12,10 @@
 :-ms-input-placeholder {
     font-style: italic;
 }
-.engagingnetworks_page_pages-datatable {
+.toplevel_page_engagingnetworks:not(.menu-top), .engagingnetworks_page_settings {
     background-color: #F1F1F1 !important;
 }
-.engagingnetworks_page_pages-datatable .submit {
+.toplevel_page_engagingnetworks .submit {
     display: inline;
 }
 #adminmenu .wp-menu-name, #adminmenu .current {
@@ -31,7 +31,7 @@
     display: inline;
     margin: auto;
 }
-#setting-error-settings_updated {
+.notice.is-dismissible {
     opacity: 0.1;
     color: white;
     background-color: #32373C;
@@ -66,26 +66,27 @@
 
 #p4en_message_container {
     width: 100%;
+    position: absolute;
 }
 
-#p4en_message_text {
+.p4en_message {
     width: 100%;
-    position: absolute;
+    position: relative;
     text-align: center;
     opacity: 0.1;
     color: white;
     z-index: 10;
     display: inline-block;
 }
-#p4en_message_text.p4en_error {
+.p4en_error_message {
     background-color: #E0352D;
 }
-#p4en_message_text.p4en_warning {
+.p4en_warning_message {
     background-color: #FFBB00;
 }
-#p4en_message_text.p4en_notice {
+.p4en_notice_message {
     background-color: #019ED3;
 }
-#p4en_message_text.p4en_success {
+.p4en_success_message {
     background-color: #3CB54C;
 }

@@ -2,19 +2,19 @@
 
 namespace P4EN\Controllers\Menu;
 
-if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
+if ( ! class_exists( 'Settings_Controller' ) ) {
 
 	/**
-	 * Class P4EN_Settings_Controller
+	 * Class Settings_Controller
 	 */
-	class P4EN_Settings_Controller extends P4EN_Controller {
+	class Settings_Controller extends Controller {
 
 		/**
 		 * Hooks the method that Creates the menu item for the current controller.
 		 */
 		public function load() {
 			parent::load();
-			add_filter( 'locale', array( $this, 'set_locale' ), 11, 1 );
+			add_filter( 'plugin_locale', array( $this, 'set_locale' ), 11, 1 );
 		}
 
 		/**
@@ -42,6 +42,7 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 			$this->view->settings( [
 				'settings' => get_option( 'p4en_main_settings' ),
 				'available_languages' => P4EN_LANGUAGES,
+				'messages' => $this->messages,
 				'domain' => 'planet4-engagingnetworks',
 			] );
 		}
@@ -58,6 +59,20 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 				'show_in_rest'      => false,
 			);
 			register_setting( 'p4en_main_settings_group', 'p4en_main_settings', $args );
+		}
+
+		/**
+		 * Validates and sanitizes the settings input.
+		 *
+		 * @param array $settings The associative array with the settings that are registered for the plugin.
+		 *
+		 * @return mixed Array if validation is ok, false if validation fails.
+		 */
+		public function valitize( $settings ) {
+			if ( $this->validate( $settings ) ) {
+				$this->sanitize( $settings );
+			}
+			return $settings;
 		}
 
 		/**
@@ -107,11 +122,16 @@ if ( ! class_exists( 'P4EN_Settings_Controller' ) ) {
 		}
 
 		/**
-		 * Loads the saved language.
+		 * Sets selected language.
+		 *
+		 * @param string $locale Current locale.
+		 *
+		 * @return string The new locale.
 		 */
-		public function set_locale() : string {
+		public function set_locale( $locale ) : string {
 			$main_settings = get_option( 'p4en_main_settings' );
-			return isset( $main_settings['p4en_lang'] ) ? $main_settings['p4en_lang'] : '';
+			$locale = $main_settings['p4en_lang'] ?? '';
+			return $locale;
 		}
 	}
 }

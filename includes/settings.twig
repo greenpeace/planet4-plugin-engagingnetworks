@@ -1,5 +1,7 @@
 {% block settings_content %}
 
+    {% embed "message.twig" with messages %}{% endembed %}
+
     <div id="settings_div" class="wrap">
         <h2>{{ __( 'Settings', domain ) }}</h2>
     </div>
@@ -13,21 +15,6 @@
 
         <br /><br />
         <table class="form-table">
-            <tr valign="top">
-                <th>{{ __( 'Language', domain ) }}:</th>
-                <td>
-                    <select id="p4en_lang" name="p4en_main_settings[p4en_lang]">
-                        <option selected disabled>- {{ __( 'Select Language', domain ) }} -</option>
-                        {% for key, language in available_languages %}
-                            {% if key == settings.p4en_lang %}
-                                <option value="{{ key|e('html_attr') }}" selected>{{ language|e('html') }}</option>
-                            {% else %}
-                                <option value="{{ key|e('html_attr') }}">{{ language|e('html') }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
             <tr valign="top">
                 <th>{{ __( 'Public', domain ) }} API:</th>
                 <td>

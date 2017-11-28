@@ -2,14 +2,14 @@
 
 namespace P4EN\Controllers\Menu;
 
-use P4EN\Controllers\P4EN_Ensapi_Controller;
+use P4EN\Controllers\Ensapi_Controller;
 
-if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
+if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 
 	/**
-	 * Class P4EN_Pages_Datatable_Controller
+	 * Class Pages_Datatable_Controller
 	 */
-	class P4EN_Pages_Datatable_Controller extends P4EN_Pages_Controller {
+	class Pages_Datatable_Controller extends Pages_Controller {
 
 		/**
 		 * Create menu/submenu entry.
@@ -19,13 +19,13 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 			$current_user = wp_get_current_user();
 
 			if ( in_array( 'administrator', $current_user->roles, true ) || in_array( 'editor', $current_user->roles, true ) ) {
-				add_submenu_page(
-					P4EN_PLUGIN_SLUG_NAME,
-					__( 'EN Pages DataTable', 'planet4-engagingnetworks' ),
-					__( 'EN Pages DataTable', 'planet4-engagingnetworks' ),
+				add_menu_page(
+					'EngagingNetworks',
+					'EngagingNetworks',
 					'edit_pages',
-					'pages-datatable',
-					array( $this, 'prepare_pages_datatable' )
+					P4EN_PLUGIN_SLUG_NAME,
+					array( $this, 'prepare_pages_datatable' ),
+					P4EN_ADMIN_DIR . 'images/logo_menu_page_16x16.jpg'
 				);
 			}
 		}
@@ -51,7 +51,7 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 						$params['status'] = $pages_settings['p4en_pages_status'];
 					}
 
-					$ens_api = new P4EN_Ensapi_Controller();
+					$ens_api = new Ensapi_Controller();
 					$main_settings = get_option( 'p4en_main_settings' );
 
 					if ( isset( $main_settings['p4en_private_api'] ) && $main_settings['p4en_private_api'] ) {
@@ -74,8 +74,10 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 								// Communication with ENS API is authenticated.
 								$body           = json_decode( $response['body'], true );
 								$ens_auth_token = $body['ens-auth-token'];
-								$expiration     = $body['expires'];
-								set_transient( 'ens_auth_token', $ens_auth_token, $expiration );
+								// Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
+								$expiration     = (int)($body['expires'] / 1000) - time();
+
+								set_transient( 'ens_auth_token', $ens_auth_token, $expiration - time() );
 
 								$response = $ens_api->get_pages( $ens_auth_token, $params );
 
@@ -103,6 +105,7 @@ if ( ! class_exists( 'P4EN_Pages_Datatable_Controller' ) ) {
 				'pages_settings' => $pages_settings,
 				'subtypes'       => self::SUBTYPES,
 				'statuses'       => self::STATUSES,
+				'messages'       => $this->messages,
 				'domain'         => 'planet4-engagingnetworks',
 			] );
 

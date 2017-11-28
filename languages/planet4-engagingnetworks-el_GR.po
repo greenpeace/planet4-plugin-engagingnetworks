@@ -43,8 +43,8 @@ msgstr "Η τρέχουσα έκδοση της PHP είναι:"
 msgid "Plugin Conflict Error!"
 msgstr "Σφάλμα!"
 
-msgid "Class P4EN_Loader already exists."
-msgstr "Η κλάση P4EN_Loader υπάρχει ήδη."
+msgid "Class Loader already exists."
+msgstr "Η κλάση Loader υπάρχει ήδη."
 
 msgid "Settings"
 msgstr "Ρυθμίσεις"
@@ -123,6 +123,9 @@ msgstr "Οι ρυθμίσεις δεν έχουν γίνει σωστά!"
 
 msgid "Changes saved!"
 msgstr "Οι αλλαγές αποθηκεύτηκαν!"
+
+msgid "Changes are not saved!"
+msgstr "Οι αλλαγές δεν αποθηκεύτηκαν!"
 
 msgid "Nonce verification failed!"
 msgstr "Ο έλεγχος για την επιβεβαίωση του Nonce απέτυχε!"

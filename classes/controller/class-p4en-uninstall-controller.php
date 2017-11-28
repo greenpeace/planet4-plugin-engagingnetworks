@@ -2,13 +2,13 @@
 
 namespace P4EN\Controllers;
 
-if ( ! class_exists( 'P4EN_Uninstall_Controller' ) ) {
+if ( ! class_exists( 'Uninstall_Controller' ) ) {
 	/**
 	 * Planet4 - EngagingNetworks uninstaller
 	 *
 	 * Used when clicking "Delete" from inside of WordPress's plugins page.
 	 */
-	class P4EN_Uninstall_Controller {
+	class Uninstall_Controller {
 
 		/**
 		 * Initialize uninstaller
