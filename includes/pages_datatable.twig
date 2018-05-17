@@ -72,7 +72,7 @@
                         {{ (subtypes[ page['subType'] ]['type'])|e('html') }}
                     </td>
                     <td>
-                        <a class="p4en_link" href="{{ page.url|e('html_attr') }}" title="" data-title="Open page in new tab" target="_blank">{{ page['name']|e('html') }}</a>
+                        <a class="p4en_link p4en_page_name" href="{{ page.url|e('html_attr') }}" title="" data-title="Open page in new tab" target="_blank">{{ page['name']|e('html') }}</a>
                     </td>
                     <td>
                         {% if ( page['createdOn'] ) %}
@@ -97,7 +97,7 @@
                         <a class="p4en_link do_copy" href="" data-href="{{ page.url|e('html_attr') }}" title=""  data-title="Copy link">
                             <i class="dashicons dashicons-admin-links"></i>
                         </a>
-                        <a class="p4en_link" href="https://e-activist.com/ea-page/auth/iframemodule.jsp?menu=page%20builder&module=manage%20pages" title=""  data-title="Edit in EN" target="_blank">
+                        <a class="p4en_link do_edit" href="https://e-activist.com/index.html#pages/{{ page['id'] }}/edit" title=""  data-title="Edit in EN" target="_blank">
                             <i class="dashicons dashicons-edit"></i>
                         </a>
                     </td>
