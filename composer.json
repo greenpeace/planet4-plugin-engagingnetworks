@@ -1,6 +1,16 @@
 {
   "name": "greenpeace/planet4-plugin-engagingnetworks",
   "description": "This repository contains the wordpress plugin that connects Planet 4 with the Engaging Networks platform.",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    },
+    {
+      "type": "composer",
+      "url": "https://packagist.org"
+    }
+  ],
   "type": "wordpress-plugin",
   "version": "0.2.9",
   "license": "GPL-3.0+",
@@ -16,14 +26,23 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.0",
     "frenck/php-compatibility": "^7.1"
   },
-  "require": {},
+  "scripts": {
+    "bootstrap_testing_environment": [
+      "echo  'Running composer install'",
+      "composer install",
+      "echo  'Copying plugin dependencies to wp tests directory'",
+      "cp -Ru wp-content/plugins/* ${WP_CORE_DIR}/wp-content/plugins/"
+    ]
+  },
   "autoload": {
     "psr-4": {
       "P4EN\\": "classes/",
       "P4EN\\Controllers\\": "classes/controller/",
       "P4EN\\Controllers\\Menu\\": "classes/controller/menu",
       "P4EN\\Models\\": "classes/model/",
-      "P4EN\\Views\\": "classes/view/"
+      "P4EN\\Views\\": "classes/view/",
+      "P4EN\\Scraper\\": "classes/scraper/",
+      "P4EN\\Api\\": "classes/api/"
     }
   }
 }

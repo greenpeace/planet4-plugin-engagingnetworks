@@ -50,6 +50,7 @@ if ( ! defined( 'P4EN_LANGUAGES' ) )            define( 'P4EN_LANGUAGES',       
 	'el_GR' => 'Ελληνικά',
 ] );
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) )       define( 'WP_UNINSTALL_PLUGIN',      P4EN_PLUGIN_BASENAME );
+if ( ! defined( 'P4_REST_SLUG' ) )              define( 'P4_REST_SLUG' ,            'planet4-engaging-networks' ) ;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';

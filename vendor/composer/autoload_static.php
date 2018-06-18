@@ -10,9 +10,11 @@ class ComposerStaticInitb2e1c8770a978ddf4754fab5da8acc5e
         'P' => 
         array (
             'P4EN\\Views\\' => 11,
+            'P4EN\\Scraper\\' => 13,
             'P4EN\\Models\\' => 12,
             'P4EN\\Controllers\\Menu\\' => 22,
             'P4EN\\Controllers\\' => 17,
+            'P4EN\\Api\\' => 9,
             'P4EN\\' => 5,
         ),
     );
@@ -21,6 +23,10 @@ class ComposerStaticInitb2e1c8770a978ddf4754fab5da8acc5e
         'P4EN\\Views\\' => 
         array (
             0 => __DIR__ . '/../..' . '/classes/view',
+        ),
+        'P4EN\\Scraper\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes/scraper',
         ),
         'P4EN\\Models\\' => 
         array (
@@ -34,6 +40,10 @@ class ComposerStaticInitb2e1c8770a978ddf4754fab5da8acc5e
         array (
             0 => __DIR__ . '/../..' . '/classes/controller',
         ),
+        'P4EN\\Api\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/classes/api',
+        ),
         'P4EN\\' => 
         array (
             0 => __DIR__ . '/../..' . '/classes',
@@ -41,6 +51,7 @@ class ComposerStaticInitb2e1c8770a978ddf4754fab5da8acc5e
     );
 
     public static $classMap = array (
+        'P4EN\\Api\\REST_Handler' => __DIR__ . '/../..' . '/classes/api/class-rest-handler.php',
         'P4EN\\Controllers\\Ensapi_Controller' => __DIR__ . '/../..' . '/classes/controller/class-ensapi-controller.php',
         'P4EN\\Controllers\\Menu\\Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-controller.php',
         'P4EN\\Controllers\\Menu\\Pages_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-pages-controller.php',
@@ -50,6 +61,8 @@ class ComposerStaticInitb2e1c8770a978ddf4754fab5da8acc5e
         'P4EN\\Controllers\\Uninstall_Controller' => __DIR__ . '/../..' . '/classes/controller/class-uninstall-controller.php',
         'P4EN\\Loader' => __DIR__ . '/../..' . '/classes/class-loader.php',
         'P4EN\\Models\\Model' => __DIR__ . '/../..' . '/classes/model/class-model.php',
+        'P4EN\\Scraper\\ENSelectors' => __DIR__ . '/../..' . '/classes/scraper/class-en-selectors.php',
+        'P4EN\\Scraper\\Scraper' => __DIR__ . '/../..' . '/classes/scraper/class-scraper.php',
         'P4EN\\Views\\View' => __DIR__ . '/../..' . '/classes/view/class-view.php',
     );
 

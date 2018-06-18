@@ -94,11 +94,14 @@
                         {{ (subtypes[ page['subType'] ]['subType'])|e('html') }}
                     </td>
                     <td>
-                        <a class="p4en_link do_copy" href="" data-href="{{ page.url|e('html_attr') }}" title=""  data-title="Copy link">
+                        <a class="p4en_link do_copy" href="" data-href="{{ page.url|e('html_attr') }}" title="" data-title="Copy link">
                             <i class="dashicons dashicons-admin-links"></i>
                         </a>
-                        <a class="p4en_link do_edit" href="https://e-activist.com/index.html#pages/{{ page['id'] }}/edit" title=""  data-title="Edit in EN" target="_blank">
+                        <a class="p4en_link do_edit" href="https://e-activist.com/index.html#pages/{{ page['id'] }}/edit" title="" data-title="Edit in EN" target="_blank">
                             <i class="dashicons dashicons-edit"></i>
+                        </a>
+                        <a class="p4en_link do_scrape_form" href="" data-title="Scrape form" data-href="{{ page.url|e('html_attr') }}" data-page-id="{{ page['id'] }}">
+                            <i class="dashicons dashicons-admin-site"></i>
                         </a>
                     </td>
                 </tr>

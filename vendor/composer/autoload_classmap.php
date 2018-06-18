@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'P4EN\\Api\\REST_Handler' => $baseDir . '/classes/api/class-rest-handler.php',
     'P4EN\\Controllers\\Ensapi_Controller' => $baseDir . '/classes/controller/class-ensapi-controller.php',
     'P4EN\\Controllers\\Menu\\Controller' => $baseDir . '/classes/controller/menu/class-controller.php',
     'P4EN\\Controllers\\Menu\\Pages_Controller' => $baseDir . '/classes/controller/menu/class-pages-controller.php',
@@ -15,5 +16,7 @@ return array(
     'P4EN\\Controllers\\Uninstall_Controller' => $baseDir . '/classes/controller/class-uninstall-controller.php',
     'P4EN\\Loader' => $baseDir . '/classes/class-loader.php',
     'P4EN\\Models\\Model' => $baseDir . '/classes/model/class-model.php',
+    'P4EN\\Scraper\\ENSelectors' => $baseDir . '/classes/scraper/class-en-selectors.php',
+    'P4EN\\Scraper\\Scraper' => $baseDir . '/classes/scraper/class-scraper.php',
     'P4EN\\Views\\View' => $baseDir . '/classes/view/class-view.php',
 );
