@@ -100,6 +100,14 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 				$this->error( __( 'Changes are not saved!', 'planet4-engagingnetworks' ) );
 			}
 
+			// Rest data.
+			$rest_data['ajaxurl']    = admin_url( 'admin-ajax.php' );
+			$rest_data['nonce']      = wp_create_nonce( 'wp_rest' );
+			$rest_data['rest_url']   = site_url( 'wp-json/'.P4_REST_SLUG.'/v1/' );
+
+			wp_localize_script( 'p4en_admin_script', 'p4en', $rest_data );
+
+
 			$data = array_merge( $data, [
 				'pages'          => $pages,
 				'pages_settings' => $pages_settings,

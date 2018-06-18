@@ -19,6 +19,8 @@ if ( ! class_exists( 'Loader' ) ) {
 		private $required_php = P4EN_REQUIRED_PHP;
 		/** @var array $required_plugins */
 		private $required_plugins = P4EN_REQUIRED_PLUGINS;
+		/** @var Api\REST_Handler $rest_handler */
+		private $rest_handler;
 
 
 		/**
@@ -54,6 +56,8 @@ if ( ! class_exists( 'Loader' ) ) {
 				}
 			}
 			$this->check_requirements();
+			$this->rest_handler = new Api\REST_Handler();
+			$this->rest_handler->initialize();
 		}
 
 		/**
@@ -158,7 +162,7 @@ if ( ! class_exists( 'Loader' ) ) {
 				wp_enqueue_script( 'p4en_datatables_bootstrap', 'https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js', array( 'p4en_datatables' ), '1.10.15', true );
 			}
 			wp_enqueue_style( 'p4en_admin_style', P4EN_ADMIN_DIR . 'css/admin.css', array(), '0.2' );
-			wp_enqueue_script( 'p4en_admin_script', P4EN_ADMIN_DIR . 'js/admin.js', array(), '0.2', true );
+			wp_enqueue_script( 'p4en_admin_script', P4EN_ADMIN_DIR . 'js/admin.js', array(), '0.3', true );
 		}
 
 		/**
