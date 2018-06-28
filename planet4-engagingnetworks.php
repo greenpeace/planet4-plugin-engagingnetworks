@@ -61,4 +61,5 @@ P4EN\Loader::get_instance( [
 	//'P4EN\Controllers\Menu\Pages_Standard_Controller',
 	'P4EN\Controllers\Menu\Pages_Datatable_Controller',
 	'P4EN\Controllers\Menu\Settings_Controller',
+	'P4EN\Controllers\Menu\Fields_Settings_Controller',
 ], 'P4EN\Views\View' );

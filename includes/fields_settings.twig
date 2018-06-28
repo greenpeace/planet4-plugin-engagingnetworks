@@ -1,0 +1,23 @@
+{% block fields_settings %}
+
+    {% embed "message.twig" with messages %}{% endembed %}
+
+    <div id="settings_div" class="wrap">
+        <h2>{{ __( 'Engaging Networks Fields Settings', 'planet4-engagingnetworks' ) }}</h2>
+        <p>{{ __( 'In this page you can define engaging networks fields that you want to be used for the petitions.', 'planet4-engagingnetworks' ) }}</p>
+        <p>{{ __( 'To save the fields click on \'Save\' button at the bottom of the page.', 'planet4-engagingnetworks' ) }}</p>
+    </div>
+    <br><br>
+    <hr/>
+    <div id="existing-fields-div" class="wrap"></div>
+    <br>
+    <div id="new-field-div" class="wrap"></div>
+    <hr>
+    <div class="form-group">
+        <div class="col-md-2">
+            <button class="button button-primary">Save</button>
+        </div>
+    </div>
+    <div class="clear"></div>
+
+{% endblock %}
