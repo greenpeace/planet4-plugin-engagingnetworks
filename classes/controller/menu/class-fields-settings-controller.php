@@ -56,7 +56,7 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 		 * Load underscore templates to footer.
 		 */
 		public function print_admin_footer_scripts() {
-			echo $this->get_template( 'settings' );
+			echo $this->get_template( 'fields_settings' );
 		}
 
 		/**
