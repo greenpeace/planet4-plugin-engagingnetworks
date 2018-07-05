@@ -1,0 +1,229 @@
+<?php
+
+namespace P4EN\Api;
+
+use P4EN\Models\Fields_Model;
+
+/**
+ * WP REST API Fields Controller.
+ */
+class Fields_Controller {
+
+	private $fields_option = 'planet4-en-fields';
+	private $model;
+
+	/**
+	 * Default constructor.
+	 */
+	public function __construct() {
+		$this->model = new Fields_Model();
+	}
+
+	/**
+	 * Validate field's attributes.
+	 *
+	 * @param array $field The field attributes to be validated.
+	 *
+	 * @return array|bool
+	 */
+	private function validate_field( $field ) {
+		if ( ! is_array( $field ) || empty( $field ) ) {
+			return [ 'No data' ];
+		}
+
+		$messages = [];
+		if ( ! isset( $field['name'] ) ) {
+			$messages[] = 'Name is not set';
+		} elseif ( preg_match( '/[A-Za-z0-9_\-\.]+$/', $field['name'] ) != 1 ) {
+			$messages[] = 'Name should contain alphanumeric characters';
+		}
+
+		if ( ! isset( $field['mandatory'] ) ) {
+			$messages[] = 'Mandatory is not set';
+		} elseif ( ! rest_is_boolean( $field['mandatory'] ) ) {
+			$messages[] = 'Mandatory should be boolean';
+		}
+
+		if ( ! isset( $field['type'] ) ) {
+			$messages[] = 'Type is not set';
+		} elseif ( ! in_array( $field['type'], [ 'text', 'country', 'question', 'number' ] ) ) {
+			$messages[] = 'Type should be one of these values: text, country, question';
+		}
+
+		if ( empty( $messages ) ) {
+			return true;
+		}
+
+		return $messages;
+	}
+
+	/**
+	 * Callback for add field api route.
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function add_field( \WP_REST_Request $request ) {
+
+		// Get field data.
+		$field_data = $request->get_params();
+
+		// Validate field data.
+		$validation = $this->validate_field( $field_data );
+		if ( $validation !== true ) {
+			$response_data = [
+				'messages' => $validation,
+			];
+			$response      = new \WP_REST_Response( $response_data );
+			$response->set_status( 400 );
+
+			return $response;
+		}
+
+		// Add field to en wordpress option.
+		$updated = $this->model->add_field( $field_data );
+		if ( ! $updated ) {
+			$response_data = [
+				'messages' => [ 'Field could not be added' ],
+			];
+			$response      = new \WP_REST_Response( $response_data );
+			$response->set_status( 500 );
+
+			return $response;
+		}
+
+		$options = get_option( $this->fields_option );
+		$field   = $this->model->get_field( $field_data['id'] );
+
+		$response_data = [
+			'message' => '',
+			'field'   => $field,
+			'o'       => $options,
+		];
+		$response      = new \WP_REST_Response( $response_data );
+		$response->set_status( 201 );
+
+		return $response;
+	}
+
+	/**
+	 * Callback for get field api route.
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error| \WP_REST_Response
+	 */
+	public function get_field( \WP_REST_Request $request ) {
+
+		// Get field id.
+		$id            = $request['id'];
+		$field         = $this->model->get_field( $id );
+		$response_data = $field;
+		$response      = new \WP_REST_Response( $response_data );
+		$response->set_status( 200 );
+
+		return $response;
+	}
+
+	/**
+	 * Callback for get fields api route.
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_Error| \WP_REST_Response
+	 */
+	public function get_fields( \WP_REST_Request $request ) {
+		$options       = get_option( $this->fields_option );
+		$fields        = $options ? array_values( $options ) : [];
+		$response_data = $fields;
+		$response      = new \WP_REST_Response( $response_data );
+		$response->set_status( 200 );
+
+		return $response;
+	}
+
+	/**
+	 * Callback for delete field api route.
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function delete_field( \WP_REST_Request $request ) {
+
+		// Get field id.
+		$id = $request['id'];
+
+		// Add field to en wordpress option.
+		$updated = $this->model->delete_field( $id );
+		if ( ! $updated ) {
+			$response_data = [
+				'messages' => [ 'Field could not be added' ],
+			];
+			$response      = new \WP_REST_Response( $response_data );
+			$response->set_status( 500 );
+
+			return $response;
+		}
+
+		$response_data = [
+			'messages' => [],
+		];
+		$response      = new \WP_REST_Response( $response_data );
+		$response->set_status( 200 );
+
+		return $response;
+	}
+
+
+	/**
+	 * Callback for update field api route.
+	 *
+	 * @param \WP_REST_Request $request
+	 *
+	 * @return \WP_REST_Response
+	 */
+	public function update_field( \WP_REST_Request $request ) {
+
+		// Get field data.
+		$id = $request['id'];
+
+		// Get field data.
+		$field_data = $request->get_params();
+
+		// Validate field data.
+		$validation = $this->validate_field( $field_data );
+		if ( $validation !== true ) {
+			$response_data = [
+				'messages' => $validation,
+			];
+			$response      = new \WP_REST_Response( $response_data );
+			$response->set_status( 400 );
+
+			return $response;
+		}
+
+		// Add field to en wordpress option.
+		$updated = $this->model->update_field( $field_data );
+		if ( ! $updated ) {
+			$response_data = [
+				'messages' => [ 'Field could not be added' ],
+			];
+			$response      = new \WP_REST_Response( $response_data );
+			$response->set_status( 500 );
+
+			return $response;
+		}
+
+		$field         = $this->model->get_field( $field_data['id'] );
+		$response_data = [
+			'messages' => [],
+			'field'    => $field,
+		];
+		$response      = new \WP_REST_Response( $response_data );
+		$response->set_status( 200 );
+
+		return $response;
+	}
+}

@@ -54,6 +54,16 @@ if ( ! class_exists( 'Loader' ) ) {
 				}
 			}
 			$this->check_requirements();
+			add_action( 'admin_init', [ $this, 'init' ] );
+			$this->rest_handler = new Api\REST_Handler();
+			$this->rest_handler->initialize();
+		}
+
+		/**
+		 * Register our setting to WP.
+		 */
+		public function init() {
+			add_option( 'planet4-en-fields', [] );
 		}
 
 		/**
