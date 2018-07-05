@@ -16,7 +16,12 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.0",
     "frenck/php-compatibility": "^7.1"
   },
-  "require": {},
+  "scripts": {
+    "bootstrap_testing_environment": [
+      "composer install",
+      "cp -Ru wp-content/plugins/* ${WP_CORE_DIR}/wp-content/plugins/"
+    ]
+  },
   "autoload": {
     "psr-4": {
       "P4EN\\": "classes/",
