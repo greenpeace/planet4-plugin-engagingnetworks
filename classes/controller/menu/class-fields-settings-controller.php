@@ -22,7 +22,7 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 					__( 'Field Settings', 'planet4-engagingnetworks' ),
 					'manage_options',
 					'fields-settings',
-					array( $this, 'prepare_page' )
+					[ $this, 'prepare_page' ]
 				);
 			}
 		}
@@ -39,14 +39,19 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 					'wp-api',
 					'wp-backbone',
 				], '0.1', true );
+			wp_localize_script(
+				'en-app',
+				'p4_data',
+				[
+					'api_url' => get_site_url() . '/wp-json/'.P4_REST_SLUG.'/v1',
+					'nonce'   => wp_create_nonce( 'wp_rest' ),
+				]
+			);
 			wp_enqueue_script( 'en-app' );
 
-
 			$data   = [];
-
 			$data = array_merge( $data, [
 				'messages'       => $this->messages,
-				'domain'         => 'planet4-engagingnetworks',
 			] );
 
 			$this->view->view_template( 'fields_settings', $data );
@@ -56,7 +61,7 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 		 * Load underscore templates to footer.
 		 */
 		public function print_admin_footer_scripts() {
-			echo $this->get_template( 'fields_settings' );
+			$this->view->view_template( 'fields_settings_templates', [] );
 		}
 
 		/**
