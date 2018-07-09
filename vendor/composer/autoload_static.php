@@ -41,8 +41,8 @@ class ComposerStaticInitb2e1c8770a978ddf4754fab5da8acc5e
     );
 
     public static $classMap = array (
-        'P4EN\\Api\\Fields_Controller' => __DIR__ . '/../..' . '/classes/api/class-fields-controller.php',
-        'P4EN\\Api\\REST_Handler' => __DIR__ . '/../..' . '/classes/api/class-rest-handler.php',
+        'P4EN\\Controllers\\Api\\Fields_Controller' => __DIR__ . '/../..' . '/classes/controller/api/class-fields-controller.php',
+        'P4EN\\Controllers\\Api\\REST_Handler' => __DIR__ . '/../..' . '/classes/controller/api/class-rest-handler.php',
         'P4EN\\Controllers\\Ensapi_Controller' => __DIR__ . '/../..' . '/classes/controller/class-ensapi-controller.php',
         'P4EN\\Controllers\\Menu\\Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-controller.php',
         'P4EN\\Controllers\\Menu\\Fields_Settings_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-fields-settings-controller.php',

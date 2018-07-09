@@ -1,6 +1,6 @@
 <?php
 
-namespace P4EN\Api;
+namespace P4EN\Controllers\Api;
 
 
 /**
@@ -8,6 +8,9 @@ namespace P4EN\Api;
  */
 class REST_Handler {
 
+	/**
+	 * @var string
+	 */
 	private $fields_option = 'planet4-en-fields';
 
 	/**
@@ -57,16 +60,14 @@ class REST_Handler {
 		 * Requires authentication.
 		 *
 		 * @route   wp-json/planet4-engaging-networks/v1/fields
-		 * @method  WP_REST_Server::READABLE ( GET )
-		 *
-		 * @params  string  en_url  required , url of the en page.
+		 * @method  \WP_REST_Server::READABLE ( GET )
 		 *
 		 * @returns \WP_Error | \WP_REST_Reponse
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields', array(
+		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields', [
 			'methods'  => \WP_REST_Server::READABLE,
 			'callback' => [ $fields_controller, 'get_fields' ],
-		) );
+		] );
 
 
 		/**
@@ -74,21 +75,22 @@ class REST_Handler {
 		 *
 		 * Requires authentication.
 		 *
-		 * @route   wp-json/store-locator-plus/<v2+>/locations
-		 * @method  WP_REST_Server::EDITABLE ( POST, PUT, PATCH )
+		 * @route   wp-json/planet4-engaging-networks/<v2+>/locations
+		 * @method  \WP_REST_Server::EDITABLE ( POST, PUT, PATCH )
 		 *
-		 * @params  string  sl_store        required , name of store
-		 * @params  string  <field_slug>    optional, other store data. Field slugs can match base or extended data fields.
+		 * @params  int     id          required , field id.
+		 * @params  string  label       required, field label.
+		 * @params  boolean mandatory   required, specify if field is mandatory.
+		 * @params  string  name        required, field name.
+		 * @params  string  type        required, specify field's type.
 		 *
-		 * @returns WP_Error | WP_REST_Reponse
+		 * @returns \WP_Error | \WP_REST_Reponse
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields', array(
+		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields', [
 			'methods'             => \WP_REST_Server::EDITABLE,
 			'callback'            => [ $fields_controller, 'add_field' ],
 			'permission_callback' => [ $this, 'is_allowed' ],
-			'args'                => array(//				'sl_store'  => array( 'required'    => true ),
-			)
-		) );
+		] );
 
 		/**
 		 * Get a single form's fields.
@@ -96,17 +98,15 @@ class REST_Handler {
 		 * Requires authentication.
 		 *
 		 * @route   wp-json/planet4-engaging-networks/<v1+>/form/get_fields
-		 * @method  WP_REST_Server::READABLE ( GET )
-		 *
-		 * @params  string  en_url  required , url of the en page.
+		 * @method  \WP_REST_Server::READABLE ( GET )
 		 *
 		 * @returns \WP_Error | \WP_REST_Reponse
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', array(
+		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', [
 			'methods'             => \WP_REST_Server::READABLE,
 			'callback'            => [ $fields_controller, 'get_field' ],
 			'permission_callback' => [ $this, 'is_allowed' ],
-		) );
+		] );
 
 
 		/**
@@ -115,12 +115,15 @@ class REST_Handler {
 		 * Requires authentication.
 		 *
 		 * @route   wp-json/planet4-engaging-networks/v1/fields/<id>
-		 * @method  WP_REST_Server::EDITABLE ( POST, PUT, PATCH )
+		 * @method  \WP_REST_Server::EDITABLE ( POST, PUT, PATCH )
 		 *
-		 * @params  string  sl_store        required , name of store
-		 * @params  string  <field_slug>    optional, other store data. Field slugs can match base or extended data fields.
+		 * @params  int     id          required , field id.
+		 * @params  string  label       required, field label.
+		 * @params  boolean mandatory   required, specify if field is mandatory.
+		 * @params  string  name        required, field name.
+		 * @params  string  type        required, specify field's type.
 		 *
-		 * @returns WP_Error | WP_REST_Reponse
+		 * @returns \WP_Error | \WP_REST_Reponse
 		 */
 		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', [
 			'methods'             => \WP_REST_Server::EDITABLE,
@@ -134,9 +137,9 @@ class REST_Handler {
 		 * Requires authentication.
 		 *
 		 * @route   wp-json/planet4-engaging-networks/v1/fields/<id>
-		 * @method  WP_REST_Server::DELETABLE ( DELETE )
+		 * @method  \WP_REST_Server::DELETABLE ( DELETE )
 		 *
-		 * @returns WP_Error | WP_REST_Reponse
+		 * @returns \WP_Error | \WP_REST_Reponse
 		 */
 		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', [
 			'methods'             => \WP_REST_Server::DELETABLE,

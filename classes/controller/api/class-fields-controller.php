@@ -1,6 +1,6 @@
 <?php
 
-namespace P4EN\Api;
+namespace P4EN\Controllers\Api;
 
 use P4EN\Models\Fields_Model;
 
@@ -34,7 +34,7 @@ class Fields_Controller {
 		$messages = [];
 		if ( ! isset( $field['name'] ) ) {
 			$messages[] = 'Name is not set';
-		} elseif ( preg_match( '/[A-Za-z0-9_\-\.]+$/', $field['name'] ) != 1 ) {
+		} elseif ( 1 !== preg_match( '/[A-Za-z0-9_\-\.]+$/', $field['name'] ) ) {
 			$messages[] = 'Name should contain alphanumeric characters';
 		}
 
@@ -46,7 +46,7 @@ class Fields_Controller {
 
 		if ( ! isset( $field['type'] ) ) {
 			$messages[] = 'Type is not set';
-		} elseif ( ! in_array( $field['type'], [ 'text', 'country', 'question', 'number' ] ) ) {
+		} elseif ( ! in_array( $field['type'], [ 'text', 'country', 'question', 'number' ], true ) ) {
 			$messages[] = 'Type should be one of these values: text, country, question';
 		}
 
@@ -60,18 +60,18 @@ class Fields_Controller {
 	/**
 	 * Callback for add field api route.
 	 *
-	 * @param \WP_REST_Request $request
+	 * @param \WP_REST_Request $request Rest request object.
 	 *
 	 * @return \WP_REST_Response
 	 */
 	public function add_field( \WP_REST_Request $request ) {
 
 		// Get field data.
-		$field_data = $request->get_params();
+		$field_data = $request->get_json_params();
 
 		// Validate field data.
 		$validation = $this->validate_field( $field_data );
-		if ( $validation !== true ) {
+		if ( true !== $validation ) {
 			$response_data = [
 				'messages' => $validation,
 			];
@@ -81,7 +81,7 @@ class Fields_Controller {
 			return $response;
 		}
 
-		// Add field to en wordpress option.
+		// Add field to en WordPress option.
 		$updated = $this->model->add_field( $field_data );
 		if ( ! $updated ) {
 			$response_data = [
@@ -110,7 +110,7 @@ class Fields_Controller {
 	/**
 	 * Callback for get field api route.
 	 *
-	 * @param \WP_REST_Request $request
+	 * @param \WP_REST_Request $request Rest request object.
 	 *
 	 * @return \WP_Error| \WP_REST_Response
 	 */
@@ -129,7 +129,7 @@ class Fields_Controller {
 	/**
 	 * Callback for get fields api route.
 	 *
-	 * @param \WP_REST_Request $request
+	 * @param \WP_REST_Request $request Rest request object.
 	 *
 	 * @return \WP_Error| \WP_REST_Response
 	 */
@@ -146,7 +146,7 @@ class Fields_Controller {
 	/**
 	 * Callback for delete field api route.
 	 *
-	 * @param \WP_REST_Request $request
+	 * @param \WP_REST_Request $request Rest request object.
 	 *
 	 * @return \WP_REST_Response
 	 */
@@ -155,7 +155,7 @@ class Fields_Controller {
 		// Get field id.
 		$id = $request['id'];
 
-		// Add field to en wordpress option.
+		// Add field to en WordPress option.
 		$updated = $this->model->delete_field( $id );
 		if ( ! $updated ) {
 			$response_data = [
@@ -180,7 +180,7 @@ class Fields_Controller {
 	/**
 	 * Callback for update field api route.
 	 *
-	 * @param \WP_REST_Request $request
+	 * @param \WP_REST_Request $request Rest request object.
 	 *
 	 * @return \WP_REST_Response
 	 */
@@ -190,11 +190,11 @@ class Fields_Controller {
 		$id = $request['id'];
 
 		// Get field data.
-		$field_data = $request->get_params();
+		$field_data = $request->get_json_params();
 
 		// Validate field data.
 		$validation = $this->validate_field( $field_data );
-		if ( $validation !== true ) {
+		if ( true !== $validation ) {
 			$response_data = [
 				'messages' => $validation,
 			];
@@ -204,7 +204,7 @@ class Fields_Controller {
 			return $response;
 		}
 
-		// Add field to en wordpress option.
+		// Add field to en WordPress option.
 		$updated = $this->model->update_field( $field_data );
 		if ( ! $updated ) {
 			$response_data = [

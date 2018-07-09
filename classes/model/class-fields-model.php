@@ -9,10 +9,15 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 	 */
 	class Fields_Model {
 
+		/**
+		 * @var string
+		 */
 		private $fields_option = 'planet4-en-fields';
 
 		/**
-		 * @param $id
+		 * Retrieve a field by id.
+		 *
+		 * @param mixed $id Field id.
 		 *
 		 * @return array
 		 */
@@ -22,7 +27,7 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 			if ( isset( $options['fields'] ) && ! empty( $options['fields'] ) ) {
 				$fields = $options['fields'];
 				foreach ( $fields as $field ) {
-					if ( $field['id'] == $id ) {
+					if ( (int) $field['id'] === (int) $id ) {
 						return $field;
 					}
 				}
@@ -32,14 +37,16 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 		}
 
 		/**
-		 * @param $field
+		 * Add field.
+		 *
+		 * @param array $field Field attributes.
 		 *
 		 * @return bool
 		 */
 		public function add_field( $field ) {
 
 			$options = get_option( $this->fields_option );
-			if ( isset( $options ) ) {
+			if ( is_array( $options ) ) {
 				$fields   = array_values( $options );
 				$fields[] = $field;
 				$updated  = update_option( $this->fields_option, $fields );
@@ -51,18 +58,21 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 		}
 
 		/**
-		 * @param $field
+		 * Update field.
+		 *
+		 * @param array $field Field attributes.
 		 *
 		 * @return bool
 		 */
 		public function update_field( $field ) {
 			$options = get_option( $this->fields_option );
 
-			if ( isset( $options ) ) {
-				$fields = array_values( $options );
-				$index  = false;
-				for ( $i = 0; $i < count( $fields ); $i ++ ) {
-					if ( $fields[ $i ]['id'] == $field['id'] ) {
+			if ( is_array( $options ) ) {
+				$fields        = array_values( $options );
+				$index         = false;
+				$fields_length = count( $fields );
+				for ( $i = 0; $i < $fields_length; $i ++ ) {
+					if ( (int) $fields[ $i ]['id'] === (int) $field['id'] ) {
 						$index = $i;
 						break;
 					}
@@ -79,17 +89,19 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 		}
 
 		/**
-		 * @param $id
+		 * Delete field.
+		 *
+		 * @param mixed $id Field id.
 		 *
 		 * @return bool
 		 */
 		public function delete_field( $id ) {
 			$options = get_option( $this->fields_option );
-			if ( isset( $options ) ) {
+			if ( is_array( $options ) ) {
 				$fields  = $options;
 				$fields  =
 					array_filter( $fields, function ( $e ) use ( $id ) {
-						return $e['id'] != $id;
+						return (int) $e['id'] !== (int) $id;
 					} );
 				$updated = update_option( $this->fields_option, $fields );
 

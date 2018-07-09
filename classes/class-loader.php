@@ -2,6 +2,8 @@
 
 namespace P4EN;
 
+use P4EN\Controllers\Api\REST_Handler;
+
 if ( ! class_exists( 'Loader' ) ) {
 
 	/**
@@ -55,7 +57,7 @@ if ( ! class_exists( 'Loader' ) ) {
 			}
 			$this->check_requirements();
 			add_action( 'admin_init', [ $this, 'init' ] );
-			$this->rest_handler = new Api\REST_Handler();
+			$this->rest_handler = new REST_Handler();
 			$this->rest_handler->initialize();
 		}
 
