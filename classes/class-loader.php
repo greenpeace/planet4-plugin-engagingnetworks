@@ -2,6 +2,8 @@
 
 namespace P4EN;
 
+use P4BKS\Loader as Block_Loader;
+
 if ( ! class_exists( 'Loader' ) ) {
 
 	/**
@@ -57,13 +59,34 @@ if ( ! class_exists( 'Loader' ) ) {
 		}
 
 		/**
+		 * Register our setting to WP.
+		 */
+		public function init() {
+			add_option( 'planet4-en-fields', [] );
+		}
+
+		/**
 		 * Hooks the plugin.
 		 */
 		private function hook_plugin() {
-			add_action( 'admin_menu', array( $this, 'load_i18n' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets' ) );
+			add_action( 'admin_init', [ $this, 'init' ] );
+			add_action( 'admin_menu', [ $this, 'load_i18n' ] );
+			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
+			add_filter( 'p4bks_pre_load_services', array( $this, 'edit_services' ), 10, 1 );
 			// Provide hook for other plugins.
 			do_action( 'p4en_action_loaded' );
+		}
+
+		/**
+		 *
+		 *
+		 * @param array $services
+		 *
+		 * @return array
+		 */
+		public function edit_services( $services ) : array {
+			$services[] = 'P4EN\Controllers\ENForm_Controller';
+			return $services;
 		}
 
 		/**

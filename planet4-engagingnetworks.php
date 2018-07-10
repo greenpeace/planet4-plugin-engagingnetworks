@@ -49,7 +49,11 @@ if ( ! defined( 'P4EN_LANGUAGES' ) )            define( 'P4EN_LANGUAGES',       
 	'en_US' => 'English',
 	'el_GR' => 'Ελληνικά',
 ] );
+if ( ! defined( 'P4EN_ALLOWED_PAGETYPE' ) )     define( 'P4EN_ALLOWED_PAGETYPE',   [
+	'page',
+] );
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) )       define( 'WP_UNINSTALL_PLUGIN',      P4EN_PLUGIN_BASENAME );
+if ( ! defined( 'P4_REST_SLUG' ) )              define( 'P4_REST_SLUG' ,            'planet4-engaging-networks' ) ;
 
 require_once __DIR__ . '/vendor/autoload.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
@@ -58,7 +62,8 @@ require_once ABSPATH . 'wp-admin/includes/plugin.php';
       L O A D  P L U G I N
    ========================== */
 P4EN\Loader::get_instance( [
-	//'P4EN\Controllers\Menu\Pages_Standard_Controller',
 	'P4EN\Controllers\Menu\Pages_Datatable_Controller',
 	'P4EN\Controllers\Menu\Settings_Controller',
+	'P4EN\Controllers\Menu\Fields_Settings_Controller',
+	'P4EN\Controllers\Api\Rest_Controller',
 ], 'P4EN\Views\View' );

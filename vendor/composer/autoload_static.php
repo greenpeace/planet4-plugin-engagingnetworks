@@ -41,14 +41,19 @@ class ComposerStaticInitb2e1c8770a978ddf4754fab5da8acc5e
     );
 
     public static $classMap = array (
+        'P4EN\\Controllers\\Api\\Fields_Controller' => __DIR__ . '/../..' . '/classes/controller/api/class-fields-controller.php',
+        'P4EN\\Controllers\\Api\\Rest_Controller' => __DIR__ . '/../..' . '/classes/controller/api/class-rest-controller.php',
+        'P4EN\\Controllers\\ENForm_Controller' => __DIR__ . '/../..' . '/classes/controller/class-enform-controller.php',
         'P4EN\\Controllers\\Ensapi_Controller' => __DIR__ . '/../..' . '/classes/controller/class-ensapi-controller.php',
         'P4EN\\Controllers\\Menu\\Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-controller.php',
+        'P4EN\\Controllers\\Menu\\Fields_Settings_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-fields-settings-controller.php',
         'P4EN\\Controllers\\Menu\\Pages_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-pages-controller.php',
         'P4EN\\Controllers\\Menu\\Pages_Datatable_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-pages-datatable-controller.php',
         'P4EN\\Controllers\\Menu\\Pages_Standard_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-pages-standard-controller.php',
         'P4EN\\Controllers\\Menu\\Settings_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-settings-controller.php',
         'P4EN\\Controllers\\Uninstall_Controller' => __DIR__ . '/../..' . '/classes/controller/class-uninstall-controller.php',
         'P4EN\\Loader' => __DIR__ . '/../..' . '/classes/class-loader.php',
+        'P4EN\\Models\\Fields_Model' => __DIR__ . '/../..' . '/classes/model/class-fields-model.php',
         'P4EN\\Models\\Model' => __DIR__ . '/../..' . '/classes/model/class-model.php',
         'P4EN\\Views\\View' => __DIR__ . '/../..' . '/classes/view/class-view.php',
     );
