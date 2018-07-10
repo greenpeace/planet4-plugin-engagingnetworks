@@ -26,7 +26,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			// Define the Shortcode UI arguments.
 			$shortcode_ui_args = [
-				'label'         => __( 'EN Form', 'planet4-blocks-backend' ),
+				'label'         => __( 'Engaging Networks Form', 'planet4-blocks-backend' ),
 				'listItemImage' => '<img src="' . esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enform.png' ) . '" />',
 				'attrs'         => $fields,
 				'post_type'     => P4EN_ALLOWED_PAGETYPE,
@@ -55,7 +55,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			// Shortcode callbacks must return content, hence, output buffering	here.
 			ob_start();
-			$this->view->block( self::BLOCK_NAME, $data );
+			$this->view->block( self::BLOCK_NAME, $data, 'twig', P4EN_INCLUDES_DIR );
 
 			return ob_get_clean();
 		}
