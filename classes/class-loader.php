@@ -57,12 +57,20 @@ if ( ! class_exists( 'Loader' ) ) {
 		}
 
 		/**
+		 * Register our setting to WP.
+		 */
+		public function init() {
+			add_option( 'planet4-en-fields', [] );
+		}
+
+		/**
 		 * Hooks the plugin.
 		 */
 		private function hook_plugin() {
-			add_action( 'admin_menu', array( $this, 'load_i18n' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets' ) );
-			add_filter( 'p4bks_add_external_services', array( $this, 'add_external_services' ) );
+			add_action( 'admin_init', [ $this, 'init' ] );
+			add_action( 'admin_menu', [ $this, 'load_i18n' ] );
+			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
+      add_filter( 'p4bks_add_external_services', [ $this, 'add_external_services' ] );
 			// Provide hook for other plugins.
 			do_action( 'p4en_action_loaded' );
 		}
