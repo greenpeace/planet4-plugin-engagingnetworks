@@ -49,6 +49,9 @@ if ( ! defined( 'P4EN_LANGUAGES' ) )            define( 'P4EN_LANGUAGES',       
 	'en_US' => 'English',
 	'el_GR' => 'Ελληνικά',
 ] );
+if ( ! defined( 'P4EN_ALLOWED_PAGETYPE' ) )     define( 'P4EN_ALLOWED_PAGETYPE',   [
+	'page',
+] );
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) )       define( 'WP_UNINSTALL_PLUGIN',      P4EN_PLUGIN_BASENAME );
 
 require_once __DIR__ . '/vendor/autoload.php';

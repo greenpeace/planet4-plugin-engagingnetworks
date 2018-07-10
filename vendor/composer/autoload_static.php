@@ -41,6 +41,7 @@ class ComposerStaticInitb2e1c8770a978ddf4754fab5da8acc5e
     );
 
     public static $classMap = array (
+        'P4EN\\Controllers\\ENForm_Controller' => __DIR__ . '/../..' . '/classes/controller/class-enform-controller.php',
         'P4EN\\Controllers\\Ensapi_Controller' => __DIR__ . '/../..' . '/classes/controller/class-ensapi-controller.php',
         'P4EN\\Controllers\\Menu\\Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-controller.php',
         'P4EN\\Controllers\\Menu\\Pages_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-pages-controller.php',
