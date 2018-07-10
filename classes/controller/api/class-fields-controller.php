@@ -9,7 +9,20 @@ use P4EN\Models\Fields_Model;
  */
 class Fields_Controller {
 
+	/**
+	 * WordPress option name for storing fields.
+	 *
+	 * @access private
+	 * @var string
+	 */
 	private $fields_option = 'planet4-en-fields';
+
+	/**
+	 * Fields model for storing/retrieving fields from db.
+	 *
+	 * @access private
+	 * @var Fields_Model
+	 */
 	private $model;
 
 	/**
@@ -93,13 +106,11 @@ class Fields_Controller {
 			return $response;
 		}
 
-		$options = get_option( $this->fields_option );
 		$field   = $this->model->get_field( $field_data['id'] );
 
 		$response_data = [
-			'message' => '',
-			'field'   => $field,
-			'o'       => $options,
+			'messages' => [ 'Field created successfully' ],
+			'field'    => $field,
 		];
 		$response      = new \WP_REST_Response( $response_data );
 		$response->set_status( 201 );
@@ -185,9 +196,6 @@ class Fields_Controller {
 	 * @return \WP_REST_Response
 	 */
 	public function update_field( \WP_REST_Request $request ) {
-
-		// Get field data.
-		$id = $request['id'];
 
 		// Get field data.
 		$field_data = $request->get_json_params();

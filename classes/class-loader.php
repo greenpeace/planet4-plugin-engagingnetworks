@@ -2,8 +2,6 @@
 
 namespace P4EN;
 
-use P4EN\Controllers\Api\REST_Handler;
-
 if ( ! class_exists( 'Loader' ) ) {
 
 	/**
@@ -56,9 +54,6 @@ if ( ! class_exists( 'Loader' ) ) {
 				}
 			}
 			$this->check_requirements();
-			add_action( 'admin_init', [ $this, 'init' ] );
-			$this->rest_handler = new REST_Handler();
-			$this->rest_handler->initialize();
 		}
 
 		/**
@@ -72,8 +67,9 @@ if ( ! class_exists( 'Loader' ) ) {
 		 * Hooks the plugin.
 		 */
 		private function hook_plugin() {
-			add_action( 'admin_menu', array( $this, 'load_i18n' ) );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets' ) );
+			add_action( 'admin_init', [ $this, 'init' ] );
+			add_action( 'admin_menu', [ $this, 'load_i18n' ] );
+			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
 			// Provide hook for other plugins.
 			do_action( 'p4en_action_loaded' );
 		}

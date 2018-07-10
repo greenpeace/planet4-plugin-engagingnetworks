@@ -7,7 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'P4EN\\Controllers\\Api\\Fields_Controller' => $baseDir . '/classes/controller/api/class-fields-controller.php',
-    'P4EN\\Controllers\\Api\\REST_Handler' => $baseDir . '/classes/controller/api/class-rest-handler.php',
+    'P4EN\\Controllers\\Api\\Rest_Controller' => $baseDir . '/classes/controller/api/class-rest-controller.php',
     'P4EN\\Controllers\\Ensapi_Controller' => $baseDir . '/classes/controller/class-ensapi-controller.php',
     'P4EN\\Controllers\\Menu\\Controller' => $baseDir . '/classes/controller/menu/class-controller.php',
     'P4EN\\Controllers\\Menu\\Fields_Settings_Controller' => $baseDir . '/classes/controller/menu/class-fields-settings-controller.php',

@@ -6,17 +6,12 @@ namespace P4EN\Controllers\Api;
 /**
  * WP REST API interface.
  */
-class REST_Handler {
-
-	/**
-	 * @var string
-	 */
-	private $fields_option = 'planet4-en-fields';
+class Rest_Controller {
 
 	/**
 	 * Initialize class if all checks are ok.
 	 */
-	public function initialize() {
+	public function load() {
 		// If WP REST API is not enabled, exit.
 		if ( ! defined( 'REST_API_VERSION' ) ) {
 			return;
@@ -62,7 +57,7 @@ class REST_Handler {
 		 * @route   wp-json/planet4-engaging-networks/v1/fields
 		 * @method  \WP_REST_Server::READABLE ( GET )
 		 *
-		 * @returns \WP_Error | \WP_REST_Reponse
+		 * @returns \WP_REST_Response
 		 */
 		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields', [
 			'methods'  => \WP_REST_Server::READABLE,
@@ -84,7 +79,7 @@ class REST_Handler {
 		 * @params  string  name        required, field name.
 		 * @params  string  type        required, specify field's type.
 		 *
-		 * @returns \WP_Error | \WP_REST_Reponse
+		 * @returns \WP_REST_Response
 		 */
 		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields', [
 			'methods'             => \WP_REST_Server::EDITABLE,
@@ -100,7 +95,7 @@ class REST_Handler {
 		 * @route   wp-json/planet4-engaging-networks/<v1+>/form/get_fields
 		 * @method  \WP_REST_Server::READABLE ( GET )
 		 *
-		 * @returns \WP_Error | \WP_REST_Reponse
+		 * @returns \WP_REST_Response
 		 */
 		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', [
 			'methods'             => \WP_REST_Server::READABLE,
@@ -123,7 +118,7 @@ class REST_Handler {
 		 * @params  string  name        required, field name.
 		 * @params  string  type        required, specify field's type.
 		 *
-		 * @returns \WP_Error | \WP_REST_Reponse
+		 * @returns \WP_REST_Response
 		 */
 		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', [
 			'methods'             => \WP_REST_Server::EDITABLE,
@@ -139,7 +134,7 @@ class REST_Handler {
 		 * @route   wp-json/planet4-engaging-networks/v1/fields/<id>
 		 * @method  \WP_REST_Server::DELETABLE ( DELETE )
 		 *
-		 * @returns \WP_Error | \WP_REST_Reponse
+		 * @returns \WP_REST_Response
 		 */
 		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', [
 			'methods'             => \WP_REST_Server::DELETABLE,
