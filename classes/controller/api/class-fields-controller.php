@@ -145,8 +145,7 @@ class Fields_Controller {
 	 * @return \WP_Error| \WP_REST_Response
 	 */
 	public function get_fields( \WP_REST_Request $request ) {
-		$options       = get_option( $this->fields_option );
-		$fields        = $options ? array_values( $options ) : [];
+		$fields        = $this->model->get_fields();
 		$response_data = $fields;
 		$response      = new \WP_REST_Response( $response_data );
 		$response->set_status( 200 );

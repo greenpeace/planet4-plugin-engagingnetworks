@@ -7,7 +7,7 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 	/**
 	 * Class Fields_Model
 	 */
-	class Fields_Model {
+	class Fields_Model extends Model {
 
 		/**
 		 * @var string
@@ -34,6 +34,17 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 			}
 
 			return [];
+		}
+
+		/**
+		 * Retrieve all the fields.
+		 *
+		 * @return array
+		 */
+		public function get_fields() : array {
+			$options = get_option( $this->fields_option );
+			$fields  = $options ? array_values( $options ) : [];
+			return $fields;
 		}
 
 		/**
