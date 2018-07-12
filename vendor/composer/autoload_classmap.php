@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'P4EN\\Controllers\\ENForm_Controller' => $baseDir . '/classes/controller/class-enform-controller.php',
     'P4EN\\Controllers\\Api\\Fields_Controller' => $baseDir . '/classes/controller/api/class-fields-controller.php',
     'P4EN\\Controllers\\Api\\Rest_Controller' => $baseDir . '/classes/controller/api/class-rest-controller.php',
     'P4EN\\Controllers\\Ensapi_Controller' => $baseDir . '/classes/controller/class-ensapi-controller.php',
