@@ -87,11 +87,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		}
 
 		/**
+		 * Retrieves all EN pages whose type is included in the $types array.
 		 *
+		 * @param array $types Array with the types of the EN pages to be retrieved.
 		 *
-		 * @param array $types
-		 *
-		 * @return array
+		 * @return array Array with data of the retrieved EN pages.
 		 */
 		public function get_pages( $types ) : array {
 			if ( $types ) {
@@ -99,19 +99,9 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				$ens_api       = new Ensapi_Controller();
 				$main_settings = get_option( 'p4en_main_settings' );
 
-				// Retrieve all pages whose type is included in the $types array.
-				// Check if the authentication API call is cached.
 				$ens_auth_token = get_transient( 'ens_auth_token' );
-
-				if ( false !== $ens_auth_token ) {
-					foreach ( $types as $type ) {
-						$params['type'] = $type;
-						$response       = $ens_api->get_pages( $ens_auth_token, $params );
-						if ( is_array( $response ) && $response['body'] ) {
-							$pages[ $params['type'] ] = json_decode( $response['body'], true );
-						}
-					}
-				} else {
+				// If authentication token is not cached then authenticate again and cache the token.
+				if ( false === $ens_auth_token ) {
 					$ens_private_token = $main_settings['p4en_private_api'];
 					$response          = $ens_api->authenticate( $ens_private_token );
 
@@ -119,18 +109,15 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 						// Communication with ENS API is authenticated.
 						$body           = json_decode( $response['body'], true );
 						$ens_auth_token = $body['ens-auth-token'];
-						// Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
-						$expiration = (int) ( $body['expires'] / 1000 ) - time();
-
+						$expiration     = (int) ( $body['expires'] / 1000 ) - time();       // Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
 						set_transient( 'ens_auth_token', $ens_auth_token, $expiration - time() );
-
-						foreach ( $types as $type ) {
-							$params['type'] = $type;
-							$response       = $ens_api->get_pages( $ens_auth_token, $params );
-							if ( is_array( $response ) && $response['body'] ) {
-								$pages[ $params['type'] ] = json_decode( $response['body'], true );
-							}
-						}
+					}
+				}
+				foreach ( $types as $type ) {
+					$params['type'] = $type;
+					$response       = $ens_api->get_pages( $ens_auth_token, $params );
+					if ( is_array( $response ) && $response['body'] ) {
+						$pages[ $params['type'] ] = json_decode( $response['body'], true );
 					}
 				}
 			}
