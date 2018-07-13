@@ -17,6 +17,8 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 		/** @const string BLOCK_NAME */
 		const BLOCK_NAME = 'enform';
+		/** @const array ENFORM_PAGE_TYPES */
+		const ENFORM_PAGE_TYPES = [ 'PET', 'ND' ];
 
 		/**
 		 * Shortcode UI setup for the ENForm shortcode.
@@ -24,7 +26,8 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * It is called when the Shortcake action hook `register_shortcode_ui` is called.
 		 */
 		public function prepare_fields() {
-			$pages = $this->get_pages( [ 'PET', 'ND' ] );
+			$ens_api = new Ensapi_Controller();
+			$pages = $ens_api->get_pages_by_types( self::ENFORM_PAGE_TYPES );
 			uasort( $pages, function ( $a, $b ) {
 				return ($a['name'] ?? '') <=> ($b['name'] ?? '');
 			} );
@@ -61,8 +64,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				],
 			];
 
-			$model = new Fields_Model();
-			$available_fields = $model->get_fields();
+			$available_fields = ( new Fields_Model() )->get_fields();
 
 			if ( $available_fields ) {
 				foreach ( $available_fields as $available_field ) {
@@ -84,43 +86,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 			];
 
 			shortcode_ui_register_for_shortcode( 'shortcake_' . self::BLOCK_NAME, $shortcode_ui_args );
-		}
-
-		/**
-		 * Retrieves all EN pages whose type is included in the $types array.
-		 *
-		 * @param array $types Array with the types of the EN pages to be retrieved.
-		 *
-		 * @return array Array with data of the retrieved EN pages.
-		 */
-		public function get_pages( $types ) : array {
-			$pages = [];
-			if ( $types ) {
-				$ens_api        = new Ensapi_Controller();
-				$main_settings  = get_option( 'p4en_main_settings' );
-				$ens_auth_token = get_transient( 'ens_auth_token' );
-
-				// If authentication token is not cached then authenticate again and cache the token.
-				if ( false === $ens_auth_token ) {
-					$ens_private_token = $main_settings['p4en_private_api'];
-					$response          = $ens_api->authenticate( $ens_private_token );
-
-					if ( is_array( $response ) && $response['body'] ) {                     // Communication with ENS API is authenticated.
-						$body           = json_decode( $response['body'], true );
-						$ens_auth_token = $body['ens-auth-token'];
-						$expiration     = (int) ( $body['expires'] / 1000 ) - time();       // Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
-						set_transient( 'ens_auth_token', $ens_auth_token, $expiration - time() );
-					}
-				}
-				foreach ( $types as $type ) {
-					$params['type'] = $type;
-					$response       = $ens_api->get_pages( $ens_auth_token, $params );
-					if ( is_array( $response ) && $response['body'] ) {
-						$pages[ $params['type'] ] = json_decode( $response['body'], true );
-					}
-				}
-			}
-			return $pages;
 		}
 
 		/**
