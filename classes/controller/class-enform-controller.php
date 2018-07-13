@@ -94,19 +94,18 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array Array with data of the retrieved EN pages.
 		 */
 		public function get_pages( $types ) : array {
+			$pages = [];
 			if ( $types ) {
-				$pages         = [];
-				$ens_api       = new Ensapi_Controller();
-				$main_settings = get_option( 'p4en_main_settings' );
-
+				$ens_api        = new Ensapi_Controller();
+				$main_settings  = get_option( 'p4en_main_settings' );
 				$ens_auth_token = get_transient( 'ens_auth_token' );
+
 				// If authentication token is not cached then authenticate again and cache the token.
 				if ( false === $ens_auth_token ) {
 					$ens_private_token = $main_settings['p4en_private_api'];
 					$response          = $ens_api->authenticate( $ens_private_token );
 
-					if ( is_array( $response ) && $response['body'] ) {
-						// Communication with ENS API is authenticated.
+					if ( is_array( $response ) && $response['body'] ) {                     // Communication with ENS API is authenticated.
 						$body           = json_decode( $response['body'], true );
 						$ens_auth_token = $body['ens-auth-token'];
 						$expiration     = (int) ( $body['expires'] / 1000 ) - time();       // Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
@@ -121,7 +120,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					}
 				}
 			}
-
 			return $pages;
 		}
 
