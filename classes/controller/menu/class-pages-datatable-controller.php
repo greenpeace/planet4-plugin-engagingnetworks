@@ -75,9 +75,9 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 								$body           = json_decode( $response['body'], true );
 								$ens_auth_token = $body['ens-auth-token'];
 								// Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
-								$expiration     = (int)($body['expires'] / 1000) - time();
+								$expiration     = time() + (int) ($body['expires']);
 
-								set_transient( 'ens_auth_token', $ens_auth_token, $expiration - time() );
+								set_transient( 'ens_auth_token', $ens_auth_token, $expiration );
 
 								$response = $ens_api->get_pages( $ens_auth_token, $params );
 

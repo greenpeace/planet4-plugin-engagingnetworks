@@ -15,7 +15,6 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		const ENS_PAGES_DEFAULT = 'PET';        // Retrieve all petitions by default.
 		const ENS_CALL_TIMEOUT  = 10;            // Seconds after which the api call will timeout if not responded.
 
-
 		/**
 		 * Authenticates usage of ENS API calls.
 		 *
@@ -45,6 +44,42 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 
 			}
 			return $response;
+		}
+
+		/**
+		 * Retrieves all EN pages whose type is included in the $types array.
+		 *
+		 * @param array $types Array with the types of the EN pages to be retrieved.
+		 *
+		 * @return array Array with data of the retrieved EN pages.
+		 */
+		public function get_pages_by_types( $types ) : array {
+			$pages = [];
+			if ( $types ) {
+				$main_settings  = get_option( 'p4en_main_settings' );
+				$ens_auth_token = get_transient( 'ens_auth_token' );
+
+				// If authentication token is not cached then authenticate again and cache the token.
+				if ( false === $ens_auth_token ) {
+					$ens_private_token = $main_settings['p4en_private_api'];
+					$response          = $this->authenticate( $ens_private_token );
+
+					if ( is_array( $response ) && $response['body'] ) {                     // Communication with ENS API is authenticated.
+						$body           = json_decode( $response['body'], true );
+						$ens_auth_token = $body['ens-auth-token'];
+						$expiration     = time() + (int) ($body['expires']);       // Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
+						set_transient( 'ens_auth_token', $ens_auth_token, $expiration - time() );
+					}
+				}
+				foreach ( $types as $type ) {
+					$params['type'] = $type;
+					$response       = $this->get_pages( $ens_auth_token, $params );
+					if ( is_array( $response ) && $response['body'] ) {
+						$pages[ $params['type'] ] = json_decode( $response['body'], true );
+					}
+				}
+			}
+			return $pages;
 		}
 
 		/**
