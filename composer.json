@@ -2,7 +2,7 @@
   "name": "greenpeace/planet4-plugin-engagingnetworks",
   "description": "This repository contains the wordpress plugin that connects Planet 4 with the Engaging Networks platform.",
   "type": "wordpress-plugin",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "license": "GPL-3.0+",
   "authors": [
     {
@@ -16,7 +16,12 @@
     "dealerdirect/phpcodesniffer-composer-installer": "^0.4.0",
     "frenck/php-compatibility": "^7.1"
   },
-  "require": {},
+  "scripts": {
+    "bootstrap_testing_environment": [
+      "composer install",
+      "cp -Ru wp-content/plugins/* ${WP_CORE_DIR}/wp-content/plugins/"
+    ]
+  },
   "autoload": {
     "psr-4": {
       "P4EN\\": "classes/",
