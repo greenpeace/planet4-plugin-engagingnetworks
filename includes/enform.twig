@@ -1,3 +1,31 @@
 {% block enform %}
-
+	<form id="p4en_form" name="p4en_form" method="post">
+		<table id="enform_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+		{% for name,value in fields %}
+			{% if 'en_page_id' != name %}
+				<tr>
+					<td>
+						<label for="{{ name }}">{{ value.label }}</label>
+					</td>
+					<td>
+					{% if 'text' == value.type %}
+						<input id="{{ name }}" type="text" name="{{ name }}" value="" />
+					{% elseif 'country' == value.type %}
+						<select id="{{ name }}" name="{{ name }}">
+							<option selected disabled>- {{ __( 'Select Country', domain ) }} -</option>
+							{% for key, country in countries %}
+								<option value="{{ key }}">{{ country }}</option>
+							{% endfor %}
+						</select>
+					{% elseif 'question' == value.type %}
+						<input id="{{ name }}" type="text" name="{{ name }}" value="" />
+					{% endif %}
+					</td>
+				</tr>
+			{% endif %}
+		{% endfor %}
+		</table>
+		{{ fn( 'submit_button', __( 'Save', domain ), 'primary', 'p4en_form_save_button' ) }}
+	</form>
+	<div class="clear"></div>
 {% endblock %}

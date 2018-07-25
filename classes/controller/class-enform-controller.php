@@ -27,7 +27,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		public function prepare_fields() {
 			$ens_api = new Ensapi_Controller();
-			$pages = $ens_api->get_pages_by_types( self::ENFORM_PAGE_TYPES );
+			$pages   = $ens_api->get_pages_by_types( self::ENFORM_PAGE_TYPES );
 			uasort( $pages, function ( $a, $b ) {
 				return ($a['name'] ?? '') <=> ($b['name'] ?? '');
 			} );
@@ -68,12 +68,17 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			if ( $available_fields ) {
 				foreach ( $available_fields as $available_field ) {
-					$fields[] = [
+					$args = [
 						'label'       => $available_field['name'],
 						'description' => $available_field['label'],
-						'attr'        => $available_field['name'] . '_' . $available_field['id'],
+						'attr'        => $available_field['id'] . '_' . $available_field['name'] . '_' . $available_field['type'] . '_' . $available_field['label'],
 						'type'        => 'checkbox',
 					];
+					if ( $available_field['mandatory'] ) {
+						$args['disabled'] = 'true';
+						$args['value']    = 'true';
+					}
+					$fields[] = $args;
 				}
 			}
 
@@ -102,8 +107,22 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		public function prepare_template( $fields, $content, $shortcode_tag ) : string {
 
+			foreach ( $fields as $name => $value ) {
+				if ( 'en_page_id' !== $name ) {
+					$attr_parts      = explode( '_', $name );
+					$fields[ $name ] = [
+						'id'    => $attr_parts[0],
+						'type'  => $attr_parts[2],
+						'label' => $attr_parts[3],
+					];
+				}
+			}
 			$data = [
-				'fields' => $fields,
+				'fields'    => $fields,
+				'countries' => [
+					'Greece',
+				],
+				'domain'    => 'planet4-engagingnetworks',
 			];
 
 			// Shortcode callbacks must return content, hence, output buffering	here.
