@@ -25,7 +25,9 @@
 			{% endif %}
 		{% endfor %}
 		</table>
-		{{ fn( 'submit_button', __( 'Save', domain ), 'primary', 'p4en_form_save_button' ) }}
+		<p class="submit">
+			<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="button button-primary" value="{{ __( 'Save', domain ) }}">
+		</p>
 	</form>
 	<div class="clear"></div>
 {% endblock %}

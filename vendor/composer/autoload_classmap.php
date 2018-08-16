@@ -6,9 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'P4EN\\Controllers\\ENForm_Controller' => $baseDir . '/classes/controller/class-enform-controller.php',
     'P4EN\\Controllers\\Api\\Fields_Controller' => $baseDir . '/classes/controller/api/class-fields-controller.php',
     'P4EN\\Controllers\\Api\\Rest_Controller' => $baseDir . '/classes/controller/api/class-rest-controller.php',
+    'P4EN\\Controllers\\Blocks\\Controller' => $baseDir . '/classes/controller/blocks/class-controller.php',
+    'P4EN\\Controllers\\Blocks\\ENForm_Controller' => $baseDir . '/classes/controller/blocks/class-enform-controller.php',
     'P4EN\\Controllers\\Ensapi_Controller' => $baseDir . '/classes/controller/class-ensapi-controller.php',
     'P4EN\\Controllers\\Menu\\Controller' => $baseDir . '/classes/controller/menu/class-controller.php',
     'P4EN\\Controllers\\Menu\\Fields_Settings_Controller' => $baseDir . '/classes/controller/menu/class-fields-settings-controller.php',
@@ -20,5 +21,6 @@ return array(
     'P4EN\\Loader' => $baseDir . '/classes/class-loader.php',
     'P4EN\\Models\\Fields_Model' => $baseDir . '/classes/model/class-fields-model.php',
     'P4EN\\Models\\Model' => $baseDir . '/classes/model/class-model.php',
+    'P4EN\\Views\\ENForm_View' => $baseDir . '/classes/view/class-enform-view.php',
     'P4EN\\Views\\View' => $baseDir . '/classes/view/class-view.php',
 );
