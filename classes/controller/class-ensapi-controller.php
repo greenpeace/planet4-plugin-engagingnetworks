@@ -9,11 +9,12 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 	 */
 	class Ensapi_Controller {
 
-		const ENS_BASE_URL      = 'https://www.e-activist.com/ens/service';
-		const ENS_AUTH_URL      = self::ENS_BASE_URL . '/authenticate';
-		const ENS_PAGES_URL     = self::ENS_BASE_URL . '/page';
-		const ENS_PAGES_DEFAULT = 'PET';        // Retrieve all petitions by default.
-		const ENS_CALL_TIMEOUT  = 10;            // Seconds after which the api call will timeout if not responded.
+		const ENS_BASE_URL       = 'https://www.e-activist.com/ens/service';
+		const ENS_AUTH_URL       = self::ENS_BASE_URL . '/authenticate';
+		const ENS_PAGES_URL      = self::ENS_BASE_URL . '/page';
+		const ENS_TYPES_DEFAULT  = 'PET';         // Retrieve all petitions by default.
+		const ENS_STATUS_DEFAULT = 'all';
+		const ENS_CALL_TIMEOUT   = 10;            // Seconds after which the api call will timeout if not responded.
 
 		/**
 		 * Authenticates usage of ENS API calls.
@@ -49,11 +50,12 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		/**
 		 * Retrieves all EN pages whose type is included in the $types array.
 		 *
-		 * @param array $types Array with the types of the EN pages to be retrieved.
+		 * @param array  $types Array with the types of the EN pages to be retrieved.
+		 * @param string $status The status of the EN pages to be retrieved.
 		 *
 		 * @return array Array with data of the retrieved EN pages.
 		 */
-		public function get_pages_by_types( $types ) : array {
+		public function get_pages_by_types_status( $types, $status = 'all' ) : array {
 			$pages = [];
 			if ( $types ) {
 				$main_settings  = get_option( 'p4en_main_settings' );
@@ -67,10 +69,11 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 					if ( is_array( $response ) && $response['body'] ) {                     // Communication with ENS API is authenticated.
 						$body           = json_decode( $response['body'], true );
 						$ens_auth_token = $body['ens-auth-token'];
-						$expiration     = time() + (int) ($body['expires']);       // Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
-						set_transient( 'ens_auth_token', $ens_auth_token, $expiration - time() );
+						$expiration     = (int) ($body['expires']);       // Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
+						set_transient( 'ens_auth_token', $ens_auth_token, $expiration );
 					}
 				}
+				$params['status'] = $status;
 				foreach ( $types as $type ) {
 					$params['type'] = $type;
 					$response       = $this->get_pages( $ens_auth_token, $params );
@@ -90,11 +93,12 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 *
 		 * @return array|string An associative array with the response (under key 'body') or a string with an error message in case of a failure.
 		 */
-		public function get_pages( $ens_auth_token, $params = array( 'type' => self::ENS_PAGES_DEFAULT ) ) {
+		public function get_pages( $ens_auth_token, $params = array( 'type' => self::ENS_TYPES_DEFAULT, 'status' => self::ENS_STATUS_DEFAULT ) ) {
 
-			$url = self::ENS_PAGES_URL;
-			$params['type'] = strtolower( $params['type'] );
-			$url = add_query_arg( $params, $url );
+			$url = add_query_arg( [
+				'type'   => strtolower( $params['type'] ),
+				'status' => $params['status'],
+			], self::ENS_PAGES_URL );
 
 			// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
 			$response = wp_safe_remote_get( $url, [
