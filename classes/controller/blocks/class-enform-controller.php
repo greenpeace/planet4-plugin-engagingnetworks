@@ -27,7 +27,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		public function prepare_fields() {
 			$ens_api = new Ensapi_Controller();
-			$pages   = $ens_api->get_pages_by_types( self::ENFORM_PAGE_TYPES );
+			$pages   = $ens_api->get_pages_by_types_status( self::ENFORM_PAGE_TYPES, 'live' );
 			uasort( $pages, function ( $a, $b ) {
 				return ($a['name'] ?? '') <=> ($b['name'] ?? '');
 			} );
@@ -56,8 +56,8 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			$fields = [
 				[
-					'label'       => __( 'Engaging Network Pages', 'planet4-engagingnetworks' ),
-					'description' => $pages ? __( 'Select the EN page that this form will be submitted to.', 'planet4-engagingnetworks' ) : __( 'Check your EngagingNetworks settings!', 'planet4-engagingnetworks' ),
+					'label'       => __( 'Engaging Network Live Pages', 'planet4-engagingnetworks' ),
+					'description' => $pages ? __( 'Select the Live EN page that this form will be submitted to.', 'planet4-engagingnetworks' ) : __( 'Check your EngagingNetworks settings!', 'planet4-engagingnetworks' ),
 					'attr'        => 'en_page_id',
 					'type'        => 'select',
 					'options'     => $options,
@@ -71,7 +71,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					$args = [
 						'label'       => $available_field['name'],
 						'description' => $available_field['label'],
-						'attr'        => $available_field['id'] . '_' . $available_field['name'] . '_' . $available_field['type'] . '_' . $available_field['label'],
+						'attr'        => strtolower( $available_field['name'] . '_' . $available_field['label'] . '_' . $available_field['type'] . '_' . $available_field['id'] ),
 						'type'        => 'checkbox',
 					];
 					if ( $available_field['mandatory'] ) {
@@ -107,24 +107,27 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		public function prepare_template( $fields, $content, $shortcode_tag ) : string {
 
-			$fields = $this->filter_attributes( $fields, $shortcode_tag );
-
-			foreach ( $fields as $name => $value ) {
-				if ( 'en_page_id' !== $name ) {
-					$attr_parts      = explode( '_', $name );
-					$fields[ $name ] = [
-						'id'    => $attr_parts[0],
-						'type'  => $attr_parts[2],
-						'label' => $attr_parts[3],
-					];
+			$fields = $this->ignore_unused_attributes( $fields, $shortcode_tag );
+			if ( $fields ) {
+				foreach ( $fields as $name => $value ) {
+					if ( 'en_page_id' !== $name ) {
+						$attr_parts      = explode( '_', $name );
+						$fields[ $name ] = [
+							'label' => $attr_parts[1],
+							'type'  => $attr_parts[2],
+							'id'    => $attr_parts[3],
+							'value' => $value,
+						];
+					}
 				}
 			}
 			$data = [
 				'fields'    => $fields,
 				'countries' => [
-					'Greece',
+					__( 'Greece',      'planet4-engagingnetworks' ),
+					__( 'Netherlands', 'planet4-engagingnetworks' ),
 				],
-				'domain'    => 'planet4-engagingnetworks',
+				'domain' => 'planet4-engagingnetworks',
 			];
 
 			// Shortcode callbacks must return content, hence, output buffering	here.
@@ -132,30 +135,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 			$this->view->block( self::BLOCK_NAME, $data, 'twig', P4EN_INCLUDES_DIR );
 
 			return ob_get_clean();
-		}
-
-		/**
-		 * Clear the fields from any user defined attributes that are not being used by the block.
-		 *
-		 * @param array  $fields This contains array of all data added.
-		 * @param string $shortcode_tag The shortcode block of campaign thumbnail.
-		 *
-		 * @return array The valid fields.
-		 */
-		public function filter_attributes( $fields, $shortcode_tag ) : array {
-			// Get all the attribute keys that are used by the block.
-			$shortcode_object    = \Shortcode_UI::get_instance()->get_shortcode( $shortcode_tag );
-			$shortcode_attrs     = is_array( $shortcode_object ) && is_array( $shortcode_object['attrs'] ) ? $shortcode_object['attrs'] : [];
-			$shortcode_attr_keys = wp_list_pluck( $shortcode_attrs, 'attr' );
-
-			// Filter out any attributes that are still inside the shortcode but are not being used by the block.
-			foreach ( $fields as $index => $value ) {
-				if ( ! in_array( $index, $shortcode_attr_keys, true ) ) {
-					unset( $fields[ $index ] );
-				}
-			}
-
-			return $fields;
 		}
 	}
 }

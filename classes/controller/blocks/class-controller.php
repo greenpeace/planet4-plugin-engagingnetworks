@@ -147,6 +147,32 @@ if ( ! class_exists( 'Controller' ) ) {
 		}
 
 		/**
+		 * Ignore the fields from any user defined attributes that are no longer being used by the block.
+		 *
+		 * @param array  $fields This contains array of all data added.
+		 * @param string $shortcode_tag The shortcode block of campaign thumbnail.
+		 *
+		 * @return array The valid fields.
+		 */
+		public function ignore_unused_attributes( $fields, $shortcode_tag ) : array {
+			// Get all the attribute keys that are used by the block.
+			$shortcode_object    = \Shortcode_UI::get_instance()->get_shortcode( $shortcode_tag );
+			$shortcode_attrs     = is_array( $shortcode_object ) && is_array( $shortcode_object['attrs'] ) ? $shortcode_object['attrs'] : [];
+			$shortcode_attr_keys = wp_list_pluck( $shortcode_attrs, 'attr' );
+
+			// Filter out any attributes that are still inside the shortcode but are not being used by the block.
+			if ( $fields ) {
+				foreach ( $fields as $index => $value ) {
+					if ( ! in_array( $index, $shortcode_attr_keys, true ) ) {
+						unset( $fields[ $index ] );
+					}
+				}
+			}
+
+			return $fields;
+		}
+
+		/**
 		 * Render preview markup for the shortcode when loading through an iframe.
 		 *
 		 * Takes a custom admin ajax request to render a shortcode and outputs shortcode
@@ -172,10 +198,9 @@ if ( ! class_exists( 'Controller' ) ) {
 			$shortcode_attr_keys = wp_list_pluck( $shortcode_attrs, 'attr' );
 			$fields              = [];
 
-			// Filter out any $_GET params not used by the shortcode.
-			foreach ( $shortcode_attr_keys as $attr_key ) {
-				if ( isset( $_GET[ $attr_key ] ) ) {
-					$fields[ $attr_key ] = $_GET[ $attr_key ];
+			if ( $shortcode_attr_keys ) {
+				foreach ( $shortcode_attr_keys as $attr_key ) {
+					$fields[ $attr_key ] = $_GET[ strtolower( $attr_key ) ] ?? '';
 				}
 			}
 
