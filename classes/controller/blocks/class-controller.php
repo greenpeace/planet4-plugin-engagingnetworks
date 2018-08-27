@@ -244,5 +244,37 @@ if ( ! class_exists( 'Controller' ) ) {
 		 * @return string                The html markup for the shortcode preview iframe
 		 */
 		abstract public function prepare_template( $fields, $content, $shortcode_tag ) : string;
+
+		/**
+		 * Validates and sanitizes the user input.
+		 *
+		 * @param array $input The associative array with the input that the user submitted.
+		 *
+		 * @return mixed Array if validation is ok, false if validation fails.
+		 */
+		public function valitize( $input ) {
+			if ( $this->validate( $input ) ) {
+				$this->sanitize( $input );
+				return $input;
+			} else {
+				return false;
+			}
+		}
+
+		/**
+		 * Validates the user input.
+		 *
+		 * @param array $input The associative array with the input that the user submitted.
+		 *
+		 * @return bool
+		 */
+		abstract public function validate( $input ) : bool;
+
+		/**
+		 * Sanitizes the user input.
+		 *
+		 * @param array $input The associative array with the input that the user submitted.
+		 */
+		abstract public function sanitize( &$input );
 	}
 }
