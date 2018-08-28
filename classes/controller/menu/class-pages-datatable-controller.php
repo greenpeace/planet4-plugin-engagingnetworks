@@ -9,7 +9,45 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 	/**
 	 * Class Pages_Datatable_Controller
 	 */
-	class Pages_Datatable_Controller extends Pages_Controller {
+	class Pages_Datatable_Controller extends Controller {
+
+		const SUBTYPES = [
+			'DCF'   => [
+				'type' => 'Data capture',
+				'subType' => 'Data capture form',
+			],
+			'MEM'   => [
+				'type' => 'Fundraising',
+				'subType' => 'Membership',
+			],
+			'EMS'   => [
+				'type' => 'List management',
+				'subType' => 'Email subscribe',
+			],
+			'UNSUB' => [
+				'type' => 'List management',
+				'subType' => 'Email unsubscribe',
+			],
+			'PET'   => [
+				'type' => 'Advocacy',
+				'subType' => 'Petition',
+			],
+			'ET'    => [
+				'type' => 'Advocacy',
+				'subType' => 'Email to target',
+			],
+			'ND'    => [
+				'type' => 'Fundraising',
+				'subType' => 'Donation',
+			],
+		];
+
+		const STATUSES = [
+			'all'       => 'All',
+			'new'       => 'New',
+			'live'      => 'Live',
+			'tested'    => 'Tested',
+		];
 
 		/**
 		 * Create menu/submenu entry.

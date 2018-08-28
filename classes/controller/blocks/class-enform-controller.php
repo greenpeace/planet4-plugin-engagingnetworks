@@ -3,8 +3,8 @@
 namespace P4EN\Controllers\Blocks;
 
 use P4EN\Controllers\Ensapi_Controller;
-use P4EN\Controllers\Menu\Pages_Controller;
 use P4EN\Models\Fields_Model;
+use P4EN\Controllers\Menu\Pages_Datatable_Controller;
 
 if ( ! class_exists( 'ENForm_Controller' ) ) {
 
@@ -58,7 +58,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 							];
 						}
 						$options[] = [
-							'label'   => Pages_Controller::SUBTYPES[ $type ]['subType'],
+							'label'   => Pages_Datatable_Controller::SUBTYPES[ $type ]['subType'],
 							'options' => $group_options,
 						];
 					}
@@ -82,7 +82,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					$args = [
 						'label'       => $available_field['name'],
 						'description' => $available_field['label'],
-						'attr'        => strtolower( $available_field['name'] . '_' . $available_field['label'] . '_' . $available_field['type'] . '_' . $available_field['id'] ),
+						'attr'        => strtolower( $available_field['name'] . '_' . str_replace( ' ', '-', $available_field['label'] ) . '_' . $available_field['type'] . '_' . $available_field['id'] . '_' . ( $available_field['mandatory'] ? 'true' : 'false' ) ),
 						'type'        => 'checkbox',
 					];
 					if ( $available_field['mandatory'] ) {
@@ -121,35 +121,29 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			$fields = $this->ignore_unused_attributes( $fields, $shortcode_tag );
 			if ( $fields ) {
-				foreach ( $fields as $name => $value ) {
-					if ( 'en_page_id' !== $name ) {
-						$attr_parts      = explode( '_', $name );
-						$fields[ $name ] = [
-							'label' => $attr_parts[1],
-							'type'  => $attr_parts[2],
-							'id'    => $attr_parts[3],
-							'value' => $value,
+				foreach ( $fields as $key => $value ) {
+					if ( 'en_page_id' !== $key ) {
+						$attr_parts     = explode( '_', $key );
+						$fields[ $key ] = [
+							'name'      => $attr_parts[0],
+							'label'     => str_replace( '-', ' ', $attr_parts[1] ),
+							'type'      => $attr_parts[2],
+							'id'        => $attr_parts[3],
+							'mandatory' => $attr_parts[4],
+							'value'     => $value,
 						];
 					}
 				}
 			}
 
 			$data = [];
-			$current_user = wp_get_current_user();
-			$validated    = $this->handle_submit( $current_user, $data );
+			$this->handle_submit( $data );
 
 			$data = array_merge( $data, [
-				'fields'    => $fields,
-				'countries' => [
-					__( 'Greece',      'planet4-engagingnetworks' ),
-					__( 'Netherlands', 'planet4-engagingnetworks' ),
-				],
+				'fields'          => $fields,
 				'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
-				'domain'    => 'planet4-engagingnetworks',
+				'domain'          => 'planet4-engagingnetworks',
 			] );
-//			echo '<pre>';
-//			print_r($data);
-//			echo '</pre>';
 
 			// Shortcode callbacks must return content, hence, output buffering	here.
 			ob_start();
@@ -161,12 +155,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		/**
 		 * Handle form submit.
 		 *
-		 * @param \WP_User $current_user
-		 * @param $data
+		 * @param array $data The data that we will get from the form submission.
 		 *
 		 * @return bool True if validation is ok, false if validation fails.
 		 */
-		public function handle_submit( \WP_User $current_user, &$data ) : bool {
+		public function handle_submit( &$data ) : bool {
 			// CSRF protection.
 			$nonce_action          = 'enform_submit';
 			$nonce                 = wp_create_nonce( $nonce_action );
@@ -181,10 +174,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					return false;
 				} else {
 					$en_page_id = $_POST['en_page_id'];
-
 					$result = $this->valitize( [
 						'en_page_id' => $en_page_id,
 					] );
+
 					if ( false === $result ) {
 						$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
 						return false;
@@ -194,15 +187,21 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					if ( isset( $main_settings['p4en_private_api'] ) ) {
 						$ens_private_token = $main_settings['p4en_private_api'];
 						$ens_api           = new Ensapi_Controller( $ens_private_token );
-					}
 
-					$response = $ens_api->process_page( $en_page_id );
-					if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
-						$data = json_decode( $response['body'], true );
-						$data['enform_submit'] = 1;
-					} else {
-						$data['error_msg'] = __( 'Submit failed!', 'planet4-engagingnetworks' );
-						return false;
+						foreach ( $_POST as $key => $value ) {
+							if ( false !== strpos( $key, 'supporter_' ) ) {
+								$fields[ sanitize_text_field( $key ) ] = sanitize_text_field( $value );
+							}
+						}
+
+						$response = $ens_api->process_page( $en_page_id, $fields ?? [] );
+						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
+							$data = json_decode( $response['body'], true );
+							$data['enform_submit'] = 1;
+						} else {
+							$data['error_msg'] = $response;
+							return false;
+						}
 					}
 				}
 			}

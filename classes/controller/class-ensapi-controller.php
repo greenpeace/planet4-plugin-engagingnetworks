@@ -131,23 +131,20 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 *
 		 * @return array|string An associative array with the response (under key 'body') or a string with an error message in case of a failure.
 		 */
-		public function process_page( $page_id ) {
+		public function process_page( $page_id, $fields ) {
 			$url = self::ENS_PAGES_URL . '/' . $page_id . '/process';
 
-			$current_user = wp_get_current_user();
+			// TODO - finish adding any other available fields to the call. Find out why API call is responding with error 500.
 			$body = [
-				'demo' => true,
 				'supporter' => [
-					'First Name' => $current_user->first_name,
-					'Last Name' => $current_user->last_name,
-					'Email Address' => $current_user->user_email,
-					'Address 1' => 'address',
-					'Postal Code' => '24100',
-					'Country' => 'GR',
+					'Title'         => $fields['supporter_title'],
+					'First Name'    => $fields['supporter_firstname'],
+					'Last Name'     => $fields['supporter_lastname'],
+					'Email Address' => $fields['supporter_emailaddress'],
 				],
 				'contactMessage' => [
-					'subject' => '',
-					'message' => '',
+					'subject' => 'test subject',
+					'message' => 'test message',
 				],
 			];
 
@@ -157,7 +154,7 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 					'ens-auth-token' => $this->ens_auth_token,
 					'Content-Type'   => 'application/json; charset=UTF-8',
 				],
-				'body' => $body,
+				'body'    => $body,
 				'timeout' => self::ENS_CALL_TIMEOUT,
 			] );
 
