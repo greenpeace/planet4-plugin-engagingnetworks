@@ -14,7 +14,7 @@
 						<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }} {{ 'true' == data.mandatory ? 'en__mandatory' : '' }}">
 							<div class="en__field__element en__field__element--text form-group" style="display: block;">
 								{% if 'text' == data.type %}
-									<input id="en__field_supporter_{{ data.name }}" name="supporter.{{ data.name }}" type="text" class="en__field__input en__field__input--text form-control" value="" placeholder="{{ data.label }}" size="40" />
+									<input id="en__field_supporter_{{ data.name }}" name="supporter.{{ data.name }}" type="text" class="en__field__input en__field__input--text form-control" value="" placeholder="{{ data.label }}{{ 'birth' in data.name ? ' (yyyy/mm/dd)' : '' }}" {{ 'true' == data.mandatory ? 'required' : '' }} size="40" />
 								{% elseif 'country' == data.type %}
 										{% include 'country_select.twig' %}
 								{% elseif 'question' == data.type %}

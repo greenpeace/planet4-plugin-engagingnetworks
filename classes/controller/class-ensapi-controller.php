@@ -127,24 +127,29 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		/**
 		 * Process an EN Page.
 		 *
-		 * @param int $page_id The id of the EN page that the submitted data will be sent to.
+		 * @param int   $page_id The id of the EN page that the submitted data will be sent to.
+		 * @param array $fields The submitted fields which will be passed to the body of the API call.
 		 *
 		 * @return array|string An associative array with the response (under key 'body') or a string with an error message in case of a failure.
 		 */
 		public function process_page( $page_id, $fields ) {
 			$url = self::ENS_PAGES_URL . '/' . $page_id . '/process';
 
-			// TODO - finish adding any other available fields to the call. Find out why API call is responding with error 500.
+			// If Email address is found then supporter exists and its data will be updated with the values
+			// inside the supporter key. Else a new supporter with this Email address will be created by EN.
 			$body = [
 				'supporter' => [
 					'Title'         => $fields['supporter_title'],
-					'First Name'    => $fields['supporter_firstname'],
-					'Last Name'     => $fields['supporter_lastname'],
-					'Email Address' => $fields['supporter_emailaddress'],
-				],
-				'contactMessage' => [
-					'subject' => 'test subject',
-					'message' => 'test message',
+					'First name'    => $fields['supporter_firstname'],
+					'Last name'     => $fields['supporter_lastname'],
+					'Address 1'     => $fields['supporter_address1'],
+					'Address 2'     => $fields['supporter_address2'],
+					'City'          => $fields['supporter_city'],
+					'Country'       => $fields['supporter_country'],
+					'Postcode'      => $fields['supporter_postcode'],
+					'Email'         => $fields['supporter_emailaddress'],
+					'Phone Number'  => $fields['supporter_phonenumber'],
+					'date_of_birth' => $fields['supporter_dateofbirth'],
 				],
 			];
 
@@ -154,7 +159,7 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 					'ens-auth-token' => $this->ens_auth_token,
 					'Content-Type'   => 'application/json; charset=UTF-8',
 				],
-				'body'    => $body,
+				'body'    => wp_json_encode( $body ),
 				'timeout' => self::ENS_CALL_TIMEOUT,
 			] );
 
