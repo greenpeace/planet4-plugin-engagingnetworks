@@ -79,15 +79,22 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			if ( $available_fields ) {
 				foreach ( $available_fields as $available_field ) {
+					$attr_parts = [
+						$available_field['id'],
+						$available_field['name'],
+						( $available_field['mandatory'] ? 'true' : 'false' ),
+						str_replace( ' ', '-', $available_field['label'] ),
+						$available_field['type'],
+					];
+
 					$args = [
 						'label'       => $available_field['name'],
 						'description' => $available_field['label'],
-						'attr'        => strtolower( $available_field['name'] . '_' . str_replace( ' ', '-', $available_field['label'] ) . '_' . $available_field['type'] . '_' . $available_field['id'] . '_' . ( $available_field['mandatory'] ? 'true' : 'false' ) ),
+						'attr'        => strtolower( implode( '_', $attr_parts ) ),
 						'type'        => 'checkbox',
 					];
 					if ( $available_field['mandatory'] ) {
-						$args['disabled'] = 'true';
-						$args['value']    = 'true';
+						$args['value'] = 'true';
 					}
 					$fields[] = $args;
 				}
@@ -125,11 +132,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					if ( 'en_page_id' !== $key ) {
 						$attr_parts     = explode( '_', $key );
 						$fields[ $key ] = [
-							'name'      => $attr_parts[0],
-							'label'     => str_replace( '-', ' ', $attr_parts[1] ),
-							'type'      => $attr_parts[2],
-							'id'        => $attr_parts[3],
-							'mandatory' => $attr_parts[4],
+							'id'        => $attr_parts[0],
+							'name'      => $attr_parts[1],
+							'mandatory' => $attr_parts[2],
+							'label'     => str_replace( '-', ' ', $attr_parts[3] ),
+							'type'      => $attr_parts[4],
 							'value'     => $value,
 						];
 					}
@@ -188,13 +195,14 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 						$ens_private_token = $main_settings['p4en_private_api'];
 						$ens_api           = new Ensapi_Controller( $ens_private_token );
 
+						$fields = [];
 						foreach ( $_POST as $key => $value ) {
 							if ( false !== strpos( $key, 'supporter_' ) ) {
 								$fields[ sanitize_text_field( $key ) ] = sanitize_text_field( $value );
 							}
 						}
 
-						$response = $ens_api->process_page( $en_page_id, $fields ?? [] );
+						$response = $ens_api->process_page( $en_page_id, $fields );
 						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
 							$data = json_decode( $response['body'], true );
 							$data['enform_submit'] = 1;

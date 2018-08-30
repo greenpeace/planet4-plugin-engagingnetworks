@@ -1,6 +1,6 @@
 {% block country_options %}
-	<select id="en__field_supporter_{{ data.name }}" name="supporter.{{ data.name }}" class="en__field__input en__field__input--select en_select_country form-control">
-		<option selected="selected" disabled>- {{ __( 'Select Country', domain ) }} -</option>
+	<select id="en__field_supporter_{{ data.name }}" name="supporter.{{ data.name }}" class="en__field__input en__field__input--select en_select_country form-control" {{ 'true' == data.mandatory ? 'required' : '' }}>
+		<option value="" selected="selected">- {{ __( 'Select Country', domain ) }} -</option>
 		<option value="AF">Afghanistan</option>
 		<option value="AX">Åland Islands</option>
 		<option value="AL">Albania</option>
