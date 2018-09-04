@@ -9,6 +9,7 @@ return array(
     'P4EN\\Views\\' => array($baseDir . '/classes/view'),
     'P4EN\\Models\\' => array($baseDir . '/classes/model'),
     'P4EN\\Controllers\\Menu\\' => array($baseDir . '/classes/controller/menu'),
+    'P4EN\\Controllers\\Blocks\\' => array($baseDir . '/classes/controller/blocks'),
     'P4EN\\Controllers\\' => array($baseDir . '/classes/controller'),
     'P4EN\\' => array($baseDir . '/classes'),
 );

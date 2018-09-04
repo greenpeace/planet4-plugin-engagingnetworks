@@ -70,21 +70,8 @@ if ( ! class_exists( 'Loader' ) ) {
 			add_action( 'admin_init', [ $this, 'init' ] );
 			add_action( 'admin_menu', [ $this, 'load_i18n' ] );
 			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
-			add_filter( 'p4bks_add_external_services', [ $this, 'add_external_services' ] );
 			// Provide hook for other plugins.
 			do_action( 'p4en_action_loaded' );
-		}
-
-		/**
-		 * Adds blocks via this plugin.
-		 *
-		 * @param array $services Block Controllers to be loaded via this plugin.
-		 *
-		 * @return array $services The external services to be loaded.
-		 */
-		public function add_external_services( $services ) : array {
-			$services[] = 'P4EN\Controllers\ENForm_Controller';
-			return $services;
 		}
 
 		/**

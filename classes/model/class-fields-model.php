@@ -56,8 +56,8 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 		 */
 		public function add_field( $field ) {
 
-			$options = get_option( $this->fields_option );
-			if ( is_array( $options ) ) {
+			$options = get_option( $this->fields_option );      // Added default value for the first time.
+			if ( is_array( $options ) || false === $options ) {
 				$fields   = array_values( $options );
 				$fields[] = $field;
 				$updated  = update_option( $this->fields_option, $fields );
