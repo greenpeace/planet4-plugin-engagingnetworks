@@ -9,7 +9,45 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 	/**
 	 * Class Pages_Datatable_Controller
 	 */
-	class Pages_Datatable_Controller extends Pages_Controller {
+	class Pages_Datatable_Controller extends Controller {
+
+		const SUBTYPES = [
+			'DCF'   => [
+				'type' => 'Data capture',
+				'subType' => 'Data capture form',
+			],
+			'MEM'   => [
+				'type' => 'Fundraising',
+				'subType' => 'Membership',
+			],
+			'EMS'   => [
+				'type' => 'List management',
+				'subType' => 'Email subscribe',
+			],
+			'UNSUB' => [
+				'type' => 'List management',
+				'subType' => 'Email unsubscribe',
+			],
+			'PET'   => [
+				'type' => 'Advocacy',
+				'subType' => 'Petition',
+			],
+			'ET'    => [
+				'type' => 'Advocacy',
+				'subType' => 'Email to target',
+			],
+			'ND'    => [
+				'type' => 'Fundraising',
+				'subType' => 'Donation',
+			],
+		];
+
+		const STATUSES = [
+			'all'       => 'All',
+			'new'       => 'New',
+			'live'      => 'Live',
+			'tested'    => 'Tested',
+		];
 
 		/**
 		 * Create menu/submenu entry.
@@ -51,44 +89,22 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 						$params['status'] = $pages_settings['p4en_pages_status'];
 					}
 
-					$ens_api = new Ensapi_Controller();
 					$main_settings = get_option( 'p4en_main_settings' );
+					if ( isset( $main_settings['p4en_private_api'] ) ) {
 
-					if ( isset( $main_settings['p4en_private_api'] ) && $main_settings['p4en_private_api'] ) {
-						// Check if the authentication API call is cached.
-						$ens_auth_token = get_transient( 'ens_auth_token' );
+						$ens_private_token = $main_settings['p4en_private_api'];
+						$ens_api = new Ensapi_Controller( $ens_private_token );
 
-						if ( false !== $ens_auth_token ) {
-							$response = $ens_api->get_pages( $ens_auth_token, $params );
-
+						// Communication with ENS API is authenticated.
+						if ( $ens_api->is_authenticated() ) {
+							$response = $ens_api->get_pages( $params );
 							if ( is_array( $response ) && $response['body'] ) {
 								$pages = json_decode( $response['body'], true );
 							} else {
 								$this->error( $response );
 							}
 						} else {
-							$ens_private_token = $main_settings['p4en_private_api'];
-							$response = $ens_api->authenticate( $ens_private_token );
-
-							if ( is_array( $response ) && $response['body'] ) {
-								// Communication with ENS API is authenticated.
-								$body           = json_decode( $response['body'], true );
-								$ens_auth_token = $body['ens-auth-token'];
-								// Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
-								$expiration     = time() + (int) ($body['expires']);
-
-								set_transient( 'ens_auth_token', $ens_auth_token, $expiration );
-
-								$response = $ens_api->get_pages( $ens_auth_token, $params );
-
-								if ( is_array( $response ) && $response['body'] ) {
-									$pages = json_decode( $response['body'], true );
-								} else {
-									$this->error( $response );
-								}
-							} else {
-								$this->error( $response );
-							}
+							$this->error( __( 'Authentication failed', 'planet4-engagingnetworks' ) );
 						}
 					} else {
 						$this->warning( __( 'Plugin Settings are not configured well!', 'planet4-engagingnetworks' ) );
