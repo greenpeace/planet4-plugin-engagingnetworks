@@ -62,10 +62,7 @@ require_once ABSPATH . 'wp-admin/includes/plugin.php';
       L O A D  P L U G I N
    ========================== */
 P4EN\Loader::get_instance( [
-	//'P4EN\Controllers\Menu\Pages_Standard_Controller',
 	'P4EN\Controllers\Menu\Pages_Datatable_Controller',
 	'P4EN\Controllers\Menu\Settings_Controller',
-	'P4EN\Controllers\Menu\Fields_Settings_Controller',
-	'P4EN\Controllers\Api\Rest_Controller',
 	'P4EN\Controllers\Blocks\ENForm_Controller',
 ], 'P4EN\Views\View' );

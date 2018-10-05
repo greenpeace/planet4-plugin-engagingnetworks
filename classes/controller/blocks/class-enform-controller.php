@@ -3,7 +3,6 @@
 namespace P4EN\Controllers\Blocks;
 
 use P4EN\Controllers\Ensapi_Controller;
-use P4EN\Models\Fields_Model;
 use P4EN\Controllers\Menu\Pages_Datatable_Controller;
 
 if ( ! class_exists( 'ENForm_Controller' ) ) {
@@ -75,7 +74,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				],
 			];
 
-			$available_fields = ( new Fields_Model() )->get_fields();
+			$available_fields = $this->sync_fields();
 
 			if ( $available_fields ) {
 				foreach ( $available_fields as $available_field ) {
@@ -100,7 +99,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				}
 			}
 
-
 			// Define the Shortcode UI arguments.
 			$shortcode_ui_args = [
 				'label'         => __( 'Engaging Networks Form', 'planet4-engagingnetworks' ),
@@ -113,18 +111,15 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		}
 
 		/**
-		 * Callback for the shortcode.
-		 * It renders the shortcode based on supplied attributes.
+		 * Get all the data that will be needed to render the block correctly.
 		 *
-		 * @param array  $fields This contains array of all data added.
+		 * @param array  $fields This is the array of fields of the block.
 		 * @param string $content This is the post content.
-		 * @param string $shortcode_tag The shortcode block of campaign thumbnail.
+		 * @param string $shortcode_tag The shortcode tag of the block.
 		 *
-		 * @since 0.1.0
-		 *
-		 * @return string All the data used for the html.
+		 * @return array The data to be passed in the View.
 		 */
-		public function prepare_template( $fields, $content, $shortcode_tag ) : string {
+		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
 
 			$fields = $this->ignore_unused_attributes( $fields, $shortcode_tag );
 			if ( $fields ) {
@@ -152,11 +147,40 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'domain'          => 'planet4-engagingnetworks',
 			] );
 
-			// Shortcode callbacks must return content, hence, output buffering	here.
-			ob_start();
-			$this->view->block( self::BLOCK_NAME, $data, 'twig', P4EN_INCLUDES_DIR );
+			return $data;
+		}
 
-			return ob_get_clean();
+		/**
+		 * Sync supporter fields between EN and Planet4.
+		 *
+		 * @return array Associative array of fields if sync was successful or empty array otherwise.
+		 */
+		public function sync_fields() : array {
+			$main_settings = get_option( 'p4en_main_settings' );
+
+			if ( isset( $main_settings['p4en_private_api'] ) ) {
+				$ens_private_token = $main_settings['p4en_private_api'];
+				$ens_api           = new Ensapi_Controller( $ens_private_token );
+				$response          = $ens_api->get_supporter_fields();
+
+				if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
+					$supporter_fields = json_decode( $response['body'], true );
+
+					foreach ( $supporter_fields as $field_data ) {
+						if ( 'Not Tagged' !== $field_data['tag'] ) {
+							$available_fields[] = [
+								'id'        => $field_data['id'],
+								'name'      => $field_data['property'],
+								'mandatory' => false,
+								'label'     => $field_data['name'],
+								'type'      => strpos( $field_data['property'], 'country' ) === false ? 'text' : 'country',
+							];
+						}
+					}
+					return $available_fields;
+				}
+			}
+			return [];
 		}
 
 		/**
