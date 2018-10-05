@@ -74,25 +74,26 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				],
 			];
 
-			$available_fields = $this->sync_fields();
+			// Get supporter fields from EN and use them on the fly.
+			$supporter_fields = $this->get_supporter_fields();
 
-			if ( $available_fields ) {
-				foreach ( $available_fields as $available_field ) {
+			if ( $supporter_fields ) {
+				foreach ( $supporter_fields as $supporter_field ) {
 					$attr_parts = [
-						$available_field['id'],
-						$available_field['name'],
-						( $available_field['mandatory'] ? 'true' : 'false' ),
-						str_replace( ' ', '-', $available_field['label'] ),
-						$available_field['type'],
+						$supporter_field['id'],
+						$supporter_field['name'],
+						( $supporter_field['mandatory'] ? 'true' : 'false' ),
+						str_replace( ' ', '-', $supporter_field['label'] ),
+						$supporter_field['type'],
 					];
 
 					$args = [
-						'label'       => $available_field['name'],
-						'description' => $available_field['label'],
+						'label'       => $supporter_field['name'],
+						'description' => $supporter_field['label'],
 						'attr'        => strtolower( implode( '_', $attr_parts ) ),
 						'type'        => 'checkbox',
 					];
-					if ( $available_field['mandatory'] ) {
+					if ( $supporter_field['mandatory'] ) {
 						$args['value'] = 'true';
 					}
 					$fields[] = $args;
@@ -151,11 +152,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		}
 
 		/**
-		 * Sync supporter fields between EN and Planet4.
+		 * Retrieve supporter fields from EN and prepare them for use in P4.
 		 *
-		 * @return array Associative array of fields if sync was successful or empty array otherwise.
+		 * @return array Associative array of supporter fields if retrieval from EN was successful or empty array otherwise.
 		 */
-		public function sync_fields() : array {
+		public function get_supporter_fields() : array {
 			$main_settings = get_option( 'p4en_main_settings' );
 
 			if ( isset( $main_settings['p4en_private_api'] ) ) {
@@ -164,20 +165,20 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				$response          = $ens_api->get_supporter_fields();
 
 				if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
-					$supporter_fields = json_decode( $response['body'], true );
+					$en_supporter_fields = json_decode( $response['body'], true );
 
-					foreach ( $supporter_fields as $field_data ) {
-						if ( 'Not Tagged' !== $field_data['tag'] ) {
-							$available_fields[] = [
-								'id'        => $field_data['id'],
-								'name'      => $field_data['property'],
+					foreach ( $en_supporter_fields as $en_supporter_field ) {
+						if ( 'Not Tagged' !== $en_supporter_field['tag'] ) {
+							$supporter_fields[] = [
+								'id'        => $en_supporter_field['id'],
+								'name'      => $en_supporter_field['property'],
 								'mandatory' => false,
-								'label'     => $field_data['name'],
-								'type'      => strpos( $field_data['property'], 'country' ) === false ? 'text' : 'country',
+								'label'     => $en_supporter_field['name'],
+								'type'      => strpos( $en_supporter_field['property'], 'country' ) === false ? 'text' : 'country',
 							];
 						}
 					}
-					return $available_fields;
+					return $supporter_fields;
 				}
 			}
 			return [];
