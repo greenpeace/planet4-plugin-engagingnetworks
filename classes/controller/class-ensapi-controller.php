@@ -13,9 +13,10 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		const ENS_AUTH_URL       = self::ENS_BASE_URL . '/authenticate';
 		const ENS_SUPPORTER_URL  = self::ENS_BASE_URL . '/supporter';
 		const ENS_PAGES_URL      = self::ENS_BASE_URL . '/page';
-		const ENS_TYPES_DEFAULT  = 'PET';         // Retrieve all petitions by default.
+		const ENS_TYPES_DEFAULT  = 'PET';           // Retrieve all petitions by default.
 		const ENS_STATUS_DEFAULT = 'all';
-		const ENS_CALL_TIMEOUT   = 10;            // Seconds after which the api call will timeout if not responded.
+		const ENS_CACHE_TTL      = 600;             // Time in seconds to cache the response of an ENS api call.
+		const ENS_CALL_TIMEOUT   = 10;              // Seconds after which the api call will timeout if not responded.
 
 		/** @var $ens_auth_token */
 		private $ens_auth_token = '';
@@ -101,25 +102,29 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 */
 		public function get_pages( $params = array( 'type' => self::ENS_TYPES_DEFAULT, 'status' => self::ENS_STATUS_DEFAULT ) ) {
 
-			$url = add_query_arg( [
-				'type'   => strtolower( $params['type'] ),
-				'status' => $params['status'],
-			], self::ENS_PAGES_URL );
+			$response = get_transient( 'ens_pages_response_' . implode( '_', $params ) );
+			if ( ! $response ) {
+				$url = add_query_arg( [
+					'type'   => strtolower( $params['type'] ),
+					'status' => $params['status'],
+				], self::ENS_PAGES_URL );
 
-			// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
-			$response = wp_safe_remote_get( $url, [
-				'headers' => [
-					'ens-auth-token' => $this->ens_auth_token,
-				],
-				'timeout' => self::ENS_CALL_TIMEOUT,
-			] );
+				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
+				$response = wp_safe_remote_get( $url, [
+					'headers' => [
+						'ens-auth-token' => $this->ens_auth_token,
+					],
+					'timeout' => self::ENS_CALL_TIMEOUT,
+				] );
 
-			if ( is_wp_error( $response ) ) {
-				return $response->get_error_message() . ' ' . $response->get_error_code();
+				if ( is_wp_error( $response ) ) {
+					return $response->get_error_message() . ' ' . $response->get_error_code();
 
-			} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
-				return $response['response']['message'] . ' ' . $response['response']['code'];         // Authentication failed.
+				} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
+					return $response['response']['message'] . ' ' . $response['response']['code'];         // Authentication failed.
 
+				}
+				set_transient( 'ens_pages_response_' . implode( '_', $params ), $response, self::ENS_CACHE_TTL );
 			}
 			return $response;
 		}
@@ -170,6 +175,37 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 			} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
 				return $response['response']['message'] . ' ' . $response['response']['code'];
 
+			}
+			return $response;
+		}
+
+		/**
+		 * Gets all the supporter fields that exist in the EN client account.
+		 *
+		 * @return array|string Array with the fields or a message if something goes wrong.
+		 */
+		public function get_supporter_fields() {
+			$response = get_transient( 'ens_supporter_fields_response' );
+			if ( ! $response ) {
+				$url = self::ENS_SUPPORTER_URL . '/fields';
+
+				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
+				$response = wp_safe_remote_get( $url, [
+					'headers' => [
+						'ens-auth-token' => $this->ens_auth_token,
+						'Content-Type'   => 'application/json; charset=UTF-8',
+					],
+					'timeout' => self::ENS_CALL_TIMEOUT,
+				] );
+
+				// Authentication failure.
+				if ( is_wp_error( $response ) ) {
+					return $response->get_error_message() . ' ' . $response->get_error_code();
+
+				} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
+					return $response['response']['message'] . ' ' . $response['response']['code'];
+				}
+				set_transient( 'ens_supporter_fields_response', $response, self::ENS_CACHE_TTL );
 			}
 			return $response;
 		}

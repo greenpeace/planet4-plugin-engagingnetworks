@@ -116,6 +116,35 @@ if ( ! class_exists( 'Controller' ) ) {
 		abstract public function prepare_fields();
 
 		/**
+		 * Get all the data that will be needed to render the block correctly.
+		 *
+		 * @param array  $fields This is the array of fields of the block.
+		 * @param string $content This is the post content.
+		 * @param string $shortcode_tag The shortcode tag of the block.
+		 *
+		 * @return array The data to be passed in the View.
+		 */
+		abstract public function prepare_data( $fields, $content, $shortcode_tag ) : array;
+
+		/**
+		 * Callback for the shortcode.
+		 * It renders the shortcode based on supplied attributes.
+		 *
+		 * @param array  $fields This is the array of fields of this block.
+		 * @param string $content This is the post content.
+		 * @param string $shortcode_tag The shortcode tag of the block.
+		 *
+		 * @return string All the data used for the html.
+		 */
+		public function prepare_template( $fields, $content, $shortcode_tag ) : string {
+			$data = $this->prepare_data( $fields, $content, $shortcode_tag );
+			// Shortcode callbacks must return content, hence, output buffering here.
+			ob_start();
+			$this->view->block( static::BLOCK_NAME, $data );
+			return ob_get_clean();
+		}
+
+		/**
 		 * Output markup of an iframe to render shortcode when previewing in admin edit screen.
 		 *
 		 * We need to load through iframe to enqueue frontend styles without breaking admin ui
@@ -232,18 +261,6 @@ if ( ! class_exists( 'Controller' ) ) {
 			// Ajax callbacks need to call exit.
 			exit;
 		}
-
-		/**
-		 * Callback for the shortcode.
-		 * It renders the shortcode based on supplied attributes.
-		 *
-		 * @param array  $fields         Associative array of shortcode paramaters.
-		 * @param string $content        The content of the shortcode block for content wrapper shortcodes only.
-		 * @param string $shortcode_tag  The name of the shortcode.
-		 *
-		 * @return string                The html markup for the shortcode preview iframe
-		 */
-		abstract public function prepare_template( $fields, $content, $shortcode_tag ) : string;
 
 		/**
 		 * Validates and sanitizes the user input.

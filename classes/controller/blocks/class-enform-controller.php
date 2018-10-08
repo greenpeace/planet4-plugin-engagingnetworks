@@ -3,7 +3,6 @@
 namespace P4EN\Controllers\Blocks;
 
 use P4EN\Controllers\Ensapi_Controller;
-use P4EN\Models\Fields_Model;
 use P4EN\Controllers\Menu\Pages_Datatable_Controller;
 
 if ( ! class_exists( 'ENForm_Controller' ) ) {
@@ -75,31 +74,31 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				],
 			];
 
-			$available_fields = ( new Fields_Model() )->get_fields();
+			// Get supporter fields from EN and use them on the fly.
+			$supporter_fields = $this->get_supporter_fields();
 
-			if ( $available_fields ) {
-				foreach ( $available_fields as $available_field ) {
+			if ( $supporter_fields ) {
+				foreach ( $supporter_fields as $supporter_field ) {
 					$attr_parts = [
-						$available_field['id'],
-						$available_field['name'],
-						( $available_field['mandatory'] ? 'true' : 'false' ),
-						str_replace( ' ', '-', $available_field['label'] ),
-						$available_field['type'],
+						$supporter_field['id'],
+						$supporter_field['name'],
+						( $supporter_field['mandatory'] ? 'true' : 'false' ),
+						str_replace( ' ', '-', $supporter_field['label'] ),
+						$supporter_field['type'],
 					];
 
 					$args = [
-						'label'       => $available_field['name'],
-						'description' => $available_field['label'],
+						'label'       => $supporter_field['name'],
+						'description' => $supporter_field['label'],
 						'attr'        => strtolower( implode( '_', $attr_parts ) ),
 						'type'        => 'checkbox',
 					];
-					if ( $available_field['mandatory'] ) {
+					if ( $supporter_field['mandatory'] ) {
 						$args['value'] = 'true';
 					}
 					$fields[] = $args;
 				}
 			}
-
 
 			// Define the Shortcode UI arguments.
 			$shortcode_ui_args = [
@@ -113,18 +112,15 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		}
 
 		/**
-		 * Callback for the shortcode.
-		 * It renders the shortcode based on supplied attributes.
+		 * Get all the data that will be needed to render the block correctly.
 		 *
-		 * @param array  $fields This contains array of all data added.
+		 * @param array  $fields This is the array of fields of the block.
 		 * @param string $content This is the post content.
-		 * @param string $shortcode_tag The shortcode block of campaign thumbnail.
+		 * @param string $shortcode_tag The shortcode tag of the block.
 		 *
-		 * @since 0.1.0
-		 *
-		 * @return string All the data used for the html.
+		 * @return array The data to be passed in the View.
 		 */
-		public function prepare_template( $fields, $content, $shortcode_tag ) : string {
+		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
 
 			$fields = $this->ignore_unused_attributes( $fields, $shortcode_tag );
 			if ( $fields ) {
@@ -152,11 +148,40 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'domain'          => 'planet4-engagingnetworks',
 			] );
 
-			// Shortcode callbacks must return content, hence, output buffering	here.
-			ob_start();
-			$this->view->block( self::BLOCK_NAME, $data, 'twig', P4EN_INCLUDES_DIR );
+			return $data;
+		}
 
-			return ob_get_clean();
+		/**
+		 * Retrieve supporter fields from EN and prepare them for use in P4.
+		 *
+		 * @return array Associative array of supporter fields if retrieval from EN was successful or empty array otherwise.
+		 */
+		public function get_supporter_fields() : array {
+			$main_settings = get_option( 'p4en_main_settings' );
+
+			if ( isset( $main_settings['p4en_private_api'] ) ) {
+				$ens_private_token = $main_settings['p4en_private_api'];
+				$ens_api           = new Ensapi_Controller( $ens_private_token );
+				$response          = $ens_api->get_supporter_fields();
+
+				if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
+					$en_supporter_fields = json_decode( $response['body'], true );
+
+					foreach ( $en_supporter_fields as $en_supporter_field ) {
+						if ( 'Not Tagged' !== $en_supporter_field['tag'] ) {
+							$supporter_fields[] = [
+								'id'        => $en_supporter_field['id'],
+								'name'      => $en_supporter_field['property'],
+								'mandatory' => false,
+								'label'     => $en_supporter_field['name'],
+								'type'      => strpos( $en_supporter_field['property'], 'country' ) === false ? 'text' : 'country',
+							];
+						}
+					}
+					return $supporter_fields;
+				}
+			}
+			return [];
 		}
 
 		/**
