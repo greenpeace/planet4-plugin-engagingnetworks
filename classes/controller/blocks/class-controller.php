@@ -178,21 +178,20 @@ if ( ! class_exists( 'Controller' ) ) {
 		/**
 		 * Ignore the fields from any user defined attributes that are no longer being used by the block.
 		 *
-		 * @param array  $fields This contains array of all data added.
-		 * @param string $shortcode_tag The shortcode block of campaign thumbnail.
+		 * @param array $fields This contains array of all data added.
 		 *
 		 * @return array The valid fields.
 		 */
-		public function ignore_unused_attributes( $fields, $shortcode_tag ) : array {
-			// Get all the attribute keys that are used by the block.
-			$shortcode_object    = \Shortcode_UI::get_instance()->get_shortcode( $shortcode_tag );
-			$shortcode_attrs     = is_array( $shortcode_object ) && is_array( $shortcode_object['attrs'] ) ? $shortcode_object['attrs'] : [];
-			$shortcode_attr_keys = wp_list_pluck( $shortcode_attrs, 'attr' );
-
+		public function ignore_unused_attributes( $fields ) : array {
 			// Filter out any attributes that are still inside the shortcode but are not being used by the block.
 			if ( $fields ) {
+				$fields_ids = [];
+
 				foreach ( $fields as $index => $value ) {
-					if ( ! in_array( $index, $shortcode_attr_keys, true ) ) {
+					$fields_id = explode( '_', $index )[0];
+					if ( ! in_array( $fields_id, $fields_ids, true ) ) {
+						$fields_ids[] = $fields_id;
+					} else {
 						unset( $fields[ $index ] );
 					}
 				}

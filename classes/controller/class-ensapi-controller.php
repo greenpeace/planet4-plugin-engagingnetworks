@@ -209,5 +209,39 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 			}
 			return $response;
 		}
+
+		/**
+		 * Authenticates usage of ENS API calls.
+		 *
+		 * @param string $email The supporter's email address.
+		 *
+		 * @return array|string An associative array with the response (under key 'body') or a string with an error message in case of a failure.
+		 */
+		public function get_supporter_by_email( $email ) {
+
+			$url = add_query_arg( [
+				'email' => $email,
+				'includeQuestions' => true,
+			], self::ENS_SUPPORTER_URL );
+
+			// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
+			$response = wp_safe_remote_get( $url, [
+				'headers' => [
+					'ens-auth-token' => $this->ens_auth_token,
+					'Content-Type'   => 'application/json; charset=UTF-8',
+				],
+				'timeout' => self::ENS_CALL_TIMEOUT,
+			] );
+
+			// Authentication failure.
+			if ( is_wp_error( $response ) ) {
+				return $response->get_error_message() . ' ' . $response->get_error_code();
+
+			} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
+				return $response['response']['message'] . ' ' . $response['response']['code'];
+
+			}
+			return $response;
+		}
 	}
 }
