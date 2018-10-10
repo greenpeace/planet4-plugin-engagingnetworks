@@ -252,3 +252,10 @@
 		<option value="ZW">Zimbabwe</option>
 	</select>
 {% endblock %}
+
+<script type="text/javascript">
+	$ = jQuery;
+	if ('{{ value }}') {
+		$('.en_select_country').val('{{ value }}')
+	}
+</script>

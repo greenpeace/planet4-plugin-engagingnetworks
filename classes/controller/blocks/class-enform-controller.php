@@ -2,7 +2,7 @@
 
 namespace P4EN\Controllers\Blocks;
 
-use P4EN\Controllers\Ensapi_Controller;
+use P4EN\Controllers\Ensapi_Controller as Ensapi;
 use P4EN\Controllers\Menu\Pages_Datatable_Controller;
 
 if ( ! class_exists( 'ENForm_Controller' ) ) {
@@ -19,6 +19,9 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		/** @const array ENFORM_PAGE_TYPES */
 		const ENFORM_PAGE_TYPES = [ 'PET', 'ND' ];
 
+		/** @var Ensapi $ensapi */
+		private $ens_api = null;
+
 		/**
 		 * Shortcode UI setup for the ENForm shortcode.
 		 *
@@ -34,8 +37,8 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 				if ( isset( $main_settings['p4en_private_api'] ) ) {
 					$ens_private_token = $main_settings['p4en_private_api'];
-					$ens_api           = new Ensapi_Controller( $ens_private_token );
-					$pages             = $ens_api->get_pages_by_types_status( self::ENFORM_PAGE_TYPES, 'live' );
+					$this->ens_api     = new Ensapi( $ens_private_token );
+					$pages             = $this->ens_api->get_pages_by_types_status( self::ENFORM_PAGE_TYPES, 'live' );
 					uasort( $pages, function ( $a, $b ) {
 						return ( $a['name'] ?? '' ) <=> ( $b['name'] ?? '' );
 					} );
@@ -122,7 +125,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
 
-			$fields = $this->ignore_unused_attributes( $fields, $shortcode_tag );
+			$fields = $this->ignore_unused_attributes( $fields );
 			if ( $fields ) {
 				foreach ( $fields as $key => $value ) {
 					if ( 'en_page_id' !== $key ) {
@@ -140,6 +143,26 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 			}
 
 			$data = [];
+			// If user is logged in.
+			if ( is_user_logged_in() ) {
+				$current_user = wp_get_current_user();
+
+				// If we have not intialized yet the Ensapi_Controller then do it here.
+				if ( ! $this->ens_api ) {
+					$main_settings = get_option( 'p4en_main_settings' );
+					if ( isset( $main_settings['p4en_private_api'] ) ) {
+						$ens_private_token = $main_settings['p4en_private_api'];
+						$this->ens_api     = new Ensapi( $ens_private_token );
+					}
+				}
+				$response = $this->ens_api->get_supporter_by_email( $current_user->user_email );
+
+				if ( is_array( $response ) && $response['body'] ) {
+					$supporter         = json_decode( $response['body'], true );
+					$data['supporter'] = $supporter;
+				}
+			}
+
 			$this->handle_submit( $data );
 
 			$data = array_merge( $data, [
@@ -157,12 +180,8 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array Associative array of supporter fields if retrieval from EN was successful or empty array otherwise.
 		 */
 		public function get_supporter_fields() : array {
-			$main_settings = get_option( 'p4en_main_settings' );
-
-			if ( isset( $main_settings['p4en_private_api'] ) ) {
-				$ens_private_token = $main_settings['p4en_private_api'];
-				$ens_api           = new Ensapi_Controller( $ens_private_token );
-				$response          = $ens_api->get_supporter_fields();
+			if ( $this->ens_api ) {
+				$response = $this->ens_api->get_supporter_fields();
 
 				if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
 					$en_supporter_fields = json_decode( $response['body'], true );
@@ -189,17 +208,16 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 *
 		 * @param array $data The data that we will get from the form submission.
 		 *
-		 * @return bool True if validation is ok, false if validation fails.
+		 * @return bool True if validation is ok, false if validation fails or if it is not a POST.
 		 */
 		public function handle_submit( &$data ) : bool {
-			// CSRF protection.
-			$nonce_action          = 'enform_submit';
-			$nonce                 = wp_create_nonce( $nonce_action );
-			$data['nonce_action']  = $nonce_action;
-			$data['enform_submit'] = 0;
-			$data['error_msg']     = '';
-
 			if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
+				// CSRF protection.
+				$nonce_action          = 'enform_submit';
+				$nonce                 = wp_create_nonce( $nonce_action );
+				$data['nonce_action']  = $nonce_action;
+				$data['enform_submit'] = 0;
+				$data['error_msg']     = '';
 
 				if ( ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 					$data['error_msg'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
@@ -215,11 +233,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 						return false;
 					}
 
-					$main_settings = get_option( 'p4en_main_settings' );
-					if ( isset( $main_settings['p4en_private_api'] ) ) {
-						$ens_private_token = $main_settings['p4en_private_api'];
-						$ens_api           = new Ensapi_Controller( $ens_private_token );
-
+					if ( $this->ens_api ) {
 						$fields = [];
 						foreach ( $_POST as $key => $value ) {
 							if ( false !== strpos( $key, 'supporter_' ) ) {
@@ -227,7 +241,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 							}
 						}
 
-						$response = $ens_api->process_page( $en_page_id, $fields );
+						$response = $this->ens_api->process_page( $en_page_id, $fields );
 						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
 							$data = json_decode( $response['body'], true );
 							$data['enform_submit'] = 1;
@@ -237,8 +251,9 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 						}
 					}
 				}
+				return true;
 			}
-			return true;
+			return false;
 		}
 
 		/**
