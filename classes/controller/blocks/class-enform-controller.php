@@ -75,6 +75,25 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'type'        => 'select',
 					'options'     => $options,
 				],
+				[
+					'attr'              => 'en_form_style',
+					'label'             => __( 'What style of form do you need?', 'planet4-engagingnetworks' ),
+					'type'              => 'p4_radio',
+					'options'           => [
+						[
+							'value' => '1',
+							'label' => __( 'Long full-width', 'planet4-engagingnetworks' ),
+							'desc'  => 'Use: on long pages (more than 5 screens) when list items are long (+ 10 words)<br>No max items<br>recommended.',
+							'image' => esc_url( plugins_url() . '/planet4-plugin-blocks/admin/images/submenu-long.jpg' ),
+						],
+						[
+							'value' => '2',
+							'label' => __( 'Inside content', 'planet4-engagingnetworks' ),
+							'desc'  => 'Use: on long pages (more than 5 screens) when list items are short (up to 5 words)<br>No max items<br>recommended.',
+							'image' => esc_url( plugins_url() . '/planet4-plugin-blocks/admin/images/submenu-short.jpg' ),
+						],
+					],
+				],
 			];
 
 			// Get supporter fields from EN and use them on the fly.
@@ -126,9 +145,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
 
 			$fields = $this->ignore_unused_attributes( $fields );
+			$excludedFields = [ 'en_page_id', 'en_form_style' ];
+
 			if ( $fields ) {
 				foreach ( $fields as $key => $value ) {
-					if ( 'en_page_id' !== $key ) {
+					if ( !in_array($key, $excludedFields) ) {
 						$attr_parts     = explode( '_', $key );
 						$fields[ $key ] = [
 							'id'        => $attr_parts[0],
