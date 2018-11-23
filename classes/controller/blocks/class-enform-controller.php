@@ -82,14 +82,14 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'options'           => [
 						[
 							'value' => '1',
-							'label' => __( 'Long full-width', 'planet4-engagingnetworks' ),
-							'desc'  => 'Use: on long pages (more than 5 screens) when list items are long (+ 10 words)<br>No max items<br>recommended.',
+							'label' => __( 'Full Width', 'planet4-engagingnetworks' ),
+							'desc'  => 'Best for use inside pages and posts.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-blocks/admin/images/submenu-long.jpg' ),
 						],
 						[
 							'value' => '2',
-							'label' => __( 'Inside content', 'planet4-engagingnetworks' ),
-							'desc'  => 'Use: on long pages (more than 5 screens) when list items are short (up to 5 words)<br>No max items<br>recommended.',
+							'label' => __( 'Full width background', 'planet4-engagingnetworks' ),
+							'desc'  => 'This options has a background image that expands the full width of the browser.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-blocks/admin/images/submenu-short.jpg' ),
 						],
 					],
