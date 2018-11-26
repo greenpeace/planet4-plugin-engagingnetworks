@@ -54,6 +54,7 @@ if ( ! class_exists( 'Loader' ) ) {
 				}
 			}
 			$this->check_requirements();
+			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_public_assets' ] );
 		}
 
 		/**
@@ -144,6 +145,19 @@ if ( ! class_exists( 'Loader' ) ) {
 				}
 			}
 			return true;
+		}
+
+		/**
+		 * Load assets for the frontend.
+		 */
+		public function enqueue_public_assets() {
+			// plugin-blocks assets.
+			$css_enform_creation = filectime( P4EN_PLUGIN_DIR . '/style.css' );
+			$js_enform_creation  = filectime( P4EN_PLUGIN_DIR . '/main.js' );
+			// Add master theme's main css as dependency for blocks css.
+			wp_enqueue_style( 'plugin-en', plugins_url( P4EN_PLUGIN_DIRNAME ) . '/style.css', [ ], $css_enform_creation );
+			// Add master theme's main js as dependency for blocks js.
+			wp_enqueue_script( 'plugin-en', plugins_url( P4EN_PLUGIN_DIRNAME ) . '/main.js', [ 'jquery' ], $js_enform_creation, true );
 		}
 
 		/**
