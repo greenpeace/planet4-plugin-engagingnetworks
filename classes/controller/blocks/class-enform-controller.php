@@ -180,9 +180,8 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array The data to be passed in the View.
 		 */
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
-
-			$fields = $this->ignore_unused_attributes( $fields );
 			$excludedFields = [ 'en_page_id', 'en_form_style' ];
+			$fields = $this->ignore_unused_attributes( $fields, $excludedFields );
 
 			if ( $fields ) {
 				foreach ( $fields as $key => $value ) {
