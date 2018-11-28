@@ -1,8 +1,7 @@
 {
-	"name": "planet4-plugin-blocks",
-	"version": "0.1.2",
-	"description": "Blocks plugin for the Planet 4 Wordpress project",
-	"repository": "git@github.com:greenpeace/planet4-plugin-blocks.git",
+	"name": "planet4-plugin-engagingnetworks",
+	"description": "Wordpress plugin that connects Planet4 with the Engaging Networks platform",
+	"repository": "git@github.com:greenpeace/planet4-plugin-engagingnetworks.git",
 	"author": "Greenpeace International",
 	"license": "GPL-3.0",
 	"devDependencies": {
