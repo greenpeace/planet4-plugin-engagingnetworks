@@ -1,4 +1,9 @@
 <?php
+/**
+ * EN Form class
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Blocks;
 
@@ -17,7 +22,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		/** @const string BLOCK_NAME */
 		const BLOCK_NAME = 'enform';
 		/** @const array ENFORM_PAGE_TYPES */
-		const ENFORM_PAGE_TYPES = [ 'PET', 'ND' ];
+		const ENFORM_PAGE_TYPES = [ 'PET', 'ND', 'EMS' ];
 
 		/** @var Ensapi $ensapi */
 		private $ens_api = null;
@@ -118,18 +123,26 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'type'              => 'p4en_radio',
 					'options'           => [
 						[
-							'value' => '1',
+							'value' => 'full-width',
 							'label' => __( 'Full Width', 'planet4-engagingnetworks' ),
 							'desc'  => 'Best for use inside pages and posts.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidth.png' ),
 						],
 						[
-							'value' => '2',
+							'value' => 'full-width-bg',
 							'label' => __( 'Full width background', 'planet4-engagingnetworks' ),
 							'desc'  => 'This options has a background image that expands the full width of the browser.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidthbg.png' ),
 						],
 					],
+				],
+				[
+					'label'       => __( 'Background', 'planet4-engagingnetworks' ),
+					'attr'        => 'background',
+					'type'        => 'attachment',
+					'libraryType' => [ 'image' ],
+					'addButton'   => __( 'Select Background Image', 'planet4-engagingnetworks' ),
+					'frameTitle'  => __( 'Select Background Image', 'planet4-engagingnetworks' ),
 				],
 			];
 
@@ -180,12 +193,13 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array The data to be passed in the View.
 		 */
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
-			$excludedFields = [ 'en_page_id', 'en_form_style' ];
-			$fields = $this->ignore_unused_attributes( $fields, $excludedFields );
+			$excluded_fields = [ 'en_page_id', 'en_form_style', 'background' ];
+
+			$fields = $this->ignore_unused_attributes( $fields, $excluded_fields );
 
 			if ( $fields ) {
 				foreach ( $fields as $key => $value ) {
-					if ( !in_array($key, $excludedFields) ) {
+					if ( ! in_array( $key, $excluded_fields ) ) {
 						$attr_parts     = explode( '_', $key );
 						$fields[ $key ] = [
 							'id'        => $attr_parts[0],
@@ -198,6 +212,15 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					}
 				}
 			}
+
+			if ( isset( $fields['background'] ) ) {
+				$image_id                    = '' !== $fields['background'] ? $fields['background'] : $p4_happy_point_bg_image;
+				$img_meta                    = wp_get_attachment_metadata( $image_id );
+				$fields['background_src']    = wp_get_attachment_image_src( $image_id, 'retina-large' );
+				$fields['background_srcset'] = wp_get_attachment_image_srcset( $image_id, 'retina-large', $img_meta );
+				$fields['background_sizes']  = wp_calculate_image_sizes( 'retina-large', null, null, $image_id );
+			}
+			$fields['default_image']     = get_bloginfo( 'template_directory' ) . '/images/happy-point-block-bg.jpg';
 
 			$data = [];
 			// If user is logged in.

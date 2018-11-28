@@ -1,40 +1,41 @@
 .enform-wrap {
-  &.block-wide {
+  &.enform-full-width-bg {
     @include background-before-opacity($light-blue-bg);
     width: 100vw;
-    height: 444px;
+    min-height: 444px;
     overflow: hidden;
+    display: flex;
+    align-items: center;
 
-    @include medium-and-up {
-      max-height: 480px;
-    }
+    picture {
+      align-self: start;
 
-    @include large-and-up {
-      max-height: 500px;
-    }
+      img {
+        position: absolute;
+        height: auto;
+        width: 100%;
+        object-fit: cover;
+        object-position: center center;
+        opacity: 0.3;
 
-    @include x-large-and-up {
-      height: 620px;
-      width: 100vw;
-      position: relative;
-      @include background-before-opacity($light-blue-bg);
+        @supports (object-fit: cover) {
+          & {
+            height: 100%;
+          }
+        }
+      }
     }
 
     .enform {
       background: none;
-    }
-  }
 
-  .container {
-    height: inherit;
-    width: 100%;
-
-    @include medium-and-up {
-      max-width: none;
-    }
-
-    .row {
-      height: inherit;
+      form {
+        .submit {
+          @include medium-and-up {
+            flex-direction: column;
+          }
+        }
+      }
     }
   }
 
@@ -61,31 +62,20 @@
         }
       }
 
-      .en_component--formblock-flex {
+      .formblock-flex {
         display: flex;
         flex-wrap: wrap;
         width: 100%;
 
-        .en__field {
-          width: 100%;
-        }
-
         @include medium-and-up {
           justify-content: space-between;
-
-          .en__field {
-            width: 49%;
-          }
         }
-      }
 
-      @include medium-and-up {
-        .submit {
-          display: flex;
-          flex-direction: row-reverse;
+        .en__field {
+          width: 100%;
 
-          input[type=submit] {
-            width: auto;
+          @include medium-and-up {
+            width: 49%;
           }
         }
       }
@@ -94,9 +84,14 @@
         margin: 0;
         line-height: 1;
 
-        input[type=submit] {
-          margin-bottom: 0;
+        @include medium-and-up {
+          display: flex;
+          flex-direction: row-reverse;
         }
+      }
+
+      input[type=submit] {
+        margin-bottom: 0;
       }
     }
   }
@@ -152,19 +147,6 @@
 
     @include large-and-up {
       text-align: left;
-    }
-  }
-
-  img {
-    position: absolute;
-    height: auto;
-    width: 100%;
-    object-fit: cover;
-
-    @supports (object-fit: cover) {
-      & {
-        height: 500px;
-      }
     }
   }
 

@@ -1,7 +1,18 @@
 {% block enform %}
-	<div class="enform-wrap {% if fields.en_form_style == 2 %}block-wide{% endif %}">
+	<div class="enform-wrap enform-{{ fields.en_form_style }} {% if fields.en_form_style == 'full-width-bg' %}block-wide{% endif %}">
+		{% if fields.en_form_style == 'full-width-bg' %}
+			<picture>
+				<img src="{{ fields.background_src.0|default(fields.default_image) }}"
+					style="object-position:{{ fields.focus_image }};opacity:{{ fields.opacity }};"
+					border="0"
+					srcset="{{ fields.background_srcset }}"
+					sizes="{{ fields.background_sizes }}"
+				/>
+			</picture>
+		{% endif %}
+
 		<div class="container">
-			<div class="row {% if fields.en_form_style == 2 %}justify-content-md-center{% endif %}">
+			<div class="row">
 				<div class="col-md-12">
 					{% if 0 == enform_submit %}
 						<div class="enform">
@@ -11,9 +22,9 @@
 								<input type="hidden" name="en_page_id" value="{{ fields.en_page_id }}">
 
 								{{ error_msg }}
-								<div class="en__component en__component--row en__component--row--1">
-									<div class="en__component en__component--formblock">
-										<div class="en_component--formblock-flex donations-formsection-info">
+								<div class="{% if fields.en_form_style == 'full-width-bg' %}row{% endif %}">
+									<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
+										<div class="formblock-flex donations-formsection-info">
 											{% for key,data in fields %}
 
 												{% if supporter %}
@@ -76,9 +87,16 @@
 											{% endfor %}
 										</div>
 									</div>
-								</div>
-								<div class="submit">
-									<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block" value="{{ __( 'Sign', domain ) }}">
+
+									<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
+										<div>
+											{{ fields.title }}
+										</div>
+										<div>
+											{{ fields.description }}
+										</div>
+										<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ __( 'Sign', domain ) }}">
+									</div>
 								</div>
 							</form>
 						</div>
