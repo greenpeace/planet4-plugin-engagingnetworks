@@ -23,6 +23,43 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		private $ens_api = null;
 
 		/**
+		 * Hooks all the needed functions to load the block.
+		 */
+		public function load() {
+			parent::load();
+			add_action( 'admin_print_footer_scripts-post.php', [ $this, 'print_admin_footer_scripts' ], 1 );
+			add_action( 'admin_print_footer_scripts-post-new.php', [ $this, 'print_admin_footer_scripts' ], 1 );
+			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
+		}
+
+		/**
+		 * Load assets only on the admin pages of the plugin.
+		 *
+		 * @param string $hook The slug name of the current admin page.
+		 */
+		public function load_admin_assets( $hook ) {
+			if ( 'post.php' !== $hook && 'post-new.php' !== $hook ) {
+				return;
+			}
+
+			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.1' );
+			add_action(
+				'enqueue_shortcode_ui',
+				function () {
+					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
+					wp_enqueue_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.1', true );
+				}
+			);
+		}
+
+		/**
+		 * Load underscore templates to footer.
+		 */
+		public function print_admin_footer_scripts() {
+			echo $this->get_template( 'en-ui' ); // WPCS: XSS ok.
+		}
+
+		/**
 		 * Shortcode UI setup for the ENForm shortcode.
 		 *
 		 * It is called when the Shortcake action hook `register_shortcode_ui` is called.
@@ -75,6 +112,25 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'type'        => 'select',
 					'options'     => $options,
 				],
+				[
+					'attr'              => 'en_form_style',
+					'label'             => __( 'What style of form do you need?', 'planet4-engagingnetworks' ),
+					'type'              => 'p4en_radio',
+					'options'           => [
+						[
+							'value' => '1',
+							'label' => __( 'Full Width', 'planet4-engagingnetworks' ),
+							'desc'  => 'Best for use inside pages and posts.',
+							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidth.png' ),
+						],
+						[
+							'value' => '2',
+							'label' => __( 'Full width background', 'planet4-engagingnetworks' ),
+							'desc'  => 'This options has a background image that expands the full width of the browser.',
+							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidthbg.png' ),
+						],
+					],
+				],
 			];
 
 			// Get supporter fields from EN and use them on the fly.
@@ -126,9 +182,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
 
 			$fields = $this->ignore_unused_attributes( $fields );
+			$excludedFields = [ 'en_page_id', 'en_form_style' ];
+
 			if ( $fields ) {
 				foreach ( $fields as $key => $value ) {
-					if ( 'en_page_id' !== $key ) {
+					if ( !in_array($key, $excludedFields) ) {
 						$attr_parts     = explode( '_', $key );
 						$fields[ $key ] = [
 							'id'        => $attr_parts[0],
