@@ -44,6 +44,13 @@ var editAttributeHeadingEN = sui.views.editAttributeField.extend({
 		 *           Reference to the shortcode model which this attribute belongs to.
 		 */
 		wp.shortcake.hooks.doAction(hookName, changed, collection, shortcode);
+
+		const en_form_style = $('input[name=' + attributeName + ']:checked').val();
+		if ('full-width' == en_form_style) {
+			$("#background").prop('disabled', 'disabled');
+		} else if ('full-width-bg' == en_form_style) {
+			$("#background").prop('disabled', false);
+		}
 	}
 });
 
