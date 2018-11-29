@@ -137,6 +137,22 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
+					'label'       => __( 'Title', 'planet4-engagingnetworks' ),
+					'attr'        => 'title',
+					'type'        => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter title', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
+					'label'       => __( 'Description', 'planet4-engagingnetworks' ),
+					'attr'        => 'description',
+					'type'        => 'textarea',
+					'meta'  => [
+						'placeholder' => __( 'Enter description', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
 					'label'       => __( 'Background', 'planet4-engagingnetworks' ),
 					'attr'        => 'background',
 					'type'        => 'attachment',
@@ -193,7 +209,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array The data to be passed in the View.
 		 */
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
-			$excluded_fields = [ 'en_page_id', 'en_form_style', 'background' ];
+			$excluded_fields = [ 'en_page_id', 'en_form_style', 'title', 'description', 'background' ];
 
 			$fields = $this->ignore_unused_attributes( $fields, $excluded_fields );
 
@@ -221,6 +237,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				$fields['background_sizes']  = wp_calculate_image_sizes( 'retina-large', null, null, $image_id );
 			}
 			$fields['default_image']     = get_bloginfo( 'template_directory' ) . '/images/happy-point-block-bg.jpg';
+
 
 			$data = [];
 			// If user is logged in.

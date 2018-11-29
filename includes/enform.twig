@@ -16,6 +16,8 @@
 				<div class="col-md-12">
 					{% if 0 == enform_submit %}
 						<div class="enform">
+							<h2>{{ fields.title }}</h2>
+							<p>{{ fields.description }}</p>
 							<form id="p4en_form" name="p4en_form" method="post">
 								{{ fn( 'wp_nonce_field', nonce_action, 'enform_nonce', true, false )|raw }}
 								<input type="hidden" name="enform_submit" value="{{ enform_submit }}">
@@ -89,12 +91,6 @@
 									</div>
 
 									<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
-										<div>
-											{{ fields.title }}
-										</div>
-										<div>
-											{{ fields.description }}
-										</div>
 										<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ __( 'Sign', domain ) }}">
 									</div>
 								</div>
