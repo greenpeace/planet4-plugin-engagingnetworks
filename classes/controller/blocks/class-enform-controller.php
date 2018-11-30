@@ -9,6 +9,7 @@ namespace P4EN\Controllers\Blocks;
 
 use P4EN\Controllers\Ensapi_Controller as Ensapi;
 use P4EN\Controllers\Menu\Pages_Datatable_Controller;
+use Timber\Timber;
 
 if ( ! class_exists( 'ENForm_Controller' ) ) {
 
@@ -35,6 +36,8 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 			add_action( 'admin_print_footer_scripts-post.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_print_footer_scripts-post-new.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
+			add_action( 'wp_ajax_handle_submit', [ $this, 'handle_submit' ] );
+			add_action( 'wp_ajax_nopriv_handle_submit', [ $this, 'handle_submit' ] );
 		}
 
 		/**
@@ -153,6 +156,22 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
+					'label'       => __( 'Thank you Title', 'planet4-engagingnetworks' ),
+					'attr'        => 'thankyou_title',
+					'type'        => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter Thank you Title', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
+					'label'       => __( 'Thank you Subtitle', 'planet4-engagingnetworks' ),
+					'attr'        => 'thankyou_subtitle',
+					'type'        => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter Thank you Subtitle', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
 					'label'       => __( 'Background', 'planet4-engagingnetworks' ),
 					'attr'        => 'background',
 					'type'        => 'attachment',
@@ -209,7 +228,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array The data to be passed in the View.
 		 */
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
-			$excluded_fields = [ 'en_page_id', 'en_form_style', 'title', 'description', 'background' ];
+			$excluded_fields = [ 'en_page_id', 'en_form_style', 'title', 'description', 'thankyou_title', 'thankyou_subtitle', 'background' ];
 
 			$fields = $this->ignore_unused_attributes( $fields, $excluded_fields );
 
@@ -229,6 +248,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				}
 			}
 
+			// Handle background image
 			if ( isset( $fields['background'] ) ) {
 				$image_id                    = '' !== $fields['background'] ? $fields['background'] : $p4_happy_point_bg_image;
 				$img_meta                    = wp_get_attachment_metadata( $image_id );
@@ -236,7 +256,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				$fields['background_srcset'] = wp_get_attachment_image_srcset( $image_id, 'retina-large', $img_meta );
 				$fields['background_sizes']  = wp_calculate_image_sizes( 'retina-large', null, null, $image_id );
 			}
-			$fields['default_image']     = get_bloginfo( 'template_directory' ) . '/images/happy-point-block-bg.jpg';
+			$fields['default_image'] = get_bloginfo( 'template_directory' ) . '/images/happy-point-block-bg.jpg';
 
 
 			$data = [];
@@ -266,6 +286,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'fields'          => $fields,
 				'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
 				'domain'          => 'planet4-engagingnetworks',
+			] );
+
+			$data = array_merge( $data, [
+				'nonce_action' => 'enform_submit',
 			] );
 
 			return $data;
@@ -307,18 +331,21 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 *
 		 * @return bool True if validation is ok, false if validation fails or if it is not a POST.
 		 */
-		public function handle_submit( &$data ) : bool {
-			if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-				// CSRF protection.
-				$nonce_action          = 'enform_submit';
-				$nonce                 = wp_create_nonce( $nonce_action );
-				$data['nonce_action']  = $nonce_action;
-				$data['enform_submit'] = 0;
-				$data['error_msg']     = '';
+		public function handle_submit() {
+			// If this is an ajax call.
+			if ( wp_doing_ajax() ) {
+				$main_settings         = get_option( 'p4en_main_settings' );
+				$ens_private_token     = $main_settings['p4en_private_api'];
+				$this->ens_api         = new Ensapi( $ens_private_token );
 
-				if ( ! wp_verify_nonce( $nonce, $nonce_action ) ) {
+				$data['error_msg']     = '';
+				$values                = $_POST['values'];
+
+				// CSRF protection.
+				$nonce                 = $_POST['_wpnonce'];
+
+				if ( ! wp_verify_nonce( $nonce, 'enform_submit' ) ) {
 					$data['error_msg'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
-					return false;
 				} else {
 					$en_page_id = $_POST['en_page_id'];
 					$result = $this->valitize( [
@@ -327,13 +354,12 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 					if ( false === $result ) {
 						$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
-						return false;
 					}
 
 					if ( $this->ens_api ) {
 						$fields = [];
-						foreach ( $_POST as $key => $value ) {
-							if ( false !== strpos( $key, 'supporter_' ) ) {
+						foreach ( $values as $key => $value ) {
+							if ( false !== strpos( $key, 'supporter' ) ) {
 								$fields[ sanitize_text_field( $key ) ] = sanitize_text_field( $value );
 							}
 						}
@@ -341,16 +367,22 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 						$response = $this->ens_api->process_page( $en_page_id, $fields );
 						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
 							$data = json_decode( $response['body'], true );
-							$data['enform_submit'] = 1;
 						} else {
 							$data['error_msg'] = $response;
-							return false;
 						}
 					}
 				}
-				return true;
+				Timber::$locations = P4EN_INCLUDES_DIR;
+				Timber::render(
+					[ 'tease-thankyou.twig' ],
+					[
+						'title'         => $values['thankyou_title'],
+						'subtitle'      => $values['thankyou_subtitle'],
+						'error'         => $data['error_msg'],
+					]
+				);
+				wp_die();
 			}
-			return false;
 		}
 
 		/**

@@ -144,17 +144,17 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 			// inside the supporter key. Else a new supporter with this Email address will be created by EN.
 			$body = [
 				'supporter' => [
-					'Title'         => $fields['supporter_title'] ?? '',
-					'First name'    => $fields['supporter_firstname'] ?? '',
-					'Last name'     => $fields['supporter_lastname'] ?? '',
-					'Address 1'     => $fields['supporter_address1'] ?? '',
-					'Address 2'     => $fields['supporter_address2'] ?? '',
-					'City'          => $fields['supporter_city'] ?? '',
-					'Country'       => $fields['supporter_country'] ?? '',
-					'Postcode'      => $fields['supporter_postcode'] ?? '',
-					'Email'         => $fields['supporter_emailaddress'] ?? '',
-					'Phone Number'  => $fields['supporter_phonenumber'] ?? '',
-					'date_of_birth' => $fields['supporter_dateofbirth'] ?? '',
+					'Title'         => $fields['supporter.title'] ?? '',
+					'First name'    => $fields['supporter.firstname'] ?? '',
+					'Last name'     => $fields['supporter.lastname'] ?? '',
+					'Address 1'     => $fields['supporter.address1'] ?? '',
+					'Address 2'     => $fields['supporter.address2'] ?? '',
+					'City'          => $fields['supporter.city'] ?? '',
+					'Country'       => $fields['supporter.country'] ?? '',
+					'Postcode'      => $fields['supporter.postcode'] ?? '',
+					'Email'         => $fields['supporter.emailaddress'] ?? '',
+					'Phone Number'  => $fields['supporter.phonenumber'] ?? '',
+					'date_of_birth' => $fields['supporter.dateofbirth'] ?? '',
 				],
 			];
 
