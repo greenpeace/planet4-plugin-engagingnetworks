@@ -14,93 +14,89 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					{% if 0 == enform_submit %}
-						<div class="enform">
-							<h2>{{ fields.title }}</h2>
-							<p>{{ fields.description }}</p>
-							<form id="p4en_form" name="p4en_form" method="post">
-								{{ fn( 'wp_nonce_field', nonce_action, 'enform_nonce', true, false )|raw }}
-								<input type="hidden" name="enform_submit" value="{{ enform_submit }}">
-								<input type="hidden" name="en_page_id" value="{{ fields.en_page_id }}">
+					<div class="enform" id="enform">
+						<h2>{{ fields.title }}</h2>
+						<p>{{ fields.description }}</p>
+						<form id="p4en_form" name="p4en_form" method="post">
+							{{ fn( 'wp_nonce_field', nonce_action, '_wpnonce', true, false )|raw }}
+							<input type="hidden" name="enform_submit" value="{{ enform_submit }}">
+							<input type="hidden" name="en_page_id" value="{{ fields.en_page_id }}">
+							<input type="hidden" name="thankyou_title" value="{{ fields.thankyou_title }}">
+							<input type="hidden" name="thankyou_subtitle" value="{{ fields.thankyou_subtitle }}">
 
-								{{ error_msg }}
-								<div class="{% if fields.en_form_style == 'full-width-bg' %}row{% endif %}">
-									<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
-										<div class="formblock-flex donations-formsection-info">
-											{% for key,data in fields %}
+							{{ error_msg }}
+							<div class="{% if fields.en_form_style == 'full-width-bg' %}row{% endif %}">
+								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
+									<div class="formblock-flex donations-formsection-info">
+										{% for key,data in fields %}
 
-												{% if supporter %}
-													{% if 'title' in data.name %}
-														{% set value = supporter['Title'] %}
-													{% elseif 'first' in data.name %}
-														{% set value = supporter['First name'] %}
-													{% elseif 'last' in data.name %}
-														{% set value = supporter['Last name'] %}
-													{% elseif 'address1' in data.name %}
-														{% set value = supporter['Address 1'] %}
-													{% elseif 'address2' in data.name %}
-														{% set value = supporter['Address 2'] %}
-													{% elseif 'city' in data.name %}
-														{% set value = supporter.City %}
-													{% elseif 'country' in data.name %}
-														{% set value = supporter.Country %}
-													{% elseif 'post' in data.name %}
-														{% set value = supporter.Postcode %}
-													{% elseif 'email' in data.name %}
-														{% set value = supporter.Email %}
-													{% elseif 'region' in data.name %}
-														{% set value = supporter.County %}
-													{% elseif 'phone' in data.name %}
-														{% set value = supporter['Phone Number'] %}
-													{% elseif 'birth' in data.name %}
-														{% set value = supporter['date_of_birth'] %}
-													{% else %}
-														{% set value = '' %}
-													{% endif %}
+											{% if supporter %}
+												{% if 'title' in data.name %}
+													{% set value = supporter['Title'] %}
+												{% elseif 'first' in data.name %}
+													{% set value = supporter['First name'] %}
+												{% elseif 'last' in data.name %}
+													{% set value = supporter['Last name'] %}
+												{% elseif 'address1' in data.name %}
+													{% set value = supporter['Address 1'] %}
+												{% elseif 'address2' in data.name %}
+													{% set value = supporter['Address 2'] %}
+												{% elseif 'city' in data.name %}
+													{% set value = supporter.City %}
+												{% elseif 'country' in data.name %}
+													{% set value = supporter.Country %}
+												{% elseif 'post' in data.name %}
+													{% set value = supporter.Postcode %}
+												{% elseif 'email' in data.name %}
+													{% set value = supporter.Email %}
+												{% elseif 'region' in data.name %}
+													{% set value = supporter.County %}
+												{% elseif 'phone' in data.name %}
+													{% set value = supporter['Phone Number'] %}
+												{% elseif 'birth' in data.name %}
+													{% set value = supporter['date_of_birth'] %}
 												{% else %}
 													{% set value = '' %}
 												{% endif %}
+											{% else %}
+												{% set value = '' %}
+											{% endif %}
 
-												{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
-													<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }} {{ 'true' == data.mandatory ? 'en__mandatory' : '' }}">
-														<div class="en__field__element en__field__element--text form-group" style="display: block;">
-															{% if 'text' == data.type %}
-																<input id="en__field_supporter_{{ data.name }}"
-																	name="supporter.{{ data.name }}"
-																	type="text"
-																	class="en__field__input en__field__input--text form-control"
-																	value="{{ value }}"
-																	placeholder="{{ data.label }}{{ 'birth' in data.name ? ' (yyyy/mm/dd)' : '' }}" {{ 'true' == data.mandatory ? 'required' : '' }}
-																	size="40" />
-															{% elseif 'country' == data.type %}
-																	{% include 'country_select.twig' %}
-															{% elseif 'question' == data.type %}
-																<label for="en__field_supporter_questions_{{ data.id }}"
-																	class="en__field__label en__field__label--item form-check-label"
-																	style="display: block; margin-top: -25px; margin-left: 25px;"></label>
-																<input id="en__field_supporter_questions_{{ data.id }}"
-																	type="checkbox"
-																	name="supporter.questions.{{ data.id }}"
-																	value="" />
-															{% endif %}
-														</div>
+											{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
+												<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }} {{ 'true' == data.mandatory ? 'en__mandatory' : '' }}">
+													<div class="en__field__element en__field__element--text form-group" style="display: block;">
+														{% if 'text' == data.type %}
+															<input id="en__field_supporter_{{ data.name }}"
+																name="supporter.{{ data.name }}"
+																type="text"
+																class="en__field__input en__field__input--text form-control"
+																value="{{ value }}"
+																placeholder="{{ data.label }}{{ 'birth' in data.name ? ' (yyyy/mm/dd)' : '' }}" {{ 'true' == data.mandatory ? 'required' : '' }}
+																size="40" />
+														{% elseif 'country' == data.type %}
+																{% include 'country_select.twig' %}
+														{% elseif 'question' == data.type %}
+															<label for="en__field_supporter_questions_{{ data.id }}"
+																class="en__field__label en__field__label--item form-check-label"
+																style="display: block; margin-top: -25px; margin-left: 25px;"></label>
+															<input id="en__field_supporter_questions_{{ data.id }}"
+																type="checkbox"
+																name="supporter.questions.{{ data.id }}"
+																value="" />
+														{% endif %}
 													</div>
-												{% endif %}
-											{% endfor %}
-										</div>
-									</div>
-
-									<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
-										<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ __( 'Sign', domain ) }}">
+												</div>
+											{% endif %}
+										{% endfor %}
 									</div>
 								</div>
-							</form>
-						</div>
-					{% else %}
-						{{ __( 'Thanks for signing!', domain ) }}
-						<br />
-						<br />
-					{% endif %}
+
+								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
+									<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ __( 'Sign', domain ) }}">
+								</div>
+							</div>
+						</form>
+					</div>
 					<div class="clear"></div>
 				</div>
 			</div>
