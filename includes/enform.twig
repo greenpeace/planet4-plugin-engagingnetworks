@@ -14,7 +14,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-					<div class="enform" id="enform">
+					<div class="enform" id="enform" data-redirect-url="{{ redirect_url|default('') }}">
 						<h2>{{ fields.title }}</h2>
 						<p>{{ fields.description }}</p>
 						<form id="p4en_form" name="p4en_form" method="post">

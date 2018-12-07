@@ -22,7 +22,14 @@ $(document).ready(function () {
         values: values,
       },
     }).done(function ( response ) {
-      $content.html( response );
+      if ('undefined' !== $content.data('redirect-url')) {
+        var url = $content.data('redirect-url');
+        if ('' !== url && 'false' !== url) {
+          window.location = url;
+        }
+      } else {
+        $content.html( response );
+      }
     }).fail(function ( response ) {
       console.log(response); //eslint-disable-line no-console
     });

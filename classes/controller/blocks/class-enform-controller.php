@@ -172,6 +172,14 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
+					'label'       => __( 'Thank you Url', 'planet4-engagingnetworks' ),
+					'attr'        => 'thankyou_url',
+					'type'        => 'url',
+					'meta'  => [
+						'placeholder' => __( 'Enter Thank you url', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
 					'label'       => __( 'Background', 'planet4-engagingnetworks' ),
 					'attr'        => 'background',
 					'type'        => 'attachment',
@@ -228,7 +236,17 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array The data to be passed in the View.
 		 */
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
-			$excluded_fields = [ 'en_page_id', 'en_form_style', 'title', 'description', 'thankyou_title', 'thankyou_subtitle', 'background' ];
+			$excluded_fields = [
+				'en_page_id',
+				'en_form_style',
+				'title',
+				'description',
+				'thankyou_title',
+				'thankyou_subtitle',
+				'thankyou_url',
+				'background',
+			];
+			$redirect_url = $fields['thankyou_url'] ? filter_var($fields['thankyou_url'], FILTER_VALIDATE_URL) : '';
 
 			$fields = $this->ignore_unused_attributes( $fields, $excluded_fields );
 
@@ -290,6 +308,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			$data = array_merge( $data, [
 				'nonce_action' => 'enform_submit',
+				'redirect_url' => $redirect_url,
 			] );
 
 			return $data;
