@@ -182,24 +182,16 @@ if ( ! class_exists( 'Controller' ) ) {
 		 *
 		 * @return array The valid fields.
 		 */
-		public function ignore_unused_attributes( $fields, $forceKeep = false ) : array {
+		public function ignore_unused_attributes( $fields ) : array {
 			// Filter out any attributes that are still inside the shortcode but are not being used by the block.
 			if ( $fields ) {
-				$fields_ids = [];
-
 				foreach ( $fields as $index => $value ) {
 					$fields_id = explode( '_', $index )[0];
-					if ( 
-						( is_numeric($fields_id) && !in_array( $fields_id, $fields_ids, true ) ) ||
-						( $forceKeep && in_array( $index, $forceKeep ) )
-					) {
-						$fields_ids[] = $fields_id;
-					} else {
+					if ( is_numeric( $fields_id ) && ! $value ) {
 						unset( $fields[ $index ] );
 					}
 				}
 			}
-
 			return $fields;
 		}
 

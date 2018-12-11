@@ -155,6 +155,7 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 					'Email'         => $fields['supporter.emailaddress'] ?? '',
 					'Phone Number'  => $fields['supporter.phonenumber'] ?? '',
 					'date_of_birth' => $fields['supporter.dateofbirth'] ?? '',
+					'questions'     => $fields['supporter.questions'] ?? [],
 				],
 			];
 
@@ -211,17 +212,49 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		}
 
 		/**
+		 * Gets all the supporter questions/optins that exist in the EN client account.
+		 *
+		 * @return array|string Array with the fields or a message if something goes wrong.
+		 */
+		public function get_supporter_questions() {
+			$response = get_transient( 'ens_supporter_questions_response' );
+			if ( ! $response ) {
+				$url = self::ENS_SUPPORTER_URL . '/questions';
+
+				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
+				$response = wp_safe_remote_get( $url, [
+					'headers' => [
+						'ens-auth-token' => $this->ens_auth_token,
+						'Content-Type'   => 'application/json; charset=UTF-8',
+					],
+					'timeout' => self::ENS_CALL_TIMEOUT,
+				] );
+
+				// Authentication failure.
+				if ( is_wp_error( $response ) ) {
+					return $response->get_error_message() . ' ' . $response->get_error_code();
+
+				} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
+					return $response['response']['message'] . ' ' . $response['response']['code'];
+				}
+				set_transient( 'ens_supporter_questions_response', $response, self::ENS_CACHE_TTL );
+			}
+			return $response;
+		}
+
+		/**
 		 * Authenticates usage of ENS API calls.
 		 *
 		 * @param string $email The supporter's email address.
+		 * @param bool   $include_questions True if we want to include the supporters data for questions/optins.
 		 *
 		 * @return array|string An associative array with the response (under key 'body') or a string with an error message in case of a failure.
 		 */
-		public function get_supporter_by_email( $email ) {
+		public function get_supporter_by_email( $email, $include_questions = true ) {
 
 			$url = add_query_arg( [
 				'email' => $email,
-				'includeQuestions' => true,
+				'includeQuestions' => $include_questions ? 'true' : 'false',
 			], self::ENS_SUPPORTER_URL );
 
 			// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.

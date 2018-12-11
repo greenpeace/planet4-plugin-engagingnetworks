@@ -91,9 +91,13 @@
     background-color: #3CB54C;
 }
 
-.field-list-item {
-    margin-left: 25px;
+.question-list-item {
+  margin-left: 25px;
+  width: 20%;
 }
+
 .field-dashicon {
-    padding-top: 10px;
+  color: #0275d8;
+  cursor: pointer;
+  padding-top: 4px;
 }
