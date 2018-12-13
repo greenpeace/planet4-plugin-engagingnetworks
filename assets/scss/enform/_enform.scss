@@ -45,7 +45,7 @@
   form {
     margin: 0;
 
-    input, .custom-select {
+    input, .custom-select, select.form-control.en__field__input--select {
       height: 42px;
       border-radius: 0;
       border-color: transparent;
@@ -54,6 +54,16 @@
 
       @include medium-and-up {
         margin-bottom: inherit;
+      }
+
+      &.is-invalid {
+        border-color: #ff3333;
+      }
+
+      + .invalid-feedback {
+        background: #ff3333;
+        color: white;
+        padding: 5px;
       }
     }
 

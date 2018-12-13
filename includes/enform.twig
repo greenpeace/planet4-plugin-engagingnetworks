@@ -17,7 +17,7 @@
 					<div class="enform" id="enform" data-redirect-url="{{ redirect_url|default('') }}">
 						<h2>{{ fields.title }}</h2>
 						<p>{{ fields.description }}</p>
-						<form id="p4en_form" name="p4en_form" method="post">
+						<form id="p4en_form" name="p4en_form" method="post" novalidate>
 							{{ fn( 'wp_nonce_field', nonce_action, '_wpnonce', true, false )|raw }}
 							<input type="hidden" name="enform_submit" value="{{ enform_submit }}">
 							<input type="hidden" name="en_page_id" value="{{ fields.en_page_id }}">
@@ -29,6 +29,7 @@
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
 									<div class="formblock-flex donations-formsection-info">
 										{% for key,data in fields %}
+											{% set errorMessage = __( 'This field is required', domain ) %}
 
 											{% if supporter %}
 												{% if 'title' in data.name %}
@@ -62,6 +63,10 @@
 												{% set value = '' %}
 											{% endif %}
 
+											{% if data.type == 'email' %}
+												{% set errorMessage = __( 'Please enter a valid e-mail address.', domain ) %}
+											{% endif %}
+
 											{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
 												<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }} {{ 'true' == data.mandatory ? 'en__mandatory' : '' }}">
 													<div class="en__field__element en__field__element--text form-group" style="display: block;">
@@ -71,7 +76,9 @@
 																type="{{ data.type }}"
 																class="en__field__input en__field__input--text form-control"
 																value="{{ value }}"
-																placeholder="{{ data.label }}{{ 'birth' in data.name ? ' (yyyy/mm/dd)' : '' }}" {{ 'true' == data.mandatory ? 'required' : '' }}
+																data-errormessage="{{ errorMessage }}"
+																placeholder="{{ data.label }}{{ 'birth' in data.name ? ' (yyyy/mm/dd)' : '' }}"
+																{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
 																size="40" />
 														{% elseif 'country' == data.type %}
 																{% include 'country_select.twig' %}
