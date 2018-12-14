@@ -1,27 +1,28 @@
 // Force wide blocks outside the container
+
 $(document).ready(function() {
   'use strict';
 
-  var $wideblocks = $('.block-wide');
-  var $container = $('div.page-template, div.container').eq(0);
+  const $wideblocks = $('.block-wide');
 
   function force_wide_blocks() {
-    var vw = $container.width();
     $wideblocks.each(function() {
-      var width = $(this).innerWidth();
+      const left = $(this).offset().left;
 
-      var margin = ((vw - width) / 2);
+      if (left > 0) {
+        const margin = -left;
 
-      if ($('html').attr('dir') === 'rtl') {
-        $(this).css('margin-left', 'auto');
-        $(this).css('margin-right', margin + 'px');
-      } else {
-        $(this).css('margin-left', margin + 'px');
+        if ($('html').attr('dir') === 'rtl') {
+          $(this).css('margin-left', 'auto');
+          $(this).css('margin-right', margin + 'px');
+        } else {
+          $(this).css('margin-left', margin + 'px');
+        }
       }
     });
   }
 
-  if ($wideblocks.length > 0 && $container.length > 0) {
+  if ($wideblocks.length > 0) {
     force_wide_blocks();
     $(window).on('resize', force_wide_blocks);
   } else {
@@ -29,4 +30,3 @@ $(document).ready(function() {
     $('iframe').attr('style','left: 0');
   }
 });
-  
