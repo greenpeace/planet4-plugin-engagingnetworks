@@ -61,7 +61,7 @@ if ( ! class_exists( 'Loader' ) ) {
 		 * Register our setting to WP.
 		 */
 		public function init() {
-			add_option( 'planet4-en-fields', [] );
+			add_option( 'planet4-en-questions', [] );
 		}
 
 		/**

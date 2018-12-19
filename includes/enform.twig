@@ -65,30 +65,55 @@
 											{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
 												<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }} {{ 'true' == data.mandatory ? 'en__mandatory' : '' }}">
 													<div class="en__field__element en__field__element--text form-group" style="display: block;">
-														{% if 'text' == data.type %}
+														{% if 'text' == data.type or 'email' == data.type %}
 															<input id="en__field_supporter_{{ data.name }}"
 																name="supporter.{{ data.name }}"
-																type="text"
+																type="{{ data.type }}"
 																class="en__field__input en__field__input--text form-control"
 																value="{{ value }}"
 																placeholder="{{ data.label }}{{ 'birth' in data.name ? ' (yyyy/mm/dd)' : '' }}" {{ 'true' == data.mandatory ? 'required' : '' }}
 																size="40" />
 														{% elseif 'country' == data.type %}
 																{% include 'country_select.twig' %}
-														{% elseif 'question' == data.type %}
-															<label for="en__field_supporter_questions_{{ data.id }}"
-																class="en__field__label en__field__label--item form-check-label"
-																style="display: block; margin-top: -25px; margin-left: 25px;"></label>
-															<input id="en__field_supporter_questions_{{ data.id }}"
-																type="checkbox"
-																name="supporter.questions.{{ data.id }}"
-																value="" />
 														{% endif %}
 													</div>
 												</div>
 											{% endif %}
 										{% endfor %}
 									</div>
+									<br />
+									{% if supporter %}
+										{% for key,data in supporter.questions %}
+											{% if 'gen' == data.type %}
+												<div style="display: flex; flex-direction: row;">
+													<label for="en__field_supporter_questions_{{ data.id }}"
+														   class="en__field__label en__field__label--item form-check-label"
+														   style="color: white; margin-right: 20px;">{{ data.label }}</label>
+													<input id="en__field_supporter_questions_{{ data.id }}"
+														   name="supporter.questions.{{ data.id }}"
+														   type="text"
+														   class="en__field__input en__field__input--text"
+														   style="flex: 1;"
+														   value="" />
+												</div><br />
+											{% endif %}
+										{% endfor %}
+										<br />
+										{% for key,data in supporter.questions %}
+											{% if 'opt' == data.type %}
+												<div>
+													<input id="en__field_supporter_questions_{{ data.id }}"
+														   name="supporter.questions.{{ data.id }}"
+														   class="en__field__input en__field__input--checkbox"
+														   type="checkbox"
+														   value="{{ data.value }}" {{ 'Y' == data.value ? 'checked' : '' }} />
+													<label for="en__field_supporter_questions_{{ data.id }}"
+														   class="en__field__label en__field__label--item form-check-label"
+														   style="color: white;">{{ data.label }}</label>
+												</div>
+											{% endif %}
+										{% endfor %}
+									{% endif %}
 								</div>
 
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">

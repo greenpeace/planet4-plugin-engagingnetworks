@@ -47,21 +47,36 @@ class Rest_Controller {
 	private function setup_rest_endpoints() {
 		$version = 'v1';
 
-		$fields_controller = new Fields_Controller();
+		$questions_controller = new Questions_Controller();
 
 		/**
-		 * Get a single form's fields.
+		 * Get a single form's questions.
 		 *
 		 * Requires authentication.
 		 *
-		 * @route   wp-json/planet4-engaging-networks/v1/fields
+		 * @route   wp-json/planet4-engaging-networks/v1/questions_available
 		 * @method  \WP_REST_Server::READABLE ( GET )
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields', [
+		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions_available', [
 			'methods'  => \WP_REST_Server::READABLE,
-			'callback' => [ $fields_controller, 'get_fields' ],
+			'callback' => [ $questions_controller, 'get_available_questions' ],
+		] );
+
+		/**
+		 * Get a single form's questions.
+		 *
+		 * Requires authentication.
+		 *
+		 * @route   wp-json/planet4-engaging-networks/v1/questions
+		 * @method  \WP_REST_Server::READABLE ( GET )
+		 *
+		 * @returns \WP_REST_Response
+		 */
+		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions', [
+			'methods'  => \WP_REST_Server::READABLE,
+			'callback' => [ $questions_controller, 'get_questions' ],
 		] );
 
 
@@ -70,36 +85,35 @@ class Rest_Controller {
 		 *
 		 * Requires authentication.
 		 *
-		 * @route   wp-json/planet4-engaging-networks/<v2+>/locations
+		 * @route   wp-json/planet4-engaging-networks/<v2+>/questions
 		 * @method  \WP_REST_Server::EDITABLE ( POST, PUT, PATCH )
 		 *
-		 * @params  int     id          required , field id.
-		 * @params  string  label       required, field label.
-		 * @params  boolean mandatory   required, specify if field is mandatory.
-		 * @params  string  name        required, field name.
-		 * @params  string  type        required, specify field's type.
+		 * @params  int     id          required , question id.
+		 * @params  string  label       required, question label.
+		 * @params  string  name        required, question name.
+		 * @params  string  type        required, specify question's type.
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields', [
+		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions', [
 			'methods'             => \WP_REST_Server::EDITABLE,
-			'callback'            => [ $fields_controller, 'add_field' ],
+			'callback'            => [ $questions_controller, 'add_question' ],
 			'permission_callback' => [ $this, 'is_allowed' ],
 		] );
 
 		/**
-		 * Get a single form's fields.
+		 * Get a single form's questions.
 		 *
 		 * Requires authentication.
 		 *
-		 * @route   wp-json/planet4-engaging-networks/<v1+>/form/get_fields
+		 * @route   wp-json/planet4-engaging-networks/<v1+>/questions
 		 * @method  \WP_REST_Server::READABLE ( GET )
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', [
+		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions/(?P<id>\d+)', [
 			'methods'             => \WP_REST_Server::READABLE,
-			'callback'            => [ $fields_controller, 'get_field' ],
+			'callback'            => [ $questions_controller, 'get_question' ],
 			'permission_callback' => [ $this, 'is_allowed' ],
 		] );
 
@@ -109,20 +123,19 @@ class Rest_Controller {
 		 *
 		 * Requires authentication.
 		 *
-		 * @route   wp-json/planet4-engaging-networks/v1/fields/<id>
+		 * @route   wp-json/planet4-engaging-networks/v1/questions/<id>
 		 * @method  \WP_REST_Server::EDITABLE ( POST, PUT, PATCH )
 		 *
-		 * @params  int     id          required , field id.
-		 * @params  string  label       required, field label.
-		 * @params  boolean mandatory   required, specify if field is mandatory.
-		 * @params  string  name        required, field name.
-		 * @params  string  type        required, specify field's type.
+		 * @params  int     id          required , question id.
+		 * @params  string  label       required, question label.
+		 * @params  string  name        required, question name.
+		 * @params  string  type        required, specify question's type.
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', [
+		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions/(?P<id>\d+)', [
 			'methods'             => \WP_REST_Server::EDITABLE,
-			'callback'            => [ $fields_controller, 'update_field' ],
+			'callback'            => [ $questions_controller, 'update_question' ],
 			'permission_callback' => [ $this, 'is_allowed' ],
 		] );
 
@@ -131,14 +144,14 @@ class Rest_Controller {
 		 *
 		 * Requires authentication.
 		 *
-		 * @route   wp-json/planet4-engaging-networks/v1/fields/<id>
+		 * @route   wp-json/planet4-engaging-networks/v1/questions/<id>
 		 * @method  \WP_REST_Server::DELETABLE ( DELETE )
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/fields/(?P<id>\d+)', [
+		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions/(?P<id>\d+)', [
 			'methods'             => \WP_REST_Server::DELETABLE,
-			'callback'            => [ $fields_controller, 'delete_field' ],
+			'callback'            => [ $questions_controller, 'delete_question' ],
 			'permission_callback' => [ $this, 'is_allowed' ],
 		] );
 

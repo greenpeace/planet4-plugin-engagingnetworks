@@ -9,6 +9,7 @@ namespace P4EN\Controllers\Blocks;
 
 use P4EN\Controllers\Ensapi_Controller as Ensapi;
 use P4EN\Controllers\Menu\Pages_Datatable_Controller;
+use P4EN\Models\Questions_Model;
 use Timber\Timber;
 
 if ( ! class_exists( 'ENForm_Controller' ) ) {
@@ -198,19 +199,43 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 						$supporter_field['id'],
 						$supporter_field['name'],
 						( $supporter_field['mandatory'] ? 'true' : 'false' ),
-						str_replace( ' ', '-', $supporter_field['label'] ),
+						str_replace( [ ' ', '?' ], [ '--', '-_-' ], $supporter_field['label'] ),
 						$supporter_field['type'],
 					];
 
 					$args = [
 						'label'       => $supporter_field['name'],
 						'description' => $supporter_field['label'],
-						'attr'        => strtolower( implode( '_', $attr_parts ) ),
+						'attr'        => strtolower( implode( '__', $attr_parts ) ),
 						'type'        => 'checkbox',
 					];
 					if ( $supporter_field['mandatory'] ) {
 						$args['value'] = 'true';
 					}
+					$fields[] = $args;
+				}
+			}
+
+			// Get supporter fields from EN and use them on the fly.
+			$questions_model     = new Questions_Model();
+			$supporter_questions = $questions_model->get_questions();
+
+			if ( $supporter_questions ) {
+				foreach ( $supporter_questions as $supporter_question ) {
+					$attr_parts = [
+						$supporter_question['id'],
+						str_replace( [ ' ', '?' ], [ '--', '-_-' ], $supporter_question['name'] ),
+						$supporter_question['questionId'],
+						str_replace( [ ' ', '?' ], [ '--', '-_-' ], $supporter_question['label'] ),
+						$supporter_question['type'],
+					];
+
+					$args = [
+						'label'       => $supporter_question['label'],
+						'description' => 'GEN' === $supporter_question['type'] ? 'Question' : 'Opt-in',
+						'attr'        => strtolower( implode( '__', $attr_parts ) ),
+						'type'        => 'checkbox',
+					];
 					$fields[] = $args;
 				}
 			}
@@ -246,28 +271,42 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'thankyou_url',
 				'background',
 			];
-			$redirect_url = $fields['thankyou_url'] ? filter_var($fields['thankyou_url'], FILTER_VALIDATE_URL) : '';
+			$redirect_url = isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '';
 
-			$fields = $this->ignore_unused_attributes( $fields, $excluded_fields );
+			$fields    = $this->ignore_unused_attributes( $fields );
+			$questions = [];
 
 			if ( $fields ) {
 				foreach ( $fields as $key => $value ) {
-					if ( ! in_array( $key, $excluded_fields ) ) {
-						$attr_parts     = explode( '_', $key );
-						$fields[ $key ] = [
-							'id'        => $attr_parts[0],
-							'name'      => $attr_parts[1],
-							'mandatory' => $attr_parts[2],
-							'label'     => str_replace( '-', ' ', $attr_parts[3] ),
-							'type'      => $attr_parts[4],
-							'value'     => $value,
-						];
+					if ( ! in_array( $key, $excluded_fields, true ) ) {
+						$attr_parts = explode( '__', $key );
+						if ( 'gen' === $attr_parts[4] || 'opt' === $attr_parts[4] ) {
+							$questions[ $attr_parts[2] ] = [
+								'id'         => $attr_parts[0],
+								'name'       => $attr_parts[1],
+								'questionId' => $attr_parts[2],
+								'label'      => str_replace( [ '--', '-_-' ], [ ' ', '?' ], $attr_parts[3] ),
+								'type'       => $attr_parts[4],
+								'value'      => $value,
+							];
+						} else {
+							$fields[ $key ] = [
+								'id'        => $attr_parts[0],
+								'name'      => $attr_parts[1],
+								'mandatory' => $attr_parts[2],
+								'label'     => str_replace( [ '--', '-_-' ], [ ' ', '?' ], $attr_parts[3] ),
+								'type'      => $attr_parts[4],
+								'value'     => $value,
+							];
+						}
 					}
 				}
 			}
 
-			// Handle background image
+			// Handle background image.
 			if ( isset( $fields['background'] ) ) {
+				$options                     = get_option( 'planet4_options' );
+				$p4_happy_point_bg_image     = $options['happy_point_bg_image_id'] ?? '';
 				$image_id                    = '' !== $fields['background'] ? $fields['background'] : $p4_happy_point_bg_image;
 				$img_meta                    = wp_get_attachment_metadata( $image_id );
 				$fields['background_src']    = wp_get_attachment_image_src( $image_id, 'retina-large' );
@@ -295,20 +334,25 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				if ( is_array( $response ) && $response['body'] ) {
 					$supporter         = json_decode( $response['body'], true );
 					$data['supporter'] = $supporter;
+
+					// If there are questions and the EN supporter has previously responded to those then apply those responses.
+					if ( $questions ) {
+						if ( $data['supporter']['questions'] ) {
+							foreach ( $data['supporter']['questions'] as $en_supporter_question ) {
+								$questions[ $en_supporter_question['id'] ]['value'] = $en_supporter_question['response'];
+							}
+						}
+						$data['supporter']['questions'] = $questions;
+					}
 				}
 			}
 
-			$this->handle_submit( $data );
-
 			$data = array_merge( $data, [
 				'fields'          => $fields,
+				'redirect_url'    => $redirect_url,
+				'nonce_action'    => 'enform_submit',
 				'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
 				'domain'          => 'planet4-engagingnetworks',
-			] );
-
-			$data = array_merge( $data, [
-				'nonce_action' => 'enform_submit',
-				'redirect_url' => $redirect_url,
 			] );
 
 			return $data;
@@ -328,12 +372,19 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 					foreach ( $en_supporter_fields as $en_supporter_field ) {
 						if ( 'Not Tagged' !== $en_supporter_field['tag'] ) {
+							$type = 'text';
+							if ( false !== strpos( $en_supporter_field['property'], 'country' ) ) {
+								$type = 'country';
+							} elseif ( false !== stripos( $en_supporter_field['property'], 'emailaddress' ) ) {
+								$type = 'email';        // Set the type of the email input field as email.
+							}
+
 							$supporter_fields[] = [
 								'id'        => $en_supporter_field['id'],
 								'name'      => $en_supporter_field['property'],
 								'mandatory' => false,
 								'label'     => $en_supporter_field['name'],
-								'type'      => strpos( $en_supporter_field['property'], 'country' ) === false ? 'text' : 'country',
+								'type'      => $type,
 							];
 						}
 					}
@@ -344,46 +395,27 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		}
 
 		/**
-		 * Handle form submit.
-		 *
-		 * @param array $data The data that we will get from the form submission.
-		 *
-		 * @return bool True if validation is ok, false if validation fails or if it is not a POST.
+		 * Handle form submit asynchronously.
 		 */
 		public function handle_submit() {
 			// If this is an ajax call.
 			if ( wp_doing_ajax() ) {
-				$main_settings         = get_option( 'p4en_main_settings' );
-				$ens_private_token     = $main_settings['p4en_private_api'];
-				$this->ens_api         = new Ensapi( $ens_private_token );
-
-				$data['error_msg']     = '';
-				$values                = $_POST['values'];
-
-				// CSRF protection.
-				$nonce                 = $_POST['_wpnonce'];
+				$main_settings     = get_option( 'p4en_main_settings' );
+				$ens_private_token = $main_settings['p4en_private_api'];
+				$this->ens_api     = new Ensapi( $ens_private_token );
+				$nonce             = $_POST['_wpnonce'];   // CSRF protection.
 
 				if ( ! wp_verify_nonce( $nonce, 'enform_submit' ) ) {
 					$data['error_msg'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
 				} else {
-					$en_page_id = $_POST['en_page_id'];
-					$result = $this->valitize( [
-						'en_page_id' => $en_page_id,
-					] );
+					$values = $_POST['values'] ?? [];
+					$fields = $this->valitize( $values );
 
-					if ( false === $result ) {
+					if ( false === $fields ) {
 						$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
 					}
-
 					if ( $this->ens_api ) {
-						$fields = [];
-						foreach ( $values as $key => $value ) {
-							if ( false !== strpos( $key, 'supporter' ) ) {
-								$fields[ sanitize_text_field( $key ) ] = sanitize_text_field( $value );
-							}
-						}
-
-						$response = $this->ens_api->process_page( $en_page_id, $fields );
+						$response = $this->ens_api->process_page( $fields['en_page_id'], $fields );
 						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
 							$data = json_decode( $response['body'], true );
 						} else {
@@ -395,9 +427,9 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				Timber::render(
 					[ 'tease-thankyou.twig' ],
 					[
-						'title'         => $values['thankyou_title'],
-						'subtitle'      => $values['thankyou_subtitle'],
-						'error'         => $data['error_msg'],
+						'title'    => $fields['thankyou_title'] ?? '',
+						'subtitle' => $fields['thankyou_subtitle'] ?? '',
+						'error'    => $data['error_msg'] ?? '',
 					]
 				);
 				wp_die();
@@ -412,7 +444,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return bool
 		 */
 		public function validate( $input ) : bool {
-			if ( ! isset( $input['en_page_id'] ) || $input['en_page_id'] <= 0 ) {
+			if (
+				( ! isset( $input['en_page_id'] ) || $input['en_page_id'] <= 0 ) ||
+				( ! isset( $input['supporter.emailaddress'] ) || false === filter_var( $input['supporter.emailaddress'], FILTER_VALIDATE_EMAIL ) )
+			) {
 				return false;
 			}
 			return true;
@@ -424,8 +459,19 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @param array $input The associative array with the input that the user submitted.
 		 */
 		public function sanitize( &$input ) {
-			if ( isset( $input['en_page_id'] ) ) {
-				$input['en_page_id'] = sanitize_text_field( $input['en_page_id'] );
+			foreach ( $input as $key => $value ) {
+				if ( 'supporter.emailaddress' === $key ) {
+					$input[ $key ] = sanitize_email( $value );
+
+				} elseif ( false !== strpos( $key, 'supporter.question.' ) ) {  // Question/Optin name is in the form of 'supporter.question.{id}'.
+					$key_parts = explode( '.', $key );
+					if ( isset( $key_parts[2] ) ) {
+						$input['supporter.questions'][ "question.$key_parts[2]" ] = sanitize_text_field( $value );
+						unset( $input[ "supporter.question.$key_parts[2]" ] );
+					}
+				} else {
+					$input[ $key ] = sanitize_text_field( $value );
+				}
 			}
 		}
 	}
