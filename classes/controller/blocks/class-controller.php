@@ -186,7 +186,7 @@ if ( ! class_exists( 'Controller' ) ) {
 			// Filter out any attributes that are still inside the shortcode but are not being used by the block.
 			if ( $fields ) {
 				foreach ( $fields as $index => $value ) {
-					$fields_id = explode( '_', $index )[0];
+					$fields_id = explode( '__', $index )[0];
 					if ( is_numeric( $fields_id ) && ! $value ) {
 						unset( $fields[ $index ] );
 					}

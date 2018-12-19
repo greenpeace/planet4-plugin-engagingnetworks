@@ -278,8 +278,8 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			if ( $fields ) {
 				foreach ( $fields as $key => $value ) {
-					if ( ! in_array( $key, $excluded_fields, true ) ) {
-						$attr_parts = explode( '__', $key );
+					$attr_parts = explode( '__', $key );
+					if ( 5 === count( $attr_parts ) && is_numeric( $attr_parts[0] ) ) {
 						if ( 'gen' === $attr_parts[4] || 'opt' === $attr_parts[4] ) {
 							$questions[ $attr_parts[2] ] = [
 								'id'         => $attr_parts[0],
@@ -334,17 +334,17 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				if ( is_array( $response ) && $response['body'] ) {
 					$supporter         = json_decode( $response['body'], true );
 					$data['supporter'] = $supporter;
+				}
+			}
 
-					// If there are questions and the EN supporter has previously responded to those then apply those responses.
-					if ( $questions ) {
-						if ( $data['supporter']['questions'] ) {
-							foreach ( $data['supporter']['questions'] as $en_supporter_question ) {
-								$questions[ $en_supporter_question['id'] ]['value'] = $en_supporter_question['response'];
-							}
-						}
-						$data['supporter']['questions'] = $questions;
+			// If there are questions and the EN supporter has previously responded to those then apply those responses.
+			if ( $questions ) {
+				if ( isset( $data['supporter']['questions'] ) ) {
+					foreach ( (array) $data['supporter']['questions'] as $en_supporter_question ) {
+						$questions[ $en_supporter_question['id'] ]['value'] = $en_supporter_question['response'];
 					}
 				}
+				$data['supporter']['questions'] = $questions;
 			}
 
 			$data = array_merge( $data, [
