@@ -51,12 +51,12 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				return;
 			}
 
-			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.1' );
+			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.2' );
 			add_action(
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_enqueue_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.1', true );
+					wp_enqueue_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.2', true );
 				}
 			);
 		}
@@ -212,7 +212,19 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					if ( $supporter_field['mandatory'] ) {
 						$args['value'] = 'true';
 					}
+					$mandatory_attr_parts   = $attr_parts;
+					$mandatory_attr_parts[] = 'mandatory';
+					$args_mandatory         = [
+						'label'       => $supporter_field['name'] . '_mandatory',
+						'description' => 'Is "' . $supporter_field['label'] . '"" mandatory?',
+						'attr'        => strtolower( implode( '__', $mandatory_attr_parts ) ),
+						'type'        => 'checkbox',
+					];
+					if ( $supporter_field['mandatory'] ) {
+						$args['value'] = 'true';
+					}
 					$fields[] = $args;
+					$fields[] = $args_mandatory;
 				}
 			}
 
@@ -236,7 +248,18 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 						'attr'        => strtolower( implode( '__', $attr_parts ) ),
 						'type'        => 'checkbox',
 					];
+
+					$mandatory_attr_parts   = $attr_parts;
+					$mandatory_attr_parts[] = 'mandatory';
+					$args_mandatory         = [
+						'label'       => $supporter_question['label'] . '_mandatory',
+						'description' => 'Is "' . $supporter_question['label'] . '"" mandatory?',
+						'attr'        => strtolower( implode( '__', $mandatory_attr_parts ) ),
+						'type'        => 'checkbox',
+					];
+
 					$fields[] = $args;
+					$fields[] = $args_mandatory;
 				}
 			}
 
