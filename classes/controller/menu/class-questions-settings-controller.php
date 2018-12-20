@@ -37,7 +37,7 @@ if ( ! class_exists( 'Questions_Settings_Controller' ) ) {
 				'jquery',
 				'wp-api',
 				'wp-backbone',
-			], '0.2', true );
+			], '0.3', true );
 			wp_localize_script(
 				'en-app',
 				'p4_data',
