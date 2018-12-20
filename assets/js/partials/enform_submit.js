@@ -2,51 +2,109 @@
 $(document).ready(function () {
   'use strict';
 
+  function addChangeListeners(form) {
+    $(form.elements).each(function() {
+      $(this).off('change').on('change', function() {
+        validateForm(form);
+      });
+    });
+  }
+
+  function validateEmail(email) {
+    // Reference: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
+  function addErrorMessage(element) {
+    $(element).addClass('is-invalid');
+    var $invalidDiv = $('<div>');
+    $invalidDiv.addClass('invalid-feedback');
+    $invalidDiv.html($(element).data('errormessage'));
+    $invalidDiv.insertAfter(element);
+  }
+
+  function removeErrorMessage(element) {
+    $(element).removeClass('is-invalid');
+    var errorDiv = $(element).next();
+    if (errorDiv.length && errorDiv.hasClass('invalid-feedback')) {
+      $(errorDiv).remove();
+    }
+  }
+
+  function validateForm(form) {
+    var formIsValid = true;
+
+    $(form.elements).each(function() {
+      removeErrorMessage(this);
+      var formValue = $(this).val();
+
+      if ($(this).attr('required') && !formValue) {
+        addErrorMessage(this);
+
+        formIsValid = false;
+      } else if ($(this).attr('type') == 'email') {
+        formIsValid = validateEmail(formValue);
+
+        if (!formIsValid) {
+          addErrorMessage(this);
+        }
+      }
+    });
+
+    return formIsValid;
+  }
+
   $('#p4en_form').submit(function(e) {
     e.preventDefault();
 
-    const url = en_vars.ajaxurl;
-    const $content = $('#enform');
-    let values = {};
+    // Don't bug users with validation before the first submit
+    addChangeListeners(this);
 
-    // Prepare the questions/optins values the way that ENS api expects them.
-    $('.en__field__input--checkbox:checked').val('Y');
-    $.each($('.en__field__input--checkbox:not(":checked")'), function(i, field) {
-      if ( field.name.indexOf( 'supporter.questions.' ) >= 0 ) {
-        let id = field.name.split('.')[2];
-        values['supporter.question.' + id] = 'N';
-      }
-    });
+    if (validateForm(this)) {
+      const url = en_vars.ajaxurl;
+      const $content = $('#enform');
+      let values = {};
 
-    $.each($('#p4en_form').serializeArray(), function(i, field) {
-      if ( field.name.indexOf( 'supporter.questions.' ) >= 0 ) {
-        let id = field.name.split('.')[2];
-        values['supporter.question.' + id] = field.value;
-      } else {
-        values[field.name] = field.value;
-      }
-    });
+      // Prepare the questions/optins values the way that ENS api expects them.
+      $('.en__field__input--checkbox:checked').val('Y');
+      $.each($('.en__field__input--checkbox:not(":checked")'), function(i, field) {
+        if ( field.name.indexOf( 'supporter.questions.' ) >= 0 ) {
+          let id = field.name.split('.')[2];
+          values['supporter.question.' + id] = 'N';
+        }
+      });
 
-    $.ajax({
-      url: url,
-      type: 'POST',
-      data: {
-        action:       'handle_submit',
-        '_wpnonce':   $( '#_wpnonce' ).val(),
-        'en_page_id': $('input[name=en_page_id]').val(),
-        values: values,
-      },
-    }).done(function ( response ) {
-      var url = $content.data('redirect-url');
+      $.each($('#p4en_form').serializeArray(), function(i, field) {
+        if ( field.name.indexOf( 'supporter.questions.' ) >= 0 ) {
+          let id = field.name.split('.')[2];
+          values['supporter.question.' + id] = field.value;
+        } else {
+          values[field.name] = field.value;
+        }
+      });
 
-      if ( is_valid_url( url ) ) {
-        window.location = url;
-      } else {
-        $content.html( response );
-      }
-    }).fail(function ( response ) {
-      console.log(response); //eslint-disable-line no-console
-    });
+      $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+          action:     'handle_submit',
+          '_wpnonce': $( '#_wpnonce' ).val(),
+          'en_page_id': $('input[name=en_page_id]').val(),
+          values: values,
+        },
+      }).done(function ( response ) {
+        var redirectURL = $content.data('redirect-url');
+
+        if ( is_valid_url( redirectURL ) ) {
+          window.location = redirectURL;
+        } else {
+          $content.html( response );
+        }
+      }).fail(function ( response ) {
+        console.log(response); //eslint-disable-line no-console
+      });  
+    }
   });
 
   function is_valid_url(url) {
