@@ -10,3 +10,20 @@
     max-width: 25%;
     vertical-align: top;
 }
+
+.shortcode-ui-edit-shortcake_enform {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+div.shortcode-ui-edit-shortcake_enform > div {
+  padding-left: 2%;
+  flex: 0 20%;
+}
+
+div.shortcode-ui-edit-shortcake_enform > div:nth-child(-n+8) {
+  flex: 0 100%;
+}
+div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+9):nth-child(even) {
+  margin-right: 40%;
+}
