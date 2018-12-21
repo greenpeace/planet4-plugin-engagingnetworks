@@ -142,21 +142,30 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 
 			// If Email address is found then supporter exists and its data will be updated with the values
 			// inside the supporter key. Else a new supporter with this Email address will be created by EN.
+			$supporter_keys_fields = [
+				'Title'         => 'supporter.title',
+				'First name'    => 'supporter.firstname',
+				'Last name'     => 'supporter.lastname',
+				'Address 1'     => 'supporter.address1',
+				'Address 2'     => 'supporter.address2',
+				'City'          => 'supporter.city',
+				'Country'       => 'supporter.country',
+				'Postcode'      => 'supporter.postcode',
+				'Email'         => 'supporter.emailaddress',
+				'Phone Number'  => 'supporter.phonenumber',
+				'date_of_birth' => 'supporter.dateofbirth',
+				'questions'     => 'supporter.questions',
+			];
+
+			// Supporter fields are updated only if they exist as fields within the submitted form.
+			foreach ( $supporter_keys_fields as $api_key => $field_name ) {
+				if ( isset( $fields[ $field_name ] ) ) {
+					$supporter[ $api_key ] = $fields[ $field_name ];
+				}
+			}
+
 			$body = [
-				'supporter' => [
-					'Title'         => $fields['supporter.title'] ?? '',
-					'First name'    => $fields['supporter.firstname'] ?? '',
-					'Last name'     => $fields['supporter.lastname'] ?? '',
-					'Address 1'     => $fields['supporter.address1'] ?? '',
-					'Address 2'     => $fields['supporter.address2'] ?? '',
-					'City'          => $fields['supporter.city'] ?? '',
-					'Country'       => $fields['supporter.country'] ?? '',
-					'Postcode'      => $fields['supporter.postcode'] ?? '',
-					'Email'         => $fields['supporter.emailaddress'] ?? '',
-					'Phone Number'  => $fields['supporter.phonenumber'] ?? '',
-					'date_of_birth' => $fields['supporter.dateofbirth'] ?? '',
-					'questions'     => $fields['supporter.questions'] ?? [],
-				],
+				'supporter' => $supporter ?? [],
 			];
 
 			// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.

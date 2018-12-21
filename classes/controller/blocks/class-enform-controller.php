@@ -204,10 +204,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					];
 
 					$args = [
-						'label'       => $supporter_field['name'],
-						'description' => $supporter_field['label'],
-						'attr'        => strtolower( implode( '__', $attr_parts ) ),
-						'type'        => 'checkbox',
+						'label' => $supporter_field['label'],
+						'name'  => $supporter_field['name'],
+						'attr'  => strtolower( implode( '__', $attr_parts ) ),
+						'type'  => 'checkbox',
 					];
 					if ( $supporter_field['mandatory'] ) {
 						$args['value'] = 'true';
@@ -215,10 +215,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					$mandatory_attr_parts   = $attr_parts;
 					$mandatory_attr_parts[] = 'mandatory';
 					$args_mandatory         = [
-						'label'       => $supporter_field['name'] . '_mandatory',
-						'description' => 'Is "' . $supporter_field['label'] . '"" mandatory?',
-						'attr'        => strtolower( implode( '__', $mandatory_attr_parts ) ),
-						'type'        => 'checkbox',
+						'label' => __( 'required', 'planet4-engagingnetworks' ),
+						'name'  => $supporter_field['name'] . '_mandatory',
+						'attr'  => strtolower( implode( '__', $mandatory_attr_parts ) ),
+						'type'  => 'checkbox',
 					];
 					if ( $supporter_field['mandatory'] ) {
 						$args['value'] = 'true';
@@ -252,10 +252,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					$mandatory_attr_parts   = $attr_parts;
 					$mandatory_attr_parts[] = 'mandatory';
 					$args_mandatory         = [
-						'label'       => $supporter_question['label'] . '_mandatory',
-						'description' => 'Is "' . $supporter_question['label'] . '"" mandatory?',
-						'attr'        => strtolower( implode( '__', $mandatory_attr_parts ) ),
-						'type'        => 'checkbox',
+						'label' => __( 'required', 'planet4-engagingnetworks' ),
+						'name'  => $supporter_question['name'] . '_mandatory',
+						'attr'  => strtolower( implode( '__', $mandatory_attr_parts ) ),
+						'type'  => 'checkbox',
 					];
 
 					$fields[] = $args;
@@ -284,18 +284,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array The data to be passed in the View.
 		 */
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
-			$excluded_fields = [
-				'en_page_id',
-				'en_form_style',
-				'title',
-				'description',
-				'thankyou_title',
-				'thankyou_subtitle',
-				'thankyou_url',
-				'background',
-			];
-			$redirect_url = isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '';
-
 			$fields    = $this->ignore_unused_attributes( $fields );
 			$questions = [];
 
@@ -372,7 +360,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			$data = array_merge( $data, [
 				'fields'          => $fields,
-				'redirect_url'    => $redirect_url,
+				'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
 				'nonce_action'    => 'enform_submit',
 				'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
 				'domain'          => 'planet4-engagingnetworks',
