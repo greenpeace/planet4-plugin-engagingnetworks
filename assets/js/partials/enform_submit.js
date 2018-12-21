@@ -43,7 +43,7 @@ $(document).ready(function () {
         addErrorMessage(this);
 
         formIsValid = false;
-      } else if ($(this).attr('type') == 'email') {
+      } else if ('email' === $(this).attr('type')) {
         formIsValid = validateEmail(formValue);
 
         if (!formIsValid) {
@@ -61,9 +61,9 @@ $(document).ready(function () {
     // Don't bug users with validation before the first submit
     addChangeListeners(this);
 
+    const $content = $('#enform');
     if (validateForm(this)) {
       const url = en_vars.ajaxurl;
-      const $content = $('#enform');
       let values = {};
 
       // Prepare the questions/optins values the way that ENS api expects them.
