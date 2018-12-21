@@ -44,9 +44,10 @@ $(document).ready(function () {
 
         formIsValid = false;
       } else if ('email' === $(this).attr('type')) {
-        formIsValid = validateEmail(formValue);
+        var emailValid = validateEmail(formValue);
+        formIsValid = formIsValid === true ? emailValid : false;
 
-        if (!formIsValid) {
+        if (!emailValid) {
           addErrorMessage(this);
         }
       }
@@ -103,7 +104,7 @@ $(document).ready(function () {
         }
       }).fail(function ( response ) {
         console.log(response); //eslint-disable-line no-console
-      });  
+      });
     }
   });
 

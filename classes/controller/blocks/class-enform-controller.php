@@ -292,19 +292,20 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					$attr_parts = explode( '__', $key );
 					if ( 5 === count( $attr_parts ) && is_numeric( $attr_parts[0] ) ) {
 						if ( 'gen' === $attr_parts[4] || 'opt' === $attr_parts[4] ) {
-							$questions[ $attr_parts[2] ] = [
+							$questions[ $attr_parts[0] ] = [
 								'id'         => $attr_parts[0],
 								'name'       => $attr_parts[1],
 								'questionId' => $attr_parts[2],
 								'label'      => str_replace( [ '--', '-_-' ], [ ' ', '?' ], $attr_parts[3] ),
 								'type'       => $attr_parts[4],
 								'value'      => $value,
+								'mandatory' => array_key_exists( $key . '__mandatory', $fields ) ? $fields[ $key . '__mandatory' ] : 'false',
 							];
 						} else {
 							$fields[ $key ] = [
 								'id'        => $attr_parts[0],
 								'name'      => $attr_parts[1],
-								'mandatory' => $attr_parts[2],
+								'mandatory' => array_key_exists( $key . '__mandatory', $fields ) ? $fields[ $key . '__mandatory' ] : 'false',
 								'label'     => str_replace( [ '--', '-_-' ], [ ' ', '?' ], $attr_parts[3] ),
 								'type'      => $attr_parts[4],
 								'value'     => $value,
@@ -352,7 +353,9 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 			if ( $questions ) {
 				if ( isset( $data['supporter']['questions'] ) ) {
 					foreach ( (array) $data['supporter']['questions'] as $en_supporter_question ) {
-						$questions[ $en_supporter_question['id'] ]['value'] = $en_supporter_question['response'];
+						if ( isset( $questions[ $en_supporter_question['id'] ] ) ) {
+							$questions[ $en_supporter_question['id'] ]['value'] = $en_supporter_question['response'];
+						}
 					}
 				}
 				$data['supporter']['questions'] = $questions;
