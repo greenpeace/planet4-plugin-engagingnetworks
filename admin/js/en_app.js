@@ -95,7 +95,7 @@ Backbone.$.ajaxSetup({
     url: p4_data.api_url + '/questions_available',
 
     comparator: function (a) {
-      return a.get('name').toLowerCase();
+      return a.get('type') + a.get('name').toLowerCase();
     }
   });
 
@@ -199,7 +199,6 @@ Backbone.$.ajaxSetup({
       if (false === attrs) {
         return;
       }
-      console.log(attrs);
 
       var question = p4_en.questions.get(attrs.id);
       question.set(attrs);
@@ -226,7 +225,7 @@ Backbone.$.ajaxSetup({
    * A single question view.
    */
   p4_en.Views.QuestionsListItemView = Backbone.View.extend({
-    className: 'question-list-item',
+    className: 'question-list-item card',
     tagName: 'li',
     template: _.template($('#tmpl-en-question').html()),
 
@@ -321,7 +320,7 @@ Backbone.$.ajaxSetup({
    * A single question view.
    */
   p4_en.Views.AvailableQuestionsListItemView = Backbone.View.extend({
-    className: 'question-list-item',
+    className: 'question-list-item card',
     tagName: 'li',
     template: _.template($('#tmpl-en-available-question').html()),
 
@@ -396,7 +395,6 @@ Backbone.$.ajaxSetup({
     p4_en.show_loader();
     p4_en.available_questions.fetch({
       success: function (collection, response, options) {
-        console.log(collection);
         p4_en.add_message('Available Questions reloaded', 'updated');
         p4_en.available_questions_view.collection = collection;
         p4_en.available_questions_view.render();

@@ -1,7 +1,7 @@
 // Global styles
-@import "global/variables";
-@import "global/functions";
-@import "global/mixins";
+@import "base/variables";
+@import "base/functions";
+@import "base/mixins";
 
 // Import blocks
-@import "enform/enform";
+@import "components/enform";

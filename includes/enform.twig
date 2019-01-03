@@ -109,7 +109,7 @@
 										<br />
 										{% for key,data in supporter.questions %}
 											{% if 'opt' == data.type %}
-												<div>
+												<div class="form-check-label-block custom-control">
 													<input id="en__field_supporter_questions_{{ data.id }}"
 														   name="supporter.questions.{{ data.id }}"
 														   class="en__field__input en__field__input--checkbox"
@@ -117,8 +117,9 @@
 														   value="{{ data.value }}" {{ 'Y' == data.value ? 'checked' : '' }}
 														   {{ 'true' == data.mandatory ? ' required' : '' }} />
 													<label for="en__field_supporter_questions_{{ data.id }}"
-														   class="en__field__label en__field__label--item form-check-label"
-														   style="color: white;">{{ data.label }}</label>
+														   class="custom-control-description form-check-label">
+														   {{ data.label }}
+													</label>
 												</div>
 											{% endif %}
 										{% endfor %}

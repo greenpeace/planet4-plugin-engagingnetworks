@@ -1,65 +1,50 @@
 <script type="text/html" id="tmpl-en-available-questions">
 	<h2 class="page-header">{{ __('List of available en questions and opt-ins', 'planet4-engagingnetworks') }}</h2>
-	<p>
 	<div class="hidden" id="en_loader">
 		<img src="/wp-admin/images/wpspin_light-2x.gif"/>
 	</div>
-	</p>
-	<h5><%= col.length %> {{ __('questions available', 'planet4-engagingnetworks') }}</h5>
+	<div class="lead my-3">
+		<%= col.length %> {{ __('questions available', 'planet4-engagingnetworks') }}
+		<button class="btn button reload-questions ml-2">{{ __('Reload', 'planet4-engagingnetworks') }}</button>
+	</div>
 	<ul class="media-list row available-questions-container"></ul>
-	<br>
-	<p class="">
-		<button class="btn button reload-questions">{{ __('Reload', 'planet4-engagingnetworks') }}</button>
-	</p>
 </script>
 
 <script type="text/html" id="tmpl-en-questions">
 	<h2 class="page-header">{{ __('List of selected en questions and opt-ins', 'planet4-engagingnetworks') }}</h2>
-	<h5><%= col.length %> {{ __('questions selected', 'planet4-engagingnetworks') }}</h5>
+	<div class="lead my-3">
+		<%= col.length %> {{ __('questions selected', 'planet4-engagingnetworks') }}
+		<button class="btn button reload-questions ml-2">{{ __('Reload', 'planet4-engagingnetworks') }}</button>
+	</div>
 	<ul class="media-list row questions-container"></ul>
-	<br>
-	<p class="">
-		<button class="btn button reload-questions">{{ __('Reload', 'planet4-engagingnetworks') }}</button>
-	</p>
 	<div id="new-question-div"></div>
 </script>
 
 <script type="text/html" id="tmpl-en-available-question">
-	<div>
-		<h5>
-			<%- name %>
-			<span>
-				<a class="add-question"><span class="dashicons dashicons-plus field-dashicon"></span></a>
-			</span>
-		</h5>
-	</div>
-	<div class="media-body">
-		<dl>
-			<dt><input type="hidden" disabled="disabled" class="form-control" value="<%- questionId %>"></dt>
-			<dt>{{ __('Type', 'planet4-engagingnetworks') }}: <%- type %></dt>
-
-		</dl>
+	<div class="card-body">
+		<h5 class="card-title"><%- name %></h5>
+		<p class="card-text">
+			<input type="hidden" disabled="disabled" class="form-control" value="<%- questionId %>">
+			<span class="text-muted">{{ __('Type', 'planet4-engagingnetworks') }}:</span>
+			<% if ('GEN' === type) { %> Question <% } else if ('OPT' === type) { %> Opt-in <% } else { print(type) } %>
+		</p>
+		<button class="btn button card-link add-question"><span class="dashicons dashicons-plus field-dashicon"></span> Add</button>
 	</div>
 </script>
 
 <script type="text/html" id="tmpl-en-question">
-	<div>
-		<h5>
-			<%- name %>
-			<span>
-				<a class="edit-this-question"><span class="dashicons dashicons-edit field-dashicon"></span></a>
-				<a class="delete-question"><span class="dashicons dashicons-trash field-dashicon"></span></a>
-            </span>
-		</h5>
-	</div>
-	<div class="media-body">
-		<dl>
-			<dt>{{ __('Question', 'planet4-engagingnetworks') }}:</dt>
-			<dd><%- label %></dd>
-			<dt>{{ __('Type', 'planet4-engagingnetworks') }}: <%- type %></dt>
-			<dt><input type="hidden" disabled="disabled" class="form-control" value="<%- questionId %>"></dt>
-
-		</dl>
+	<div class="card-body">
+		<h5 class="card-title"><%- name %></h5>
+		<div class="card-text">
+			<p class="mb-2"><span class="text-muted">{{ __('Question', 'planet4-engagingnetworks') }}:</span> <%- label %></p>
+			<p>
+				<span class="text-muted">{{ __('Type', 'planet4-engagingnetworks') }}:</span>
+				<% if ('GEN' === type) { %> Question <% } else if ('OPT' === type) { %> Opt-in <% } else { print(type) } %>
+			</p>
+			<input type="hidden" disabled="disabled" class="form-control" value="<%- questionId %>">
+		</div>
+		<button class="btn button edit-this-question"><span class="dashicons dashicons-edit field-dashicon"></span> Edit</button>
+		<button class="btn button delete-question"><span class="dashicons dashicons-trash field-dashicon"></span> Delete</button>
 	</div>
 </script>
 
