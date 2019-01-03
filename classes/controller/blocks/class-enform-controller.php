@@ -292,14 +292,14 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					$attr_parts = explode( '__', $key );
 					if ( 5 === count( $attr_parts ) && is_numeric( $attr_parts[0] ) ) {
 						if ( 'gen' === $attr_parts[4] || 'opt' === $attr_parts[4] ) {
-							$questions[ $attr_parts[0] ] = [
+							$questions[ $attr_parts[2] ] = [
 								'id'         => $attr_parts[0],
 								'name'       => $attr_parts[1],
 								'questionId' => $attr_parts[2],
 								'label'      => str_replace( [ '--', '-_-' ], [ ' ', '?' ], $attr_parts[3] ),
 								'type'       => $attr_parts[4],
 								'value'      => $value,
-								'mandatory' => array_key_exists( $key . '__mandatory', $fields ) ? $fields[ $key . '__mandatory' ] : 'false',
+								'mandatory'  => array_key_exists( $key . '__mandatory', $fields ) ? $fields[ $key . '__mandatory' ] : 'false',
 							];
 						} else {
 							$fields[ $key ] = [
@@ -396,9 +396,9 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 							$supporter_fields[] = [
 								'id'        => $en_supporter_field['id'],
 								'name'      => $en_supporter_field['property'],
-								'mandatory' => false,
 								'label'     => $en_supporter_field['name'],
 								'type'      => $type,
+								//'mandatory' => false,
 							];
 						}
 					}
