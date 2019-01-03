@@ -68,7 +68,7 @@
 											{% endif %}
 
 											{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
-												<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }} {{ 'true' == data.mandatory ? 'en__mandatory' : '' }}">
+												<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }}">
 													<div class="en__field__element en__field__element--text form-group" style="display: block;">
 														{% if 'text' == data.type or 'email' == data.type %}
 															<input id="en__field_supporter_{{ data.name }}"
@@ -101,7 +101,8 @@
 														   type="text"
 														   class="en__field__input en__field__input--text"
 														   style="flex: 1;"
-														   value="" />
+														   value=""
+															{{ 'true' == data.mandatory ? 'required' : '' }} />
 												</div><br />
 											{% endif %}
 										{% endfor %}
@@ -113,7 +114,8 @@
 														   name="supporter.questions.{{ data.id }}"
 														   class="en__field__input en__field__input--checkbox"
 														   type="checkbox"
-														   value="{{ data.value }}" {{ 'Y' == data.value ? 'checked' : '' }} />
+														   value="{{ data.value }}" {{ 'Y' == data.value ? 'checked' : '' }}
+														   {{ 'true' == data.mandatory ? ' required' : '' }} />
 													<label for="en__field_supporter_questions_{{ data.id }}"
 														   class="custom-control-description form-check-label">
 														   {{ data.label }}
