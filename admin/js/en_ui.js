@@ -24,7 +24,7 @@ jQuery(function ($) {
           // Hide all mandatory checkboxes for new enforms.
           filtered.forEach(function (element) {
             var attr_name = element.get("attr");
-            $("input[name='" + attr_name + "__mandatory']").parent().parent().hide();
+            $("input[name$='__mandatory']").parent().parent().hide();
           });
 
           this.add_click_events_for_filtered_fields(filtered);
@@ -73,7 +73,7 @@ jQuery(function ($) {
          */
         filter_enform_fields: function (shortcode) {
           return shortcode.attributes.attrs.filter(function (field) {
-            return field.get("attr").match(/^\d+_/) && !field.get("attr").match(/_mandatory$/);
+            return ( field.get("attr").match(/^\d+/) || field.get("attr").match(/^field__+/) ) && !field.get("attr").match(/_mandatory$/);
           });
         },
 
