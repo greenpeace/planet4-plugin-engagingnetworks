@@ -288,6 +288,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				foreach ( $supporter_fields as $key => $supporter_field ) {
 					if ( isset( $fields[ 'field__' . $supporter_field['id'] ] ) ) {
 						$fields[ 'field__' . $supporter_field['id'] ] = array_merge( $fields[ 'field__' . $supporter_field['id'] ], $supporter_field );
+						unset( $fields[ 'field__' . $supporter_field['id'] . '__mandatory' ] );
 					}
 					unset( $supporter_fields[ $key ] );
 				}
