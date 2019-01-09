@@ -22,9 +22,16 @@ jQuery(function ($) {
           var filtered = this.filter_enform_fields(shortcode);
 
           // Hide all mandatory checkboxes for new enforms.
+          $("input[name$='__mandatory']").parent().parent().hide();
+
           filtered.forEach(function (element) {
-            var attr_name = element.get("attr");
-            $("input[name$='__mandatory']").parent().parent().hide();
+            let attr_name = element.get("attr");
+            let $element = $("input[name='" + attr_name + "']");
+
+            if ( $element.parent().text().indexOf( 'Email' ) >= 0 ) {
+              $element.prop('checked', true).attr('disabled', 'disabled');
+              $("input[name=" + attr_name + "__mandatory]").prop('checked', true).attr('disabled', 'disabled').parent().parent().show();
+            }
           });
 
           this.add_click_events_for_filtered_fields(filtered);
@@ -42,10 +49,15 @@ jQuery(function ($) {
 
           // Hide all mandatory checkboxes for non selected en fields.
           filtered.forEach(function (element) {
-            var attr_name = element.get("attr");
-            var $element = $("input[name='" + attr_name + "']");
+            let attr_name = element.get("attr");
+            let $element = $("input[name='" + attr_name + "']");
+
             if (!$element.is(':checked')) {
               $("input[name='" + attr_name + "__mandatory']").parent().parent().hide();
+            }
+            if ( $element.parent().text().indexOf( 'Email' ) >= 0 ) {
+              $element.prop('checked', true).attr('disabled', 'disabled');
+              $("input[name=" + attr_name + "__mandatory]").prop('checked', true).attr('disabled', 'disabled').parent().parent().show();
             }
           });
 
