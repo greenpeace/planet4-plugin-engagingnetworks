@@ -144,16 +144,16 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 			// inside the supporter key. Else a new supporter with this Email address will be created by EN.
 			$supporter_keys_fields = [
 				'Title'         => 'supporter.title',
-				'First name'    => 'supporter.firstname',
-				'Last name'     => 'supporter.lastname',
+				'First name'    => 'supporter.firstName',
+				'Last name'     => 'supporter.lastName',
 				'Address 1'     => 'supporter.address1',
 				'Address 2'     => 'supporter.address2',
 				'City'          => 'supporter.city',
 				'Country'       => 'supporter.country',
 				'Postcode'      => 'supporter.postcode',
-				'Email'         => 'supporter.emailaddress',
-				'Phone Number'  => 'supporter.phonenumber',
-				'date_of_birth' => 'supporter.dateofbirth',
+				'Email'         => 'supporter.emailAddress',
+				'Phone Number'  => 'supporter.phoneNumber',
+				'date_of_birth' => 'supporter.dateOfBirth',
 				'questions'     => 'supporter.questions',
 			];
 

@@ -22,9 +22,24 @@ jQuery(function ($) {
           var filtered = this.filter_enform_fields(shortcode);
 
           // Hide all mandatory checkboxes for new enforms.
+          $("input[name$='__mandatory']").parent().parent().hide();
+
           filtered.forEach(function (element) {
-            var attr_name = element.get("attr");
-            $("input[name='" + attr_name + "__mandatory']").parent().parent().hide();
+            let attr_name    = element.get("attr");
+            let element_name = element.get("name");
+            let $element     = $("input[name='" + attr_name + "']");
+
+            if ( 'emailAddress' === element_name ) {
+              $element
+                  .click()  // Do click instead of setting checked property, because shortcake needs to catch the click event.
+                  .attr('readonly', 'readonly')
+                  .attr('onclick', 'return false;');
+              $("input[name=" + attr_name + "__mandatory]")
+                  .click()
+                  .attr('readonly', 'readonly')
+                  .attr('onclick',  'return false;')
+                  .parent().parent().show();
+            }
           });
 
           this.add_click_events_for_filtered_fields(filtered);
@@ -42,10 +57,22 @@ jQuery(function ($) {
 
           // Hide all mandatory checkboxes for non selected en fields.
           filtered.forEach(function (element) {
-            var attr_name = element.get("attr");
-            var $element = $("input[name='" + attr_name + "']");
+            let attr_name    = element.get("attr");
+            let element_name = element.get("name");
+            let $element     = $("input[name='" + attr_name + "']");
+
             if (!$element.is(':checked')) {
               $("input[name='" + attr_name + "__mandatory']").parent().parent().hide();
+            }
+
+            if ( 'emailAddress' === element_name ) {
+              $element
+                  .attr('readonly', 'readonly')
+                  .attr('onclick',  'return false;');
+              $("input[name=" + attr_name + "__mandatory]")
+                  .attr('readonly', 'readonly')
+                  .attr('onclick',  'return false;')
+                  .parent().parent().show();
             }
           });
 
@@ -73,7 +100,7 @@ jQuery(function ($) {
          */
         filter_enform_fields: function (shortcode) {
           return shortcode.attributes.attrs.filter(function (field) {
-            return field.get("attr").match(/^\d+_/) && !field.get("attr").match(/_mandatory$/);
+            return ( field.get("attr").match(/^\d+/) || field.get("attr").match(/^field__+/) ) && !field.get("attr").match(/_mandatory$/);
           });
         },
 
@@ -102,6 +129,10 @@ jQuery(function ($) {
           $(element_list).on('click', function (event) {
             var element_name = event.currentTarget.name;
             var $element = $(event.currentTarget);
+
+            if ($element.attr('readonly') ) {
+              return false;
+            }
 
             if ($element.is(':checked')) {
               $("input[name='" + element_name + "__mandatory']").parent().parent().show();

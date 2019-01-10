@@ -185,10 +185,10 @@ if ( ! class_exists( 'Controller' ) ) {
 		public function ignore_unused_attributes( $fields ) : array {
 			// Filter out any attributes that are still inside the shortcode but are not being used by the block.
 			if ( $fields ) {
-				foreach ( $fields as $index => $value ) {
-					$fields_id = explode( '__', $index )[0];
-					if ( is_numeric( $fields_id ) && ! $value ) {
-						unset( $fields[ $index ] );
+				foreach ( $fields as $key => $value ) {
+					$attr_parts = explode( '__', $key );
+					if ( ( 'field' === $attr_parts[0] || is_numeric( $attr_parts[0] ) ) && ! $value ) {
+						unset( $fields[ $key ] );
 					}
 				}
 			}

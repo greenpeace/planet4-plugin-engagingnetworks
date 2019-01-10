@@ -56,7 +56,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_enqueue_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.2', true );
+					wp_enqueue_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.3', true );
 				}
 			);
 		}
@@ -122,10 +122,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'options'     => $options,
 				],
 				[
-					'attr'              => 'en_form_style',
-					'label'             => __( 'What style of form do you need?', 'planet4-engagingnetworks' ),
-					'type'              => 'p4en_radio',
-					'options'           => [
+					'attr'        => 'en_form_style',
+					'label'       => __( 'What style of form do you need?', 'planet4-engagingnetworks' ),
+					'type'        => 'p4en_radio',
+					'options'     => [
 						[
 							'value' => 'full-width',
 							'label' => __( 'Full Width', 'planet4-engagingnetworks' ),
@@ -144,7 +144,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Title', 'planet4-engagingnetworks' ),
 					'attr'        => 'title',
 					'type'        => 'text',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter title', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -152,7 +152,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Description', 'planet4-engagingnetworks' ),
 					'attr'        => 'description',
 					'type'        => 'textarea',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter description', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -160,7 +160,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Thank you Title', 'planet4-engagingnetworks' ),
 					'attr'        => 'thankyou_title',
 					'type'        => 'text',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter Thank you Title', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -168,7 +168,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Thank you Subtitle', 'planet4-engagingnetworks' ),
 					'attr'        => 'thankyou_subtitle',
 					'type'        => 'text',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter Thank you Subtitle', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -176,7 +176,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Thank you Url', 'planet4-engagingnetworks' ),
 					'attr'        => 'thankyou_url',
 					'type'        => 'url',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter Thank you url', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -195,35 +195,20 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			if ( $supporter_fields ) {
 				foreach ( $supporter_fields as $supporter_field ) {
-					$attr_parts = [
-						$supporter_field['id'],
-						$supporter_field['name'],
-						( $supporter_field['mandatory'] ? 'true' : 'false' ),
-						str_replace( [ ' ', '?' ], [ '--', '-_-' ], $supporter_field['label'] ),
-						$supporter_field['type'],
-					];
-
 					$args = [
 						'label' => $supporter_field['label'],
 						'name'  => $supporter_field['name'],
-						'attr'  => strtolower( implode( '__', $attr_parts ) ),
+						'attr'  => 'field__' . $supporter_field['id'],
 						'type'  => 'checkbox',
 					];
-					if ( $supporter_field['mandatory'] ) {
-						$args['value'] = 'true';
-					}
-					$mandatory_attr_parts   = $attr_parts;
-					$mandatory_attr_parts[] = 'mandatory';
-					$args_mandatory         = [
+					$fields[] = $args;
+
+					$args_mandatory = [
 						'label' => __( 'required', 'planet4-engagingnetworks' ),
 						'name'  => $supporter_field['name'] . '_mandatory',
-						'attr'  => strtolower( implode( '__', $mandatory_attr_parts ) ),
+						'attr'  => $args['attr'] . '__mandatory',
 						'type'  => 'checkbox',
 					];
-					if ( $supporter_field['mandatory'] ) {
-						$args['value'] = 'true';
-					}
-					$fields[] = $args;
 					$fields[] = $args_mandatory;
 				}
 			}
@@ -234,31 +219,20 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			if ( $supporter_questions ) {
 				foreach ( $supporter_questions as $supporter_question ) {
-					$attr_parts = [
-						$supporter_question['id'],
-						str_replace( [ ' ', '?' ], [ '--', '-_-' ], $supporter_question['name'] ),
-						$supporter_question['questionId'],
-						str_replace( [ ' ', '?' ], [ '--', '-_-' ], $supporter_question['label'] ),
-						$supporter_question['type'],
-					];
-
 					$args = [
 						'label'       => $supporter_question['label'],
 						'description' => 'GEN' === $supporter_question['type'] ? 'Question' : 'Opt-in',
-						'attr'        => strtolower( implode( '__', $attr_parts ) ),
+						'attr'        => $supporter_question['id'] . '__' . $supporter_question['questionId'],
 						'type'        => 'checkbox',
 					];
+					$fields[] = $args;
 
-					$mandatory_attr_parts   = $attr_parts;
-					$mandatory_attr_parts[] = 'mandatory';
 					$args_mandatory         = [
 						'label' => __( 'required', 'planet4-engagingnetworks' ),
 						'name'  => $supporter_question['name'] . '_mandatory',
-						'attr'  => strtolower( implode( '__', $mandatory_attr_parts ) ),
+						'attr'  => $args['attr'] . '__mandatory',
 						'type'  => 'checkbox',
 					];
-
-					$fields[] = $args;
 					$fields[] = $args_mandatory;
 				}
 			}
@@ -284,34 +258,51 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array The data to be passed in the View.
 		 */
 		public function prepare_data( $fields, $content, $shortcode_tag ) : array {
-			$fields    = $this->ignore_unused_attributes( $fields );
-			$questions = [];
+			$fields = $this->ignore_unused_attributes( $fields );
 
 			if ( $fields ) {
 				foreach ( $fields as $key => $value ) {
 					$attr_parts = explode( '__', $key );
-					if ( 5 === count( $attr_parts ) && is_numeric( $attr_parts[0] ) ) {
-						if ( 'gen' === $attr_parts[4] || 'opt' === $attr_parts[4] ) {
-							$questions[ $attr_parts[2] ] = [
+					if ( 'field' === $attr_parts[0] ) {
+						$fields[ $key ] = [
+							'id'        => $attr_parts[1],
+							'mandatory' => $fields[ $key . '__mandatory' ] ?? 'false',
+							'value'     => $value,
+						];
+					} else {
+						if ( is_numeric( $attr_parts[0] ) && 'mandatory' !== $attr_parts[ count( $attr_parts ) - 1 ] ) {
+							$fields[ $attr_parts[1] ] = [
 								'id'         => $attr_parts[0],
-								'name'       => $attr_parts[1],
-								'questionId' => $attr_parts[2],
-								'label'      => str_replace( [ '--', '-_-' ], [ ' ', '?' ], $attr_parts[3] ),
-								'type'       => $attr_parts[4],
+								'questionId' => $attr_parts[1],
+								'mandatory'  => $fields[ $key . '__mandatory' ] ?? 'false',
 								'value'      => $value,
-								'mandatory'  => array_key_exists( $key . '__mandatory', $fields ) ? $fields[ $key . '__mandatory' ] : 'false',
-							];
-						} else {
-							$fields[ $key ] = [
-								'id'        => $attr_parts[0],
-								'name'      => $attr_parts[1],
-								'mandatory' => array_key_exists( $key . '__mandatory', $fields ) ? $fields[ $key . '__mandatory' ] : 'false',
-								'label'     => str_replace( [ '--', '-_-' ], [ ' ', '?' ], $attr_parts[3] ),
-								'type'      => $attr_parts[4],
-								'value'     => $value,
 							];
 						}
 					}
+				}
+			}
+
+			// Get supporter fields from EN and use them on the fly.
+			$supporter_fields = $this->get_supporter_fields();
+			if ( $supporter_fields ) {
+				foreach ( $supporter_fields as $key => $supporter_field ) {
+					if ( isset( $fields[ 'field__' . $supporter_field['id'] ] ) ) {
+						$fields[ 'field__' . $supporter_field['id'] ] = array_merge( $fields[ 'field__' . $supporter_field['id'] ], $supporter_field );
+						unset( $fields[ 'field__' . $supporter_field['id'] . '__mandatory' ] );
+					}
+					unset( $supporter_fields[ $key ] );
+				}
+			}
+
+			// Get supporter questions from database.
+			$questions_model = new Questions_Model();
+			$questions       = $questions_model->get_questions();
+			if ( $questions ) {
+				foreach ( $questions as $key => $question ) {
+					if ( isset( $fields[ $question['questionId'] ] ) ) {
+						$questions[ $question['questionId'] ] = $question;
+					}
+					unset( $questions[ $key ] );
 				}
 			}
 
@@ -378,6 +369,14 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array Associative array of supporter fields if retrieval from EN was successful or empty array otherwise.
 		 */
 		public function get_supporter_fields() : array {
+			// If we have not initialized yet the Ensapi_Controller then do it here.
+			if ( ! $this->ens_api ) {
+				$main_settings = get_option( 'p4en_main_settings' );
+				if ( isset( $main_settings['p4en_private_api'] ) ) {
+					$ens_private_token = $main_settings['p4en_private_api'];
+					$this->ens_api     = new Ensapi( $ens_private_token );
+				}
+			}
 			if ( $this->ens_api ) {
 				$response = $this->ens_api->get_supporter_fields();
 
@@ -389,16 +388,15 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 							$type = 'text';
 							if ( false !== strpos( $en_supporter_field['property'], 'country' ) ) {
 								$type = 'country';
-							} elseif ( false !== stripos( $en_supporter_field['property'], 'emailaddress' ) ) {
+							} elseif ( false !== strpos( $en_supporter_field['property'], 'emailAddress' ) ) {
 								$type = 'email';        // Set the type of the email input field as email.
 							}
 
 							$supporter_fields[] = [
-								'id'        => $en_supporter_field['id'],
-								'name'      => $en_supporter_field['property'],
-								'label'     => $en_supporter_field['name'],
-								'type'      => $type,
-								//'mandatory' => false,
+								'id'    => $en_supporter_field['id'],
+								'name'  => $en_supporter_field['property'],
+								'label' => $en_supporter_field['name'],
+								'type'  => $type,
 							];
 						}
 					}
@@ -460,7 +458,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		public function validate( $input ) : bool {
 			if (
 				( ! isset( $input['en_page_id'] ) || $input['en_page_id'] <= 0 ) ||
-				( ! isset( $input['supporter.emailaddress'] ) || false === filter_var( $input['supporter.emailaddress'], FILTER_VALIDATE_EMAIL ) )
+				( ! isset( $input['supporter.emailAddress'] ) || false === filter_var( $input['supporter.emailAddress'], FILTER_VALIDATE_EMAIL ) )
 			) {
 				return false;
 			}
@@ -474,7 +472,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		public function sanitize( &$input ) {
 			foreach ( $input as $key => $value ) {
-				if ( 'supporter.emailaddress' === $key ) {
+				if ( 'supporter.emailAddress' === $key ) {
 					$input[ $key ] = sanitize_email( $value );
 
 				} elseif ( false !== strpos( $key, 'supporter.question.' ) ) {  // Question/Optin name is in the form of 'supporter.question.{id}'.

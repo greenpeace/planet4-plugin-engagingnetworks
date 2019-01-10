@@ -54,7 +54,7 @@
 													{% set value = supporter.County %}
 												{% elseif 'phone' in data.name %}
 													{% set value = supporter['Phone Number'] %}
-												{% elseif 'birth' in data.name %}
+												{% elseif 'Birth' in data.name %}
 													{% set value = supporter['date_of_birth'] %}
 												{% else %}
 													{% set value = '' %}
@@ -77,7 +77,7 @@
 																class="en__field__input en__field__input--text form-control"
 																value="{{ value }}"
 																data-errormessage="{{ errorMessage }}"
-																placeholder="{{ data.label }}{{ 'birth' in data.name ? ' (yyyy/mm/dd)' : '' }}"
+																placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy/mm/dd)' : '' }}"
 																{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
 																size="40" />
 														{% elseif 'country' == data.type %}
@@ -91,7 +91,7 @@
 									<br />
 									{% if supporter %}
 										{% for key,data in supporter.questions %}
-											{% if 'gen' == data.type %}
+											{% if 'GEN' == data.type %}
 												<div style="display: flex; flex-direction: row;">
 													<label for="en__field_supporter_questions_{{ data.id }}"
 														   class="en__field__label en__field__label--item form-check-label"
@@ -108,7 +108,7 @@
 										{% endfor %}
 										<br />
 										{% for key,data in supporter.questions %}
-											{% if 'opt' == data.type %}
+											{% if 'OPT' == data.type %}
 												<div class="form-check-label-block custom-control">
 													<input id="en__field_supporter_questions_{{ data.id }}"
 														   name="supporter.questions.{{ data.id }}"
