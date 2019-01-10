@@ -1,4 +1,9 @@
 <?php
+/**
+ * Settings Controller
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Menu;
 
@@ -39,12 +44,14 @@ if ( ! class_exists( 'Settings_Controller' ) ) {
 		 * Render the settings page of the plugin.
 		 */
 		public function prepare_settings() {
-			$this->view->settings( [
-				'settings' => get_option( 'p4en_main_settings' ),
-				'available_languages' => P4EN_LANGUAGES,
-				'messages' => $this->messages,
-				'domain' => 'planet4-engagingnetworks',
-			] );
+			$this->view->settings(
+				[
+					'settings'            => get_option( 'p4en_main_settings' ),
+					'available_languages' => P4EN_LANGUAGES,
+					'messages'            => $this->messages,
+					'domain'              => 'planet4-engagingnetworks',
+				]
+			);
 		}
 
 		/**
@@ -130,7 +137,7 @@ if ( ! class_exists( 'Settings_Controller' ) ) {
 		 */
 		public function set_locale( $locale ) : string {
 			$main_settings = get_option( 'p4en_main_settings' );
-			$locale = $main_settings['p4en_lang'] ?? '';
+			$locale        = $main_settings['p4en_lang'] ?? '';
 			return $locale;
 		}
 	}

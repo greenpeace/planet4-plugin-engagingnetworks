@@ -1,4 +1,9 @@
 <?php
+/**
+ * Fields class
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Api;
 
@@ -106,7 +111,7 @@ class Fields_Controller {
 			return $response;
 		}
 
-		$field   = $this->model->get_field( $field_data['id'] );
+		$field = $this->model->get_field( $field_data['id'] );
 
 		$response_data = [
 			'messages' => [ 'Field created successfully' ],

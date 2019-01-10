@@ -1,4 +1,9 @@
 <?php
+/**
+ * Model class
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Models;
 

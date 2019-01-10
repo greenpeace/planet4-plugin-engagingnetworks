@@ -1,7 +1,11 @@
 <?php
+/**
+ * REST Controller Class
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Api;
-
 
 /**
  * WP REST API interface.
@@ -59,10 +63,14 @@ class Rest_Controller {
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions_available', [
-			'methods'  => \WP_REST_Server::READABLE,
-			'callback' => [ $questions_controller, 'get_available_questions' ],
-		] );
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/questions_available',
+			[
+				'methods'  => \WP_REST_Server::READABLE,
+				'callback' => [ $questions_controller, 'get_available_questions' ],
+			]
+		);
 
 		/**
 		 * Get a single form's questions.
@@ -74,11 +82,14 @@ class Rest_Controller {
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions', [
-			'methods'  => \WP_REST_Server::READABLE,
-			'callback' => [ $questions_controller, 'get_questions' ],
-		] );
-
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/questions',
+			[
+				'methods'  => \WP_REST_Server::READABLE,
+				'callback' => [ $questions_controller, 'get_questions' ],
+			]
+		);
 
 		/**
 		 * Add a single location.
@@ -95,11 +106,15 @@ class Rest_Controller {
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions', [
-			'methods'             => \WP_REST_Server::EDITABLE,
-			'callback'            => [ $questions_controller, 'add_question' ],
-			'permission_callback' => [ $this, 'is_allowed' ],
-		] );
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/questions',
+			[
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => [ $questions_controller, 'add_question' ],
+				'permission_callback' => [ $this, 'is_allowed' ],
+			]
+		);
 
 		/**
 		 * Get a single form's questions.
@@ -111,12 +126,15 @@ class Rest_Controller {
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions/(?P<id>\d+)', [
-			'methods'             => \WP_REST_Server::READABLE,
-			'callback'            => [ $questions_controller, 'get_question' ],
-			'permission_callback' => [ $this, 'is_allowed' ],
-		] );
-
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/questions/(?P<id>\d+)',
+			[
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => [ $questions_controller, 'get_question' ],
+				'permission_callback' => [ $this, 'is_allowed' ],
+			]
+		);
 
 		/**
 		 * Update a single location.
@@ -133,11 +151,15 @@ class Rest_Controller {
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions/(?P<id>\d+)', [
-			'methods'             => \WP_REST_Server::EDITABLE,
-			'callback'            => [ $questions_controller, 'update_question' ],
-			'permission_callback' => [ $this, 'is_allowed' ],
-		] );
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/questions/(?P<id>\d+)',
+			[
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => [ $questions_controller, 'update_question' ],
+				'permission_callback' => [ $this, 'is_allowed' ],
+			]
+		);
 
 		/**
 		 * Delete a single location.
@@ -149,11 +171,15 @@ class Rest_Controller {
 		 *
 		 * @returns \WP_REST_Response
 		 */
-		register_rest_route( P4_REST_SLUG . '/' . $version, '/questions/(?P<id>\d+)', [
-			'methods'             => \WP_REST_Server::DELETABLE,
-			'callback'            => [ $questions_controller, 'delete_question' ],
-			'permission_callback' => [ $this, 'is_allowed' ],
-		] );
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/questions/(?P<id>\d+)',
+			[
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => [ $questions_controller, 'delete_question' ],
+				'permission_callback' => [ $this, 'is_allowed' ],
+			]
+		);
 
 	}
 

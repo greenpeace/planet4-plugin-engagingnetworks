@@ -1,4 +1,9 @@
 <?php
+/**
+ * Questions model class
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Models;
 
@@ -10,6 +15,8 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 	class Questions_Model extends Model {
 
 		/**
+		 * Questions option
+		 *
 		 * @var string
 		 */
 		private $questions_option = 'planet4-en-questions';
@@ -112,9 +119,12 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 			if ( is_array( $options ) ) {
 				$questions = $options;
 				$questions =
-					array_filter( $questions, function ( $e ) use ( $id ) {
-						return (int) $e['id'] !== (int) $id;
-					} );
+					array_filter(
+						$questions,
+						function ( $e ) use ( $id ) {
+							return (int) $e['id'] !== (int) $id;
+						}
+					);
 				$updated   = update_option( $this->questions_option, $questions );
 
 				return $updated;

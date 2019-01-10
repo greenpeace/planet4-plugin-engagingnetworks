@@ -21,12 +21,25 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 	 */
 	class ENForm_Controller extends Controller {
 
-		/** @const string BLOCK_NAME */
+		/**
+		 * Block name
+		 *
+		 * @const string BLOCK_NAME
+		 */
 		const BLOCK_NAME = 'enform';
-		/** @const array ENFORM_PAGE_TYPES */
+
+		/**
+		 * Page types for EN forms
+		 *
+		 * @const array ENFORM_PAGE_TYPES
+		 */
 		const ENFORM_PAGE_TYPES = [ 'PET', 'ND', 'EMS' ];
 
-		/** @var Ensapi $ensapi */
+		/**
+		 * ENSAPI Object
+		 *
+		 * @var Ensapi $ensapi
+		 */
 		private $ens_api = null;
 
 		/**
@@ -85,9 +98,12 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					$ens_private_token = $main_settings['p4en_private_api'];
 					$this->ens_api     = new Ensapi( $ens_private_token );
 					$pages             = $this->ens_api->get_pages_by_types_status( self::ENFORM_PAGE_TYPES, 'live' );
-					uasort( $pages, function ( $a, $b ) {
-						return ( $a['name'] ?? '' ) <=> ( $b['name'] ?? '' );
-					} );
+					uasort(
+						$pages,
+						function ( $a, $b ) {
+							return ( $a['name'] ?? '' ) <=> ( $b['name'] ?? '' );
+						}
+					);
 				}
 
 				$options = [
@@ -122,10 +138,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'options'     => $options,
 				],
 				[
-					'attr'        => 'en_form_style',
-					'label'       => __( 'What style of form do you need?', 'planet4-engagingnetworks' ),
-					'type'        => 'p4en_radio',
-					'options'     => [
+					'attr'    => 'en_form_style',
+					'label'   => __( 'What style of form do you need?', 'planet4-engagingnetworks' ),
+					'type'    => 'p4en_radio',
+					'options' => [
 						[
 							'value' => 'full-width',
 							'label' => __( 'Full Width', 'planet4-engagingnetworks' ),
@@ -141,42 +157,42 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
-					'label'       => __( 'Title', 'planet4-engagingnetworks' ),
-					'attr'        => 'title',
-					'type'        => 'text',
-					'meta'        => [
+					'label' => __( 'Title', 'planet4-engagingnetworks' ),
+					'attr'  => 'title',
+					'type'  => 'text',
+					'meta'  => [
 						'placeholder' => __( 'Enter title', 'planet4-engagingnetworks' ),
 					],
 				],
 				[
-					'label'       => __( 'Description', 'planet4-engagingnetworks' ),
-					'attr'        => 'description',
-					'type'        => 'textarea',
-					'meta'        => [
+					'label' => __( 'Description', 'planet4-engagingnetworks' ),
+					'attr'  => 'description',
+					'type'  => 'textarea',
+					'meta'  => [
 						'placeholder' => __( 'Enter description', 'planet4-engagingnetworks' ),
 					],
 				],
 				[
-					'label'       => __( 'Thank you Title', 'planet4-engagingnetworks' ),
-					'attr'        => 'thankyou_title',
-					'type'        => 'text',
-					'meta'        => [
+					'label' => __( 'Thank you Title', 'planet4-engagingnetworks' ),
+					'attr'  => 'thankyou_title',
+					'type'  => 'text',
+					'meta'  => [
 						'placeholder' => __( 'Enter Thank you Title', 'planet4-engagingnetworks' ),
 					],
 				],
 				[
-					'label'       => __( 'Thank you Subtitle', 'planet4-engagingnetworks' ),
-					'attr'        => 'thankyou_subtitle',
-					'type'        => 'text',
-					'meta'        => [
+					'label' => __( 'Thank you Subtitle', 'planet4-engagingnetworks' ),
+					'attr'  => 'thankyou_subtitle',
+					'type'  => 'text',
+					'meta'  => [
 						'placeholder' => __( 'Enter Thank you Subtitle', 'planet4-engagingnetworks' ),
 					],
 				],
 				[
-					'label'       => __( 'Thank you Url', 'planet4-engagingnetworks' ),
-					'attr'        => 'thankyou_url',
-					'type'        => 'url',
-					'meta'        => [
+					'label' => __( 'Thank you Url', 'planet4-engagingnetworks' ),
+					'attr'  => 'thankyou_url',
+					'type'  => 'url',
+					'meta'  => [
 						'placeholder' => __( 'Enter Thank you url', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -195,7 +211,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			if ( $supporter_fields ) {
 				foreach ( $supporter_fields as $supporter_field ) {
-					$args = [
+					$args     = [
 						'label' => $supporter_field['label'],
 						'name'  => $supporter_field['name'],
 						'attr'  => 'field__' . $supporter_field['id'],
@@ -209,7 +225,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 						'attr'  => $args['attr'] . '__mandatory',
 						'type'  => 'checkbox',
 					];
-					$fields[] = $args_mandatory;
+					$fields[]       = $args_mandatory;
 				}
 			}
 
@@ -219,7 +235,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 			if ( $supporter_questions ) {
 				foreach ( $supporter_questions as $supporter_question ) {
-					$args = [
+					$args     = [
 						'label'       => $supporter_question['label'],
 						'description' => 'GEN' === $supporter_question['type'] ? 'Question' : 'Opt-in',
 						'attr'        => $supporter_question['id'] . '__' . $supporter_question['questionId'],
@@ -227,13 +243,13 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					];
 					$fields[] = $args;
 
-					$args_mandatory         = [
+					$args_mandatory = [
 						'label' => __( 'required', 'planet4-engagingnetworks' ),
 						'name'  => $supporter_question['name'] . '_mandatory',
 						'attr'  => $args['attr'] . '__mandatory',
 						'type'  => 'checkbox',
 					];
-					$fields[] = $args_mandatory;
+					$fields[]       = $args_mandatory;
 				}
 			}
 
@@ -318,7 +334,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 			}
 			$fields['default_image'] = get_bloginfo( 'template_directory' ) . '/images/happy-point-block-bg.jpg';
 
-
 			$data = [];
 			// If user is logged in.
 			if ( is_user_logged_in() ) {
@@ -352,13 +367,16 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				$data['supporter']['questions'] = $questions;
 			}
 
-			$data = array_merge( $data, [
-				'fields'          => $fields,
-				'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
-				'nonce_action'    => 'enform_submit',
-				'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
-				'domain'          => 'planet4-engagingnetworks',
-			] );
+			$data = array_merge(
+				$data,
+				[
+					'fields'          => $fields,
+					'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
+					'nonce_action'    => 'enform_submit',
+					'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
+					'domain'          => 'planet4-engagingnetworks',
+				]
+			);
 
 			return $data;
 		}

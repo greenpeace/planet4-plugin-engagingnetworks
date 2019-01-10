@@ -1,4 +1,11 @@
 <?php
+/**
+ * Controller class
+ *
+ * This is the long description.
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Menu;
 
@@ -18,11 +25,19 @@ if ( ! class_exists( 'Controller' ) ) {
 		const NOTICE  = 2;
 		const SUCCESS = 3;
 
-		/** @var View $view */
+		/**
+		 * View object
+		 *
+		 * @var View $view
+		 */
 		protected $view;
-		/** @var array $messages */
-		protected $messages = [];
 
+		/**
+		 * Messages array
+		 *
+		 * @var array $messages
+		 */
+		protected $messages = [];
 
 		/**
 		 * Creates the plugin's controller object.
@@ -81,12 +96,15 @@ if ( ! class_exists( 'Controller' ) ) {
 		 */
 		public function error( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
-				array_push($this->messages, [
-					'msg'     => esc_html( $msg ),
-					'title'   => $title ? esc_html( $title ) : esc_html__( 'Error', 'planet4-engagingnetworks' ),
-					'type'    => self::ERROR,
-					'classes' => 'p4en_error_message',
-				] );
+				array_push(
+					$this->messages,
+					[
+						'msg'     => esc_html( $msg ),
+						'title'   => $title ? esc_html( $title ) : esc_html__( 'Error', 'planet4-engagingnetworks' ),
+						'type'    => self::ERROR,
+						'classes' => 'p4en_error_message',
+					]
+				);
 			}
 		}
 
@@ -98,12 +116,15 @@ if ( ! class_exists( 'Controller' ) ) {
 		 */
 		public function warning( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
-				array_push($this->messages, [
-					'msg'     => esc_html( $msg ),
-					'title'   => $title ? esc_html( $title ) : esc_html__( 'Warning', 'planet4-engagingnetworks' ),
-					'type'    => self::WARNING,
-					'classes' => 'p4en_warning_message',
-				] );
+				array_push(
+					$this->messages,
+					[
+						'msg'     => esc_html( $msg ),
+						'title'   => $title ? esc_html( $title ) : esc_html__( 'Warning', 'planet4-engagingnetworks' ),
+						'type'    => self::WARNING,
+						'classes' => 'p4en_warning_message',
+					]
+				);
 			}
 		}
 
@@ -115,12 +136,15 @@ if ( ! class_exists( 'Controller' ) ) {
 		 */
 		public function notice( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
-				array_push($this->messages, [
-					'msg'     => esc_html( $msg ),
-					'title'   => $title ? esc_html( $title ) : esc_html__( 'Notice', 'planet4-engagingnetworks' ),
-					'type'    => self::NOTICE,
-					'classes' => 'p4en_notice_message',
-				] );
+				array_push(
+					$this->messages,
+					[
+						'msg'     => esc_html( $msg ),
+						'title'   => $title ? esc_html( $title ) : esc_html__( 'Notice', 'planet4-engagingnetworks' ),
+						'type'    => self::NOTICE,
+						'classes' => 'p4en_notice_message',
+					]
+				);
 			}
 		}
 
@@ -132,12 +156,15 @@ if ( ! class_exists( 'Controller' ) ) {
 		 */
 		public function success( $msg, $title = '' ) {
 			if ( is_string( $msg ) ) {
-				array_push($this->messages, [
-					'msg'     => esc_html( $msg ),
-					'title'   => $title ? esc_html( $title ) : esc_html__( 'Success', 'planet4-engagingnetworks' ),
-					'type'    => self::SUCCESS,
-					'classes' => 'p4en_success_message',
-				] );
+				array_push(
+					$this->messages,
+					[
+						'msg'     => esc_html( $msg ),
+						'title'   => $title ? esc_html( $title ) : esc_html__( 'Success', 'planet4-engagingnetworks' ),
+						'type'    => self::SUCCESS,
+						'classes' => 'p4en_success_message',
+					]
+				);
 			}
 		}
 
