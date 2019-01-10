@@ -35,7 +35,7 @@ jQuery(function ($) {
                   .attr('readonly', 'readonly')
                   .attr('onclick', 'return false;');
               $("input[name=" + attr_name + "__mandatory]")
-				  .click()
+                  .click()
                   .attr('readonly', 'readonly')
                   .attr('onclick',  'return false;')
                   .parent().parent().show();
@@ -57,13 +57,15 @@ jQuery(function ($) {
 
           // Hide all mandatory checkboxes for non selected en fields.
           filtered.forEach(function (element) {
-            let attr_name = element.get("attr");
-            let $element = $("input[name='" + attr_name + "']");
+            let attr_name    = element.get("attr");
+            let element_name = element.get("name");
+            let $element     = $("input[name='" + attr_name + "']");
 
             if (!$element.is(':checked')) {
               $("input[name='" + attr_name + "__mandatory']").parent().parent().hide();
             }
-            if ( $element.parent().text().indexOf( 'Email' ) >= 0 ) {
+
+            if ( 'emailAddress' === element_name ) {
               $element
                   .attr('readonly', 'readonly')
                   .attr('onclick',  'return false;');
