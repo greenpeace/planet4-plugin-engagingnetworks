@@ -122,10 +122,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'options'     => $options,
 				],
 				[
-					'attr'              => 'en_form_style',
-					'label'             => __( 'What style of form do you need?', 'planet4-engagingnetworks' ),
-					'type'              => 'p4en_radio',
-					'options'           => [
+					'attr'        => 'en_form_style',
+					'label'       => __( 'What style of form do you need?', 'planet4-engagingnetworks' ),
+					'type'        => 'p4en_radio',
+					'options'     => [
 						[
 							'value' => 'full-width',
 							'label' => __( 'Full Width', 'planet4-engagingnetworks' ),
@@ -144,7 +144,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Title', 'planet4-engagingnetworks' ),
 					'attr'        => 'title',
 					'type'        => 'text',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter title', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -152,7 +152,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Description', 'planet4-engagingnetworks' ),
 					'attr'        => 'description',
 					'type'        => 'textarea',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter description', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -160,7 +160,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Thank you Title', 'planet4-engagingnetworks' ),
 					'attr'        => 'thankyou_title',
 					'type'        => 'text',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter Thank you Title', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -168,7 +168,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Thank you Subtitle', 'planet4-engagingnetworks' ),
 					'attr'        => 'thankyou_subtitle',
 					'type'        => 'text',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter Thank you Subtitle', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -176,7 +176,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label'       => __( 'Thank you Url', 'planet4-engagingnetworks' ),
 					'attr'        => 'thankyou_url',
 					'type'        => 'url',
-					'meta'  => [
+					'meta'        => [
 						'placeholder' => __( 'Enter Thank you url', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -203,7 +203,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					];
 					$fields[] = $args;
 
-					$args_mandatory         = [
+					$args_mandatory = [
 						'label' => __( 'required', 'planet4-engagingnetworks' ),
 						'name'  => $supporter_field['name'] . '_mandatory',
 						'attr'  => $args['attr'] . '__mandatory',
@@ -275,7 +275,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 								'id'         => $attr_parts[0],
 								'questionId' => $attr_parts[1],
 								'mandatory'  => $fields[ $key . '__mandatory' ] ?? 'false',
-								'value'     => $value,
+								'value'      => $value,
 							];
 						}
 					}
@@ -369,7 +369,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @return array Associative array of supporter fields if retrieval from EN was successful or empty array otherwise.
 		 */
 		public function get_supporter_fields() : array {
-			// If we have not intialized yet the Ensapi_Controller then do it here.
+			// If we have not initialized yet the Ensapi_Controller then do it here.
 			if ( ! $this->ens_api ) {
 				$main_settings = get_option( 'p4en_main_settings' );
 				if ( isset( $main_settings['p4en_private_api'] ) ) {
@@ -388,15 +388,15 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 							$type = 'text';
 							if ( false !== strpos( $en_supporter_field['property'], 'country' ) ) {
 								$type = 'country';
-							} elseif ( false !== stripos( $en_supporter_field['property'], 'emailaddress' ) ) {
+							} elseif ( false !== strpos( $en_supporter_field['property'], 'emailAddress' ) ) {
 								$type = 'email';        // Set the type of the email input field as email.
 							}
 
 							$supporter_fields[] = [
-								'id'        => $en_supporter_field['id'],
-								'name'      => $en_supporter_field['property'],
-								'label'     => $en_supporter_field['name'],
-								'type'      => $type,
+								'id'    => $en_supporter_field['id'],
+								'name'  => $en_supporter_field['property'],
+								'label' => $en_supporter_field['name'],
+								'type'  => $type,
 							];
 						}
 					}

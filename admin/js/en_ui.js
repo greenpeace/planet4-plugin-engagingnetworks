@@ -25,12 +25,20 @@ jQuery(function ($) {
           $("input[name$='__mandatory']").parent().parent().hide();
 
           filtered.forEach(function (element) {
-            let attr_name = element.get("attr");
-            let $element = $("input[name='" + attr_name + "']");
+            let attr_name    = element.get("attr");
+            let element_name = element.get("name");
+            let $element     = $("input[name='" + attr_name + "']");
 
-            if ( $element.parent().text().indexOf( 'Email' ) >= 0 ) {
-              $element.prop('checked', true).attr('disabled', 'disabled');
-              $("input[name=" + attr_name + "__mandatory]").prop('checked', true).attr('disabled', 'disabled').parent().parent().show();
+            if ( 'emailAddress' === element_name ) {
+              $element
+                  .click()  // Do click instead of setting checked property, because shortcake needs to catch the click event.
+                  .attr('readonly', 'readonly')
+                  .attr('onclick', 'return false;');
+              $("input[name=" + attr_name + "__mandatory]")
+				  .click()
+                  .attr('readonly', 'readonly')
+                  .attr('onclick',  'return false;')
+                  .parent().parent().show();
             }
           });
 
@@ -56,8 +64,13 @@ jQuery(function ($) {
               $("input[name='" + attr_name + "__mandatory']").parent().parent().hide();
             }
             if ( $element.parent().text().indexOf( 'Email' ) >= 0 ) {
-              $element.prop('checked', true).attr('disabled', 'disabled');
-              $("input[name=" + attr_name + "__mandatory]").prop('checked', true).attr('disabled', 'disabled').parent().parent().show();
+              $element
+                  .attr('readonly', 'readonly')
+                  .attr('onclick',  'return false;');
+              $("input[name=" + attr_name + "__mandatory]")
+                  .attr('readonly', 'readonly')
+                  .attr('onclick',  'return false;')
+                  .parent().parent().show();
             }
           });
 
@@ -114,6 +127,10 @@ jQuery(function ($) {
           $(element_list).on('click', function (event) {
             var element_name = event.currentTarget.name;
             var $element = $(event.currentTarget);
+
+            if ($element.attr('readonly') ) {
+              return false;
+            }
 
             if ($element.is(':checked')) {
               $("input[name='" + element_name + "__mandatory']").parent().parent().show();
