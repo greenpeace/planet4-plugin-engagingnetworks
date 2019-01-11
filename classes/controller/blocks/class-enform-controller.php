@@ -28,12 +28,12 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		const BLOCK_NAME = 'enform';
 
-		/**
+    /**
 		 * Page types for EN forms
 		 *
 		 * @const array ENFORM_PAGE_TYPES
 		 */
-		const ENFORM_PAGE_TYPES = [ 'PET', 'ND', 'EMS' ];
+		const ENFORM_PAGE_TYPES = [ 'PET', 'EMS' ];
 
 		/**
 		 * ENSAPI Object
@@ -435,22 +435,19 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				$this->ens_api     = new Ensapi( $ens_private_token );
 				$nonce             = $_POST['_wpnonce'];   // CSRF protection.
 
-				if ( ! wp_verify_nonce( $nonce, 'enform_submit' ) ) {
-					$data['error_msg'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
-				} else {
-					$values = $_POST['values'] ?? [];
-					$fields = $this->valitize( $values );
 
-					if ( false === $fields ) {
-						$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
-					}
-					if ( $this->ens_api ) {
-						$response = $this->ens_api->process_page( $fields['en_page_id'], $fields );
-						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
-							$data = json_decode( $response['body'], true );
-						} else {
-							$data['error_msg'] = $response;
-						}
+				$values = $_POST['values'] ?? [];
+				$fields = $this->valitize( $values );
+
+				if ( false === $fields ) {
+					$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
+				}
+				if ( $this->ens_api ) {
+					$response = $this->ens_api->process_page( $fields['en_page_id'], $fields );
+					if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
+						$data = json_decode( $response['body'], true );
+					} else {
+						$data['error_msg'] = $response;
 					}
 				}
 				Timber::$locations = P4EN_INCLUDES_DIR;
