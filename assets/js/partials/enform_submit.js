@@ -89,7 +89,7 @@ $(document).ready(function () {
         type: 'POST',
         data: {
           action:     'handle_submit',
-          '_wpnonce': $( '#_wpnonce' ).val(),
+          '_wpnonce': $( '#_wpnonce', $(this) ).val(),
           'en_page_id': $('input[name=en_page_id]').val(),
           values: values,
         },

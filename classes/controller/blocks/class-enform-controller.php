@@ -64,7 +64,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				return;
 			}
 
-			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.2' );
+			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.3' );
 			add_action(
 				'enqueue_shortcode_ui',
 				function () {
@@ -170,6 +170,14 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'type'  => 'textarea',
 					'meta'  => [
 						'placeholder' => __( 'Enter description', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
+					'label' => __( 'Button text', 'planet4-engagingnetworks' ),
+					'attr'  => 'button_text',
+					'type'  => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter the text of the button', 'planet4-engagingnetworks' ),
 					],
 				],
 				[
@@ -435,19 +443,22 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				$this->ens_api     = new Ensapi( $ens_private_token );
 				$nonce             = $_POST['_wpnonce'];   // CSRF protection.
 
+				if ( ! wp_verify_nonce( $nonce, 'enform_submit' ) ) {
+					$data['error_msg'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
+				} else {
+					$values = $_POST['values'] ?? [];
+					$fields = $this->valitize( $values );
 
-				$values = $_POST['values'] ?? [];
-				$fields = $this->valitize( $values );
-
-				if ( false === $fields ) {
-					$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
-				}
-				if ( $this->ens_api ) {
-					$response = $this->ens_api->process_page( $fields['en_page_id'], $fields );
-					if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
-						$data = json_decode( $response['body'], true );
-					} else {
-						$data['error_msg'] = $response;
+					if ( false === $fields ) {
+						$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
+					}
+					if ( $this->ens_api ) {
+						$response = $this->ens_api->process_page( $fields['en_page_id'], $fields );
+						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
+							$data = json_decode( $response['body'], true );
+						} else {
+							$data['error_msg'] = $response;
+						}
 					}
 				}
 				Timber::$locations = P4EN_INCLUDES_DIR;
