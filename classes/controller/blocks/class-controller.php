@@ -1,4 +1,9 @@
 <?php
+/**
+ * Controller class
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Blocks;
 
@@ -13,12 +18,18 @@ if ( ! class_exists( 'Controller' ) ) {
 	 */
 	abstract class Controller {
 
-		/** @const string BLOCK_NAME
+		/**
 		 * The block's name.
+		 *
+		 * @const string BLOCK_NAME
 		 */
 		const BLOCK_NAME = 'default';
 
-		/** @var View $view */
+		/**
+		 * The view object.
+		 *
+		 * @var View $view
+		 */
 		protected $view;
 
 		/**
@@ -96,7 +107,7 @@ if ( ! class_exists( 'Controller' ) ) {
 				&& is_user_logged_in()
 				&& wp_get_current_user()->has_cap( 'edit_posts' )
 				&& isset( $_REQUEST['action'] )
-				&& $_REQUEST['action'] === 'bulk_do_shortcode'
+				&& 'bulk_do_shortcode' === $_REQUEST['action']
 			) {
 				// Render a preview iframe using a wrapper method.
 				add_shortcode( 'shortcake_' . static::BLOCK_NAME, array( $this, 'prepare_template_preview_iframe' ) );

@@ -1,4 +1,9 @@
 <?php
+/**
+ * ENSAPI Controller class
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers;
 
@@ -18,7 +23,11 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		const ENS_CACHE_TTL      = 600;             // Time in seconds to cache the response of an ENS api call.
 		const ENS_CALL_TIMEOUT   = 10;              // Seconds after which the api call will timeout if not responded.
 
-		/** @var $ens_auth_token */
+		/**
+		 * ENS Auth Token
+		 *
+		 * @var $ens_auth_token
+		 */
 		private $ens_auth_token = '';
 
 
@@ -53,13 +62,16 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 			if ( ! $this->ens_auth_token ) {
 				$url = self::ENS_AUTH_URL;
 				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
-				$response = wp_safe_remote_post( $url, [
-					'headers' => [
-						'Content-Type' => 'application/json; charset=UTF-8',
-					],
-					'body'    => $ens_private_token,
-					'timeout' => self::ENS_CALL_TIMEOUT,
-				] );
+				$response = wp_safe_remote_post(
+					$url,
+					[
+						'headers' => [
+							'Content-Type' => 'application/json; charset=UTF-8',
+						],
+						'body'    => $ens_private_token,
+						'timeout' => self::ENS_CALL_TIMEOUT,
+					]
+				);
 
 				if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {                   // Communication with ENS API is authenticated.
 					$body                 = json_decode( $response['body'], true );
@@ -83,8 +95,8 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 			if ( $types ) {
 				$params['status'] = $status;
 				foreach ( $types as $type ) {
-					$params['type']   = $type;
-					$response         = $this->get_pages( $params );
+					$params['type'] = $type;
+					$response       = $this->get_pages( $params );
 					if ( is_array( $response ) && $response['body'] ) {
 						$pages[ $params['type'] ] = json_decode( $response['body'], true );
 					}
@@ -100,22 +112,31 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 *
 		 * @return array|string An associative array with the response (under key 'body') or a string with an error message in case of a failure.
 		 */
-		public function get_pages( $params = array( 'type' => self::ENS_TYPES_DEFAULT, 'status' => self::ENS_STATUS_DEFAULT ) ) {
+		public function get_pages( $params = array(
+			'type'   => self::ENS_TYPES_DEFAULT,
+			'status' => self::ENS_STATUS_DEFAULT,
+		) ) {
 
 			$response = get_transient( 'ens_pages_response_' . implode( '_', $params ) );
 			if ( ! $response ) {
-				$url = add_query_arg( [
-					'type'   => strtolower( $params['type'] ),
-					'status' => $params['status'],
-				], self::ENS_PAGES_URL );
+				$url = add_query_arg(
+					[
+						'type'   => strtolower( $params['type'] ),
+						'status' => $params['status'],
+					],
+					self::ENS_PAGES_URL
+				);
 
 				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
-				$response = wp_safe_remote_get( $url, [
-					'headers' => [
-						'ens-auth-token' => $this->ens_auth_token,
-					],
-					'timeout' => self::ENS_CALL_TIMEOUT,
-				] );
+				$response = wp_safe_remote_get(
+					$url,
+					[
+						'headers' => [
+							'ens-auth-token' => $this->ens_auth_token,
+						],
+						'timeout' => self::ENS_CALL_TIMEOUT,
+					]
+				);
 
 				if ( is_wp_error( $response ) ) {
 					return $response->get_error_message() . ' ' . $response->get_error_code();
@@ -169,14 +190,17 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 			];
 
 			// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
-			$response = wp_safe_remote_post( $url, [
-				'headers' => [
-					'ens-auth-token' => $this->ens_auth_token,
-					'Content-Type'   => 'application/json; charset=UTF-8',
-				],
-				'body'    => wp_json_encode( $body ),
-				'timeout' => self::ENS_CALL_TIMEOUT,
-			] );
+			$response = wp_safe_remote_post(
+				$url,
+				[
+					'headers' => [
+						'ens-auth-token' => $this->ens_auth_token,
+						'Content-Type'   => 'application/json; charset=UTF-8',
+					],
+					'body'    => wp_json_encode( $body ),
+					'timeout' => self::ENS_CALL_TIMEOUT,
+				]
+			);
 
 			// Authentication failure.
 			if ( is_wp_error( $response ) ) {
@@ -200,13 +224,16 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				$url = self::ENS_SUPPORTER_URL . '/fields';
 
 				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
-				$response = wp_safe_remote_get( $url, [
-					'headers' => [
-						'ens-auth-token' => $this->ens_auth_token,
-						'Content-Type'   => 'application/json; charset=UTF-8',
-					],
-					'timeout' => self::ENS_CALL_TIMEOUT,
-				] );
+				$response = wp_safe_remote_get(
+					$url,
+					[
+						'headers' => [
+							'ens-auth-token' => $this->ens_auth_token,
+							'Content-Type'   => 'application/json; charset=UTF-8',
+						],
+						'timeout' => self::ENS_CALL_TIMEOUT,
+					]
+				);
 
 				// Authentication failure.
 				if ( is_wp_error( $response ) ) {
@@ -231,13 +258,16 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				$url = self::ENS_SUPPORTER_URL . '/questions';
 
 				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
-				$response = wp_safe_remote_get( $url, [
-					'headers' => [
-						'ens-auth-token' => $this->ens_auth_token,
-						'Content-Type'   => 'application/json; charset=UTF-8',
-					],
-					'timeout' => self::ENS_CALL_TIMEOUT,
-				] );
+				$response = wp_safe_remote_get(
+					$url,
+					[
+						'headers' => [
+							'ens-auth-token' => $this->ens_auth_token,
+							'Content-Type'   => 'application/json; charset=UTF-8',
+						],
+						'timeout' => self::ENS_CALL_TIMEOUT,
+					]
+				);
 
 				// Authentication failure.
 				if ( is_wp_error( $response ) ) {
@@ -261,19 +291,25 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 */
 		public function get_supporter_by_email( $email, $include_questions = true ) {
 
-			$url = add_query_arg( [
-				'email' => $email,
-				'includeQuestions' => $include_questions ? 'true' : 'false',
-			], self::ENS_SUPPORTER_URL );
+			$url = add_query_arg(
+				[
+					'email'            => $email,
+					'includeQuestions' => $include_questions ? 'true' : 'false',
+				],
+				self::ENS_SUPPORTER_URL
+			);
 
 			// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
-			$response = wp_safe_remote_get( $url, [
-				'headers' => [
-					'ens-auth-token' => $this->ens_auth_token,
-					'Content-Type'   => 'application/json; charset=UTF-8',
-				],
-				'timeout' => self::ENS_CALL_TIMEOUT,
-			] );
+			$response = wp_safe_remote_get(
+				$url,
+				[
+					'headers' => [
+						'ens-auth-token' => $this->ens_auth_token,
+						'Content-Type'   => 'application/json; charset=UTF-8',
+					],
+					'timeout' => self::ENS_CALL_TIMEOUT,
+				]
+			);
 
 			// Authentication failure.
 			if ( is_wp_error( $response ) ) {

@@ -1,4 +1,9 @@
 <?php
+/**
+ * Fields Settings Controller class.
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Menu;
 
@@ -33,11 +38,17 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 
 			add_action( 'admin_print_footer_scripts', [ $this, 'print_admin_footer_scripts' ], 1 );
 
-			wp_register_script( 'en-app', P4EN_ADMIN_DIR . '/js/en_app.js', [
-				'jquery',
-				'wp-api',
-				'wp-backbone',
-			], '0.1', true );
+			wp_register_script(
+				'en-app',
+				P4EN_ADMIN_DIR . '/js/en_app.js',
+				[
+					'jquery',
+					'wp-api',
+					'wp-backbone',
+				],
+				'0.1',
+				true
+			);
 			wp_localize_script(
 				'en-app',
 				'p4_data',

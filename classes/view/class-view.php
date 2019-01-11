@@ -1,4 +1,9 @@
 <?php
+/**
+ * View class
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Views;
 
@@ -11,9 +16,12 @@ if ( ! class_exists( 'View' ) ) {
 	 */
 	class View {
 
-		/** @var string $template_dir The path to the template files. */
+		/**
+		 * Template dir
+		 *
+		 * @var string $template_dir The path to the template files.
+		 */
 		private $template_dir = P4EN_INCLUDES_DIR;
-
 
 		/**
 		 * Creates the plugin's View object.

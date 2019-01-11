@@ -1,4 +1,9 @@
 <?php
+/**
+ * Questions controller
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Api;
 
@@ -46,7 +51,7 @@ class Questions_Controller {
 
 		if ( ! isset( $question['label'] ) ) {
 			$messages[] = 'Label is not set';
-		} elseif ( $question['label'] === '' ) {
+		} elseif ( '' === $question['label'] ) {
 			$messages[] = 'Mandatory should be boolean';
 		}
 
@@ -156,8 +161,14 @@ class Questions_Controller {
 		return $response;
 	}
 
+	/**
+	 * Get questions from the model.
+	 *
+	 * @param \WP_REST_Request $request The request object.
+	 *
+	 * @return \WP_REST_Response
+	 */
 	public function get_questions( \WP_REST_Request $request ) {
-
 		$questions = $this->model->get_questions();
 		$response  = new \WP_REST_Response( $questions );
 		$response->set_status( 200 );

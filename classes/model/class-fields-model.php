@@ -1,4 +1,9 @@
 <?php
+/**
+ * Fields model
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Models;
 
@@ -10,6 +15,8 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 	class Fields_Model extends Model {
 
 		/**
+		 * Fields option
+		 *
 		 * @var string
 		 */
 		private $fields_option = 'planet4-en-fields';
@@ -111,9 +118,12 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 			if ( is_array( $options ) ) {
 				$fields  = $options;
 				$fields  =
-					array_filter( $fields, function ( $e ) use ( $id ) {
-						return (int) $e['id'] !== (int) $id;
-					} );
+					array_filter(
+						$fields,
+						function ( $e ) use ( $id ) {
+							return (int) $e['id'] !== (int) $id;
+						}
+					);
 				$updated = update_option( $this->fields_option, $fields );
 
 				return $updated;

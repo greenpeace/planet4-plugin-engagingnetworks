@@ -1,4 +1,9 @@
 <?php
+/**
+ * Pages Datatable Controller
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Menu;
 
@@ -13,40 +18,40 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 
 		const SUBTYPES = [
 			'DCF'   => [
-				'type' => 'Data capture',
+				'type'    => 'Data capture',
 				'subType' => 'Data capture form',
 			],
 			'MEM'   => [
-				'type' => 'Fundraising',
+				'type'    => 'Fundraising',
 				'subType' => 'Membership',
 			],
 			'EMS'   => [
-				'type' => 'List management',
+				'type'    => 'List management',
 				'subType' => 'Email subscribe',
 			],
 			'UNSUB' => [
-				'type' => 'List management',
+				'type'    => 'List management',
 				'subType' => 'Email unsubscribe',
 			],
 			'PET'   => [
-				'type' => 'Advocacy',
+				'type'    => 'Advocacy',
 				'subType' => 'Petition',
 			],
 			'ET'    => [
-				'type' => 'Advocacy',
+				'type'    => 'Advocacy',
 				'subType' => 'Email to target',
 			],
 			'ND'    => [
-				'type' => 'Fundraising',
+				'type'    => 'Fundraising',
 				'subType' => 'Donation',
 			],
 		];
 
 		const STATUSES = [
-			'all'       => 'All',
-			'new'       => 'New',
-			'live'      => 'Live',
-			'tested'    => 'Tested',
+			'all'    => 'All',
+			'new'    => 'New',
+			'live'   => 'Live',
+			'tested' => 'Tested',
 		];
 
 		/**
@@ -72,13 +77,13 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 		 * Pass all needed data to the view object for the datatable page.
 		 */
 		public function prepare_pages_datatable() {
-			$data   = [];
-			$pages  = [];
-			$params = [];
+			$data           = [];
+			$pages          = [];
+			$params         = [];
 			$pages_settings = [];
 
 			$current_user = wp_get_current_user();
-			$validated = $this->handle_submit( $current_user, $data );
+			$validated    = $this->handle_submit( $current_user, $data );
 
 			if ( $validated ) {
 				$pages_settings = get_user_meta( $current_user->ID, 'p4en_pages_datatable_settings', true );
@@ -93,7 +98,7 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 					if ( isset( $main_settings['p4en_private_api'] ) ) {
 
 						$ens_private_token = $main_settings['p4en_private_api'];
-						$ens_api = new Ensapi_Controller( $ens_private_token );
+						$ens_api           = new Ensapi_Controller( $ens_private_token );
 
 						// Communication with ENS API is authenticated.
 						if ( $ens_api->is_authenticated() ) {
@@ -116,14 +121,17 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 				$this->error( __( 'Changes are not saved!', 'planet4-engagingnetworks' ) );
 			}
 
-			$data = array_merge( $data, [
-				'pages'          => $pages,
-				'pages_settings' => $pages_settings,
-				'subtypes'       => self::SUBTYPES,
-				'statuses'       => self::STATUSES,
-				'messages'       => $this->messages,
-				'domain'         => 'planet4-engagingnetworks',
-			] );
+			$data = array_merge(
+				$data,
+				[
+					'pages'          => $pages,
+					'pages_settings' => $pages_settings,
+					'subtypes'       => self::SUBTYPES,
+					'statuses'       => self::STATUSES,
+					'messages'       => $this->messages,
+					'domain'         => 'planet4-engagingnetworks',
+				]
+			);
 
 			$this->filter_pages_datatable( $data );
 			// Provide hook for other plugins to be able to filter the datatable output.
@@ -135,20 +143,20 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 		/**
 		 * Handle form submit.
 		 *
-		 * @param $current_user
-		 * @param $data
+		 * @param mixed[] $current_user The current user.
+		 * @param mixed[] $data The form data.
 		 *
 		 * @return bool Array if validation is ok, false if validation fails.
 		 */
 		public function handle_submit( $current_user, &$data ) : bool {
 			// CSRF protection.
-			$nonce_action = 'pages_datatable_submit';
-			$nonce = wp_create_nonce( $nonce_action );
+			$nonce_action         = 'pages_datatable_submit';
+			$nonce                = wp_create_nonce( $nonce_action );
 			$data['nonce_action'] = $nonce_action;
-			$data['form_submit'] = 0;
+			$data['form_submit']  = 0;
 
 			if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-				$data['form_submit']  = 1;
+				$data['form_submit'] = 1;
 
 				if ( ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 					$this->error( __( 'Nonce verification failed!', 'planet4-engagingnetworks' ) );
