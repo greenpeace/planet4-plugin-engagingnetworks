@@ -127,7 +127,7 @@
 								</div>
 
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
-									<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ __( 'Sign', domain ) }}">
+									<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ '' != fields.button_text ? fields.button_text : __( 'Sign', domain ) }}">
 								</div>
 							</div>
 						</form>
