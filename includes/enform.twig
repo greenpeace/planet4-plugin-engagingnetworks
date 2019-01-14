@@ -88,7 +88,6 @@
 											{% endif %}
 										{% endfor %}
 									</div>
-									<br />
 									{% if supporter %}
 										{% for key,data in supporter.questions %}
 											{% if 'GEN' == data.type %}
@@ -103,10 +102,9 @@
 														   style="flex: 1;"
 														   value=""
 															{{ 'true' == data.mandatory ? 'required' : '' }} />
-												</div><br />
+												</div>
 											{% endif %}
 										{% endfor %}
-										<br />
 										{% for key,data in supporter.questions %}
 											{% if 'OPT' == data.type %}
 												<div class="form-check-label-block custom-control">
