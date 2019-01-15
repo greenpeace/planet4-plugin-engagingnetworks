@@ -1,4 +1,9 @@
 <?php
+/**
+ * Pages Datatable Controller
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Menu;
 
@@ -9,7 +14,45 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 	/**
 	 * Class Pages_Datatable_Controller
 	 */
-	class Pages_Datatable_Controller extends Pages_Controller {
+	class Pages_Datatable_Controller extends Controller {
+
+		const SUBTYPES = [
+			'DCF'   => [
+				'type'    => 'Data capture',
+				'subType' => 'Data capture form',
+			],
+			'MEM'   => [
+				'type'    => 'Fundraising',
+				'subType' => 'Membership',
+			],
+			'EMS'   => [
+				'type'    => 'List management',
+				'subType' => 'Email subscribe',
+			],
+			'UNSUB' => [
+				'type'    => 'List management',
+				'subType' => 'Email unsubscribe',
+			],
+			'PET'   => [
+				'type'    => 'Advocacy',
+				'subType' => 'Petition',
+			],
+			'ET'    => [
+				'type'    => 'Advocacy',
+				'subType' => 'Email to target',
+			],
+			'ND'    => [
+				'type'    => 'Fundraising',
+				'subType' => 'Donation',
+			],
+		];
+
+		const STATUSES = [
+			'all'    => 'All',
+			'new'    => 'New',
+			'live'   => 'Live',
+			'tested' => 'Tested',
+		];
 
 		/**
 		 * Create menu/submenu entry.
@@ -34,13 +77,13 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 		 * Pass all needed data to the view object for the datatable page.
 		 */
 		public function prepare_pages_datatable() {
-			$data   = [];
-			$pages  = [];
-			$params = [];
+			$data           = [];
+			$pages          = [];
+			$params         = [];
 			$pages_settings = [];
 
 			$current_user = wp_get_current_user();
-			$validated = $this->handle_submit( $current_user, $data );
+			$validated    = $this->handle_submit( $current_user, $data );
 
 			if ( $validated ) {
 				$pages_settings = get_user_meta( $current_user->ID, 'p4en_pages_datatable_settings', true );
@@ -51,44 +94,22 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 						$params['status'] = $pages_settings['p4en_pages_status'];
 					}
 
-					$ens_api = new Ensapi_Controller();
 					$main_settings = get_option( 'p4en_main_settings' );
+					if ( isset( $main_settings['p4en_private_api'] ) ) {
 
-					if ( isset( $main_settings['p4en_private_api'] ) && $main_settings['p4en_private_api'] ) {
-						// Check if the authentication API call is cached.
-						$ens_auth_token = get_transient( 'ens_auth_token' );
+						$ens_private_token = $main_settings['p4en_private_api'];
+						$ens_api           = new Ensapi_Controller( $ens_private_token );
 
-						if ( false !== $ens_auth_token ) {
-							$response = $ens_api->get_pages( $ens_auth_token, $params );
-
+						// Communication with ENS API is authenticated.
+						if ( $ens_api->is_authenticated() ) {
+							$response = $ens_api->get_pages( $params );
 							if ( is_array( $response ) && $response['body'] ) {
 								$pages = json_decode( $response['body'], true );
 							} else {
 								$this->error( $response );
 							}
 						} else {
-							$ens_private_token = $main_settings['p4en_private_api'];
-							$response = $ens_api->authenticate( $ens_private_token );
-
-							if ( is_array( $response ) && $response['body'] ) {
-								// Communication with ENS API is authenticated.
-								$body           = json_decode( $response['body'], true );
-								$ens_auth_token = $body['ens-auth-token'];
-								// Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
-								$expiration     = time() + (int) ($body['expires']);
-
-								set_transient( 'ens_auth_token', $ens_auth_token, $expiration );
-
-								$response = $ens_api->get_pages( $ens_auth_token, $params );
-
-								if ( is_array( $response ) && $response['body'] ) {
-									$pages = json_decode( $response['body'], true );
-								} else {
-									$this->error( $response );
-								}
-							} else {
-								$this->error( $response );
-							}
+							$this->error( __( 'Authentication failed', 'planet4-engagingnetworks' ) );
 						}
 					} else {
 						$this->warning( __( 'Plugin Settings are not configured well!', 'planet4-engagingnetworks' ) );
@@ -100,14 +121,17 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 				$this->error( __( 'Changes are not saved!', 'planet4-engagingnetworks' ) );
 			}
 
-			$data = array_merge( $data, [
-				'pages'          => $pages,
-				'pages_settings' => $pages_settings,
-				'subtypes'       => self::SUBTYPES,
-				'statuses'       => self::STATUSES,
-				'messages'       => $this->messages,
-				'domain'         => 'planet4-engagingnetworks',
-			] );
+			$data = array_merge(
+				$data,
+				[
+					'pages'          => $pages,
+					'pages_settings' => $pages_settings,
+					'subtypes'       => self::SUBTYPES,
+					'statuses'       => self::STATUSES,
+					'messages'       => $this->messages,
+					'domain'         => 'planet4-engagingnetworks',
+				]
+			);
 
 			$this->filter_pages_datatable( $data );
 			// Provide hook for other plugins to be able to filter the datatable output.
@@ -119,20 +143,20 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 		/**
 		 * Handle form submit.
 		 *
-		 * @param $current_user
-		 * @param $data
+		 * @param mixed[] $current_user The current user.
+		 * @param mixed[] $data The form data.
 		 *
 		 * @return bool Array if validation is ok, false if validation fails.
 		 */
 		public function handle_submit( $current_user, &$data ) : bool {
 			// CSRF protection.
-			$nonce_action = 'pages_datatable_submit';
-			$nonce = wp_create_nonce( $nonce_action );
+			$nonce_action         = 'pages_datatable_submit';
+			$nonce                = wp_create_nonce( $nonce_action );
 			$data['nonce_action'] = $nonce_action;
-			$data['form_submit'] = 0;
+			$data['form_submit']  = 0;
 
 			if ( 'POST' === $_SERVER['REQUEST_METHOD'] ) {
-				$data['form_submit']  = 1;
+				$data['form_submit'] = 1;
 
 				if ( ! wp_verify_nonce( $nonce, $nonce_action ) ) {
 					$this->error( __( 'Nonce verification failed!', 'planet4-engagingnetworks' ) );

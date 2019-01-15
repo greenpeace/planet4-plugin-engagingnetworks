@@ -1,4 +1,9 @@
 <?php
+/**
+ * Loader class
+ *
+ * @package P4EN
+ */
 
 namespace P4EN;
 
@@ -11,15 +16,33 @@ if ( ! class_exists( 'Loader' ) ) {
 	 */
 	final class Loader {
 
-		/** @var Loader $instance */
+		/**
+		 * Loader
+		 *
+		 * @var Loader $instance
+		 */
 		private static $instance;
-		/** @var array $services */
-		private $services;
-		/** @var string $required_php */
-		private $required_php = P4EN_REQUIRED_PHP;
-		/** @var array $required_plugins */
-		private $required_plugins = P4EN_REQUIRED_PLUGINS;
 
+		/**
+		 * Services
+		 *
+		 * @var array $services
+		 */
+		private $services;
+
+		/**
+		 * Required PHP version
+		 *
+		 * @var string $required_php
+		 */
+		private $required_php = P4EN_REQUIRED_PHP;
+
+		/**
+		 * Required Plugins
+		 *
+		 * @var array $required_plugins
+		 */
+		private $required_plugins = P4EN_REQUIRED_PLUGINS;
 
 		/**
 		 * Singleton creational pattern.
@@ -31,7 +54,9 @@ if ( ! class_exists( 'Loader' ) ) {
 		 * @return Loader
 		 */
 		public static function get_instance( $services = array(), $view_class ) : Loader {
-			! isset( self::$instance ) and self::$instance = new self( $services, $view_class );
+			if ( ! isset( self::$instance ) ) {
+				self::$instance = new self( $services, $view_class );
+			}
 			return  self::$instance;
 		}
 
@@ -46,7 +71,7 @@ if ( ! class_exists( 'Loader' ) ) {
 		 */
 		private function __construct( $services = array(), $view_class ) {
 			$this->services = $services;
-			$view = new $view_class();
+			$view           = new $view_class();
 
 			if ( $this->services ) {
 				foreach ( $this->services as $service ) {
@@ -54,13 +79,14 @@ if ( ! class_exists( 'Loader' ) ) {
 				}
 			}
 			$this->check_requirements();
+			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_public_assets' ] );
 		}
 
 		/**
 		 * Register our setting to WP.
 		 */
 		public function init() {
-			add_option( 'planet4-en-fields', [] );
+			add_option( 'planet4-en-questions', [] );
 		}
 
 		/**
@@ -70,21 +96,8 @@ if ( ! class_exists( 'Loader' ) ) {
 			add_action( 'admin_init', [ $this, 'init' ] );
 			add_action( 'admin_menu', [ $this, 'load_i18n' ] );
 			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
-			add_filter( 'p4bks_add_external_services', [ $this, 'add_external_services' ] );
 			// Provide hook for other plugins.
 			do_action( 'p4en_action_loaded' );
-		}
-
-		/**
-		 * Adds blocks via this plugin.
-		 *
-		 * @param array $services Block Controllers to be loaded via this plugin.
-		 *
-		 * @return array $services The external services to be loaded.
-		 */
-		public function add_external_services( $services ) : array {
-			$services[] = 'P4EN\Controllers\ENForm_Controller';
-			return $services;
 		}
 
 		/**
@@ -105,8 +118,10 @@ if ( ! class_exists( 'Loader' ) ) {
 							'<u>' . esc_html__( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME ) . esc_html__( ' requires a newer version of the following plugin.', 'planet4-engagingnetworks' ) . '<br />' .
 							'<br/>' . esc_html__( 'Minimum required version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['min_version'] ) . '</strong>' .
 							'<br/>' . esc_html__( 'Installed version of ', 'planet4-engagingnetworks' ) . esc_html( $plugin['Name'] ) . ': <strong>' . esc_html( $plugin['Version'] ) . '</strong>' .
-							'</div>', 'Plugin Requirements Error', array(
-								'response' => \WP_Http::OK,
+							'</div>',
+							'Plugin Requirements Error',
+							array(
+								'response'  => \WP_Http::OK,
 								'back_link' => true,
 							)
 						);
@@ -118,8 +133,10 @@ if ( ! class_exists( 'Loader' ) ) {
 						'<u>' . esc_html__( 'Plugin Requirements Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html( P4EN_PLUGIN_NAME . __( ' requires a newer version of PHP.', 'planet4-engagingnetworks' ) ) . '<br />' .
 						'<br/>' . esc_html__( 'Minimum required version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( $this->required_php ) . '</strong>' .
 						'<br/>' . esc_html__( 'Running version of PHP: ', 'planet4-engagingnetworks' ) . '<strong>' . esc_html( phpversion() ) . '</strong>' .
-						'</div>', 'Plugin Requirements Error', array(
-							'response' => \WP_Http::OK,
+						'</div>',
+						'Plugin Requirements Error',
+						array(
+							'response'  => \WP_Http::OK,
 							'back_link' => true,
 						)
 					);
@@ -150,13 +167,34 @@ if ( ! class_exists( 'Loader' ) ) {
 					$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $required_plugin['rel_path'] );
 
 					if ( ! is_plugin_active( $required_plugin['rel_path'] ) ||
-					     ! version_compare( $plugin_data['Version'], $required_plugin['min_version'], '>=' ) ) {
+						! version_compare( $plugin_data['Version'], $required_plugin['min_version'], '>=' ) ) {
 						$plugin = array_merge( $plugin_data, $required_plugin );
 						return false;
 					}
 				}
 			}
 			return true;
+		}
+
+		/**
+		 * Load assets for the frontend.
+		 */
+		public function enqueue_public_assets() {
+			// plugin-blocks assets.
+			$css_enform_creation = filectime( P4EN_PLUGIN_DIR . '/style.css' );
+			$js_enform_creation  = filectime( P4EN_PLUGIN_DIR . '/main.js' );
+			// Add master theme's main css as dependency for blocks css.
+			wp_enqueue_style( 'plugin-en', plugins_url( P4EN_PLUGIN_DIRNAME ) . '/style.css', [], $css_enform_creation );
+			// Add master theme's main js as dependency for blocks js.
+			wp_register_script( 'plugin-en', plugins_url( P4EN_PLUGIN_DIRNAME ) . '/main.js', [ 'jquery' ], $js_enform_creation, true );
+			wp_localize_script(
+				'plugin-en',
+				'en_vars',
+				[
+					'ajaxurl' => admin_url( 'admin-ajax.php' ),
+				]
+			);
+			wp_enqueue_script( 'plugin-en' );
 		}
 
 		/**
@@ -206,8 +244,10 @@ if ( ! class_exists( 'Loader' ) ) {
 	wp_die(
 		'<div class="error fade">' .
 		'<u>' . esc_html__( 'Plugin Conflict Error!', 'planet4-engagingnetworks' ) . '</u><br /><br />' . esc_html__( 'Class Loader already exists.', 'planet4-engagingnetworks' ) . '<br />' .
-		'</div>', 'Plugin Conflict Error', array(
-			'response' => \WP_Http::OK,
+		'</div>',
+		'Plugin Conflict Error',
+		array(
+			'response'  => \WP_Http::OK,
 			'back_link' => true,
 		)
 	);

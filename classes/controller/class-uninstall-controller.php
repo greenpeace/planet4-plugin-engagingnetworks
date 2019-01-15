@@ -1,4 +1,9 @@
 <?php
+/**
+ * Uninstall Controller
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers;
 

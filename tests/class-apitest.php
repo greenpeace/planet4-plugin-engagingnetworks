@@ -1,21 +1,36 @@
 <?php
-
-
 /**
- * Class ApiTest.
+ * Class ApiTest
+ *
  * Test fields rest endpoints.
  *
- * @package Planet4_Engaging_Networks
+ * @package P4EN
+ */
+
+/**
+ * ApiTest class.
  */
 class ApiTest extends P4_TestCase {
 
 	/**
+	 * The REST server.
+	 *
 	 * @var WP_REST_Server
 	 */
 	protected $server;
 
+	/**
+	 * Namespaced route
+	 *
+	 * @var string
+	 */
 	protected $namespaced_route = '/planet4-engaging-networks/v1/fields';
 
+	/**
+	 * Slug for the API
+	 *
+	 * @var string
+	 */
 	protected $api_slug = 'planet4-engaging-networks';
 
 	/**
@@ -24,19 +39,23 @@ class ApiTest extends P4_TestCase {
 	public function setUp() {
 		parent::setUp();
 
+		global $wp_rest_server;
+		$wp_rest_server = new \WP_REST_Server;
+		$this->server   = $wp_rest_server;
+
 		if ( ! defined( 'REST_REQUEST' ) ) {
 			define( 'REST_REQUEST', true );
 		}
 
-		global $wp_rest_server;
-		$this->server = $wp_rest_server = new \WP_REST_Server;
 		do_action( 'rest_api_init' );
 
 		// Create a user with administrator role.
-		$this->factory->user->create( [
-			'role'       => 'administrator',
-			'user_login' => 'p4_admin',
-		] );
+		$this->factory->user->create(
+			[
+				'role'       => 'administrator',
+				'user_login' => 'p4_admin',
+			]
+		);
 		$user = get_user_by( 'login', 'p4_admin' );
 		wp_set_current_user( $user->ID );
 		add_option( 'planet4-en-fields', [] );

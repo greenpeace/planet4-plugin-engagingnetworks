@@ -11,10 +11,9 @@
     }
   ],
   "require-dev": {
-    "squizlabs/php_codesniffer": "2.9.*",
-    "wp-coding-standards/wpcs": "0.13.*",
-    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.0",
-    "frenck/php-compatibility": "^7.1"
+    "squizlabs/php_codesniffer": "^3.3.2",
+    "wp-coding-standards/wpcs": "^1.1.0",
+    "dealerdirect/phpcodesniffer-composer-installer": "^0.4.0"
   },
   "scripts": {
     "bootstrap_testing_environment": [
@@ -26,6 +25,7 @@
     "psr-4": {
       "P4EN\\": "classes/",
       "P4EN\\Controllers\\": "classes/controller/",
+      "P4EN\\Controllers\\Blocks\\": "classes/controller/blocks",
       "P4EN\\Controllers\\Menu\\": "classes/controller/menu",
       "P4EN\\Models\\": "classes/model/",
       "P4EN\\Views\\": "classes/view/"

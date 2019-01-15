@@ -1,0 +1,169 @@
+.enform-full-width-bg {
+  @include background-before-opacity($light-blue-bg);
+  width: 100vw;
+  min-height: 444px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+
+  picture {
+    align-self: start;
+
+    img {
+      position: absolute;
+      height: auto;
+      width: 100%;
+      object-fit: cover;
+      object-position: center center;
+      opacity: 0.3;
+
+      @supports (object-fit: cover) {
+        & {
+          height: 100%;
+        }
+      }
+    }
+  }
+}
+
+.enform {
+  font-family: $roboto;
+  height: inherit;
+  padding: 20px;
+  background: #074365;
+  margin-bottom: 40px;
+  width: 100%;
+
+  .enform-full-width & {
+    color: white;
+  }
+
+  .enform-full-width-bg & {
+    background: none;
+  }
+
+  form {
+    margin: 0;
+
+    input, .custom-select, select.form-control.en__field__input--select {
+      height: 42px;
+      border-radius: 0;
+      border-color: transparent;
+      margin-bottom: 16px;
+      min-width: 200px;
+
+      @include medium-and-up {
+        margin-bottom: inherit;
+      }
+
+      &.is-invalid {
+        border-color: #ff3333;
+      }
+
+      + .invalid-feedback {
+        background: #ff3333;
+        color: white;
+        padding: 5px;
+      }
+    }
+
+    .formblock-flex {
+      display: flex;
+      flex-wrap: wrap;
+      width: 100%;
+
+      @include medium-and-up {
+        justify-content: space-between;
+      }
+
+      .en__field {
+        width: 100%;
+
+        @include medium-and-up {
+          width: 49%;
+        }
+      }
+    }
+
+    .submit {
+      margin: 0;
+      line-height: 1;
+
+      @include medium-and-up {
+        display: flex;
+        flex-direction: row-reverse;
+      }
+    }
+
+    input[type=submit] {
+      margin-bottom: 0;
+      line-height: 1;
+    }
+
+    .form-check-label-block {
+      display: inline-block;
+      padding: 10px 15px;
+
+      .enform-full-width-bg & {
+        background: rgba(255, 255, 255, .5);
+        color: $black;
+      }
+
+      input[type=checkbox] {
+        & + .custom-control-description {
+          font-size: 1.125rem;
+        }
+
+        & + .custom-control-description:before {
+          border: 3px solid $white;
+
+          .enform-full-width-bg & {
+            border: 3px solid $med-blue;
+          }
+        }
+      }
+    }
+  }
+
+  h2 {
+    font-size: 1.625rem;
+    line-height: 32px;
+    margin-bottom: 24px;
+
+    &.thankyou {
+      margin-bottom: 0;
+    }
+
+    @include medium-and-up {
+      font-size: 1.75rem;
+      line-height: 34px;
+    }
+
+    @include large-and-up {
+      font-size: 2.125rem;
+    }
+
+    @include x-large-and-up {
+      font-size: 2.25rem;
+    }
+  }
+
+  p {
+    font-family: $roboto;
+    line-height: 18px;
+    text-align: left;
+    margin-bottom: 24px;
+
+    @include medium-and-up {
+      text-align: center;
+    }
+
+    @include large-and-up {
+      text-align: left;
+    }
+  }
+
+  .thankyou-subtitle {
+    font-weight: normal;
+  }
+}

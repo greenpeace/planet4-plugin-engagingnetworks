@@ -1,4 +1,9 @@
 <?php
+/**
+ * Fields Settings Controller class.
+ *
+ * @package P4EN
+ */
 
 namespace P4EN\Controllers\Menu;
 
@@ -7,8 +12,7 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 	/**
 	 * Class Fields_Settings_Controller
 	 */
-	class Fields_Settings_Controller extends Pages_Controller {
-
+	class Fields_Settings_Controller extends Controller {
 
 		/**
 		 * Create menu/submenu entry.
@@ -33,26 +37,31 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 		public function prepare_page() {
 
 			add_action( 'admin_print_footer_scripts', [ $this, 'print_admin_footer_scripts' ], 1 );
-			wp_register_script( 'en-app', P4EN_ADMIN_DIR . '/js/en_app.js',
+
+			wp_register_script(
+				'en-app',
+				P4EN_ADMIN_DIR . '/js/en_app.js',
 				[
 					'jquery',
 					'wp-api',
 					'wp-backbone',
-				], '0.1', true );
+				],
+				'0.1',
+				true
+			);
 			wp_localize_script(
 				'en-app',
 				'p4_data',
 				[
-					'api_url' => get_site_url() . '/wp-json/'.P4_REST_SLUG.'/v1',
+					'api_url' => get_site_url() . '/wp-json/' . P4_REST_SLUG . '/v1',
 					'nonce'   => wp_create_nonce( 'wp_rest' ),
 				]
 			);
 			wp_enqueue_script( 'en-app' );
 
-			$data   = [];
-			$data = array_merge( $data, [
-				'messages'       => $this->messages,
-			] );
+			$data = [
+				'messages' => $this->messages,
+			];
 
 			$this->view->view_template( 'fields_settings', $data );
 		}
@@ -65,21 +74,22 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 		}
 
 		/**
-		 * Validates the settings input.
+		 * Validates the user input.
 		 *
-		 * @param array $settings The associative array with the settings that are registered for the plugin.
+		 * @param array $settings The associative array with the input that the user submitted.
 		 *
 		 * @return bool
 		 */
 		public function validate( $settings ) : bool {
+			return true;
 		}
 
 		/**
-		 * Sanitizes the settings input.
+		 * Sanitizes the user input.
 		 *
-		 * @param array $settings The associative array with the settings that are registered for the plugin (Call by Reference).
+		 * @param array $input The associative array with the input that the user submitted.
 		 */
-		public function sanitize( &$settings ) {
+		public function sanitize( &$input ) {
 		}
 	}
 }
