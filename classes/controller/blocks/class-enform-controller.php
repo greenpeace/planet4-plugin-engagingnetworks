@@ -157,6 +157,14 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
+					'label'       => __( 'Background image for full width form (aka "Happy Point")', 'planet4-engagingnetworks' ),
+					'attr'        => 'background',
+					'type'        => 'attachment',
+					'libraryType' => [ 'image' ],
+					'addButton'   => __( 'Select Background Image', 'planet4-engagingnetworks' ),
+					'frameTitle'  => __( 'Select Background Image', 'planet4-engagingnetworks' ),
+				],
+				[
 					'label' => __( 'Title', 'planet4-engagingnetworks' ),
 					'attr'  => 'title',
 					'type'  => 'text',
@@ -203,14 +211,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'meta'  => [
 						'placeholder' => __( 'Enter Thank you url', 'planet4-engagingnetworks' ),
 					],
-				],
-				[
-					'label'       => __( 'Background', 'planet4-engagingnetworks' ),
-					'attr'        => 'background',
-					'type'        => 'attachment',
-					'libraryType' => [ 'image' ],
-					'addButton'   => __( 'Select Background Image', 'planet4-engagingnetworks' ),
-					'frameTitle'  => __( 'Select Background Image', 'planet4-engagingnetworks' ),
 				],
 			];
 
