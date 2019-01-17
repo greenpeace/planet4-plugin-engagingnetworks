@@ -144,13 +144,13 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'options' => [
 						[
 							'value' => 'full-width',
-							'label' => __( 'Full Width', 'planet4-engagingnetworks' ),
+							'label' => __( 'Full Width no background', 'planet4-engagingnetworks' ),
 							'desc'  => 'Best to use inside pages.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidth.png' ),
 						],
 						[
 							'value' => 'full-width-bg',
-							'label' => __( 'Full width background', 'planet4-engagingnetworks' ),
+							'label' => __( 'Full width with background', 'planet4-engagingnetworks' ),
 							'desc'  => 'This option has a background image that expands the full width of the browser.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidthbg.png' ),
 						],
