@@ -65,6 +65,8 @@
 
 											{% if data.type == 'email' %}
 												{% set errorMessage = __( 'Please enter a valid e-mail address.', domain ) %}
+											{% elseif data.type == 'country' %}
+												{% set errorMessage = __( 'Please select a country.', domain ) %}
 											{% endif %}
 
 											{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
@@ -81,7 +83,7 @@
 																{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
 																size="40" />
 														{% elseif 'country' == data.type %}
-																{% include 'country_select.twig' %}
+																{% include 'country_select.twig' with { errorMessage: errorMessage } %}
 														{% endif %}
 													</div>
 												</div>
