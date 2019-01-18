@@ -181,10 +181,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
-					'label' => __( 'Button text', 'planet4-engagingnetworks' ),
-					'attr'  => 'button_text',
-					'type'  => 'text',
-					'meta'  => [
+					'label'       => __( 'Button text', 'planet4-engagingnetworks' ),
+					'attr'        => 'button_text',
+					'type'        => 'text',
+					'description' => 'Your default is set to [' . __( 'Sign', 'planet4-engagingnetworks' ) . ']',
+					'meta'        => [
 						'placeholder' => __( 'Enter the text of the button', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -382,7 +383,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
 					'nonce_action'    => 'enform_submit',
 					'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
-					'domain'          => 'planet4-engagingnetworks',
 				]
 			);
 

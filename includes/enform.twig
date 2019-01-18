@@ -29,7 +29,7 @@
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
 									<div class="formblock-flex donations-formsection-info">
 										{% for key,data in fields %}
-											{% set errorMessage = __( 'This field is required', domain ) %}
+											{% set errorMessage = __( 'This field is required', 'planet4-engagingnetworks' ) %}
 
 											{% if supporter %}
 												{% if 'title' in data.name %}
@@ -64,7 +64,7 @@
 											{% endif %}
 
 											{% if data.type == 'email' %}
-												{% set errorMessage = __( 'Please enter a valid e-mail address.', domain ) %}
+												{% set errorMessage = __( 'Please enter a valid e-mail address.', 'planet4-engagingnetworks' ) %}
 											{% endif %}
 
 											{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
@@ -125,7 +125,7 @@
 								</div>
 
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
-									<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ '' != fields.button_text ? fields.button_text : __( 'Sign', domain ) }}">
+									<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ '' != fields.button_text ? fields.button_text : __( 'Sign', 'planet4-engagingnetworks' ) }}">
 								</div>
 							</div>
 						</form>
