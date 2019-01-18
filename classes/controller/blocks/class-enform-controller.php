@@ -69,7 +69,15 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_enqueue_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.3', true );
+					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.3', true );
+
+					// Localize en-ui script.
+					$translation_array = array(
+						'en_fields_description_1' => __( 'What kind of Information do you want to send to EN?', 'planet4-engagingnetworks' ),
+						'en_fields_description_2' => __( 'Make sure to select the same fields of your Engaging Networks page / form', 'planet4-engagingnetworks' ),
+					);
+					wp_localize_script( 'en-ui', 'p4_en_blocks_enform_translations', $translation_array );
+					wp_enqueue_script( 'en-ui' );
 				}
 			);
 		}
