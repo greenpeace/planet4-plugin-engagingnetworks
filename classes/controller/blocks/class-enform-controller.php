@@ -69,7 +69,15 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_enqueue_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.3', true );
+					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.3', true );
+
+					// Localize en-ui script.
+					$translation_array = array(
+						'en_fields_description_1' => __( 'What kind of Information do you want to send to EN?', 'planet4-engagingnetworks' ),
+						'en_fields_description_2' => __( 'Make sure to select the same fields of your Engaging Networks page / form', 'planet4-engagingnetworks' ),
+					);
+					wp_localize_script( 'en-ui', 'p4_en_blocks_enform_translations', $translation_array );
+					wp_enqueue_script( 'en-ui' );
 				}
 			);
 		}
@@ -144,17 +152,25 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'options' => [
 						[
 							'value' => 'full-width',
-							'label' => __( 'Full Width', 'planet4-engagingnetworks' ),
-							'desc'  => 'Best for use inside pages and posts.',
+							'label' => __( 'Full Width no background', 'planet4-engagingnetworks' ),
+							'desc'  => 'Best to use inside pages.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidth.png' ),
 						],
 						[
 							'value' => 'full-width-bg',
-							'label' => __( 'Full width background', 'planet4-engagingnetworks' ),
-							'desc'  => 'This options has a background image that expands the full width of the browser.',
+							'label' => __( 'Full width with background', 'planet4-engagingnetworks' ),
+							'desc'  => 'This option has a background image that expands the full width of the browser.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidthbg.png' ),
 						],
 					],
+				],
+				[
+					'label'       => __( 'Background image for full width form (aka "Happy Point")', 'planet4-engagingnetworks' ),
+					'attr'        => 'background',
+					'type'        => 'attachment',
+					'libraryType' => [ 'image' ],
+					'addButton'   => __( 'Select Background Image', 'planet4-engagingnetworks' ),
+					'frameTitle'  => __( 'Select Background Image', 'planet4-engagingnetworks' ),
 				],
 				[
 					'label' => __( 'Title', 'planet4-engagingnetworks' ),
@@ -173,10 +189,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
-					'label' => __( 'Button text', 'planet4-engagingnetworks' ),
-					'attr'  => 'button_text',
-					'type'  => 'text',
-					'meta'  => [
+					'label'       => __( 'Button text', 'planet4-engagingnetworks' ),
+					'attr'        => 'button_text',
+					'type'        => 'text',
+					'description' => 'Your default is set to [' . __( 'Sign', 'planet4-engagingnetworks' ) . ']',
+					'meta'        => [
 						'placeholder' => __( 'Enter the text of the button', 'planet4-engagingnetworks' ),
 					],
 				],
@@ -203,14 +220,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'meta'  => [
 						'placeholder' => __( 'Enter Thank you url', 'planet4-engagingnetworks' ),
 					],
-				],
-				[
-					'label'       => __( 'Background', 'planet4-engagingnetworks' ),
-					'attr'        => 'background',
-					'type'        => 'attachment',
-					'libraryType' => [ 'image' ],
-					'addButton'   => __( 'Select Background Image', 'planet4-engagingnetworks' ),
-					'frameTitle'  => __( 'Select Background Image', 'planet4-engagingnetworks' ),
 				],
 			];
 
@@ -382,7 +391,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
 					'nonce_action'    => 'enform_submit',
 					'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
-					'domain'          => 'planet4-engagingnetworks',
 				]
 			);
 
