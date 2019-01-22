@@ -27,9 +27,12 @@ jQuery(function ($) {
           $("input[name$='__mandatory']").parent().parent().hide();
 
           filtered.forEach(function (element) {
-            let attr_name    = element.get("attr");
-            let element_name = element.get("name");
-            let $element     = $("input[name='" + attr_name + "']");
+            let attr_name        = element.get("attr");
+            let element_name     = element.get("name");
+            let $element         = $("input[name='" + attr_name + "']");
+            let $required_fields = $("[name$='_required']", $('.edit-shortcode-form'));
+
+            $required_fields.prop('required', true);
 
             if ( 'emailAddress' === element_name ) {
               $element
@@ -41,6 +44,14 @@ jQuery(function ($) {
                   .attr('readonly', 'readonly')
                   .attr('onclick',  'return false;')
                   .parent().parent().show();
+            }
+          });
+
+          $('input, textarea, select').filter('[required]:visible').off('change keyup').on('change keyup', function() {
+            if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
+              $(this).addClass('enform-required-field');
+            } else {
+              $(this).removeClass('enform-required-field');
             }
           });
 
@@ -64,6 +75,9 @@ jQuery(function ($) {
             let attr_name    = element.get("attr");
             let element_name = element.get("name");
             let $element     = $("input[name='" + attr_name + "']");
+            let $required_fields = $("[name$='_required']", $('.edit-shortcode-form'));
+
+            $required_fields.prop('required', true);
 
             if (!$element.is(':checked')) {
               $("input[name='" + attr_name + "__mandatory']").parent().parent().hide();
@@ -80,6 +94,14 @@ jQuery(function ($) {
             }
           });
 
+          $('input, textarea, select').filter('[required]:visible').off('change keyup').on('change keyup', function() {
+            if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
+              $(this).addClass('enform-required-field');
+            } else {
+              $(this).removeClass('enform-required-field');
+            }
+          });
+
           this.add_click_events_for_filtered_fields(filtered);
         },
 
@@ -89,6 +111,18 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_destroy: function (shortcode) {
+          var flag = false;
+
+          $('input, textarea, select').filter('[required]:visible').each( function() {
+          	if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
+              flag = true;
+              $(this).addClass('enform-required-field');
+            }
+          });
+
+          if ( flag ) {
+            ;//throw new Error("Required field is empty!");
+          }
 
           // Get filtered fields names.
           var filtered = this.filter_enform_fields(shortcode);
