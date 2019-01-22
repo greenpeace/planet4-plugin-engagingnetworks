@@ -18,6 +18,8 @@ jQuery(function ($) {
          */
         render_new: function (shortcode) {
 
+          this.add_en_fields_separator();
+
           // Get filtered fields.
           var filtered = this.filter_enform_fields(shortcode);
 
@@ -42,6 +44,14 @@ jQuery(function ($) {
             }
           });
 
+          $('[required]:visible', $('.edit-shortcode-form')).off('change keyup').on('change keyup', function() {
+            if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
+              $(this).addClass('enform-required-field');
+            } else {
+              $(this).removeClass('enform-required-field');
+            }
+          });
+
           this.add_click_events_for_filtered_fields(filtered);
         },
 
@@ -51,6 +61,8 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_edit: function (shortcode) {
+
+          this.add_en_fields_separator();
 
           // Get filtered fields
           var filtered = this.filter_enform_fields(shortcode);
@@ -76,6 +88,14 @@ jQuery(function ($) {
             }
           });
 
+          $('[required]:visible', $('.edit-shortcode-form')).off('change keyup').on('change keyup', function() {
+            if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
+              $(this).addClass('enform-required-field');
+            } else {
+              $(this).removeClass('enform-required-field');
+            }
+          });
+
           this.add_click_events_for_filtered_fields(filtered);
         },
 
@@ -85,6 +105,24 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_destroy: function (shortcode) {
+          var required_is_empty = false;
+
+          $('[required]:visible', $('.edit-shortcode-form')).each( function() {
+          	if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
+              $(this).addClass('enform-required-field');
+
+              if ( ! required_is_empty ) {
+                $(this).focus();
+              }
+              required_is_empty = true;
+            }
+          });
+
+          // Here we have to prevent the block from Updating so the only way to do this at this point
+          // is to stop JS execution by throwing an error.
+          if ( required_is_empty ) {
+            throw new Error("Required field is empty!");
+          }
 
           // Get filtered fields names.
           var filtered = this.filter_enform_fields(shortcode);
@@ -157,7 +195,13 @@ jQuery(function ($) {
             return $("input[name='" + element_name + "']").get()
           });
           $(filtered_objects).off('click');
-        }
+        },
+
+        add_en_fields_separator: function () {
+          var $desc_div = $('.shortcode-ui-attribute-background').parent();
+          $desc_div.append('<p><h3>' + p4_en_blocks_enform_translations.en_fields_description_1 + '</h3>' +
+            '(' + p4_en_blocks_enform_translations.en_fields_description_2 + ')</p>');
+        },
       }
     };
 

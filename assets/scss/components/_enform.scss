@@ -111,11 +111,12 @@
 
       input[type=checkbox] {
         & + .custom-control-description {
-          font-size: 1.125rem;
+          font-size: 0.85rem;
         }
 
         & + .custom-control-description:before {
           border: 3px solid $white;
+          vertical-align: middle;
 
           .enform-full-width-bg & {
             border: 3px solid $med-blue;
@@ -153,6 +154,7 @@
     line-height: 18px;
     text-align: left;
     margin-bottom: 24px;
+    font-size: 1rem;
 
     @include medium-and-up {
       text-align: center;

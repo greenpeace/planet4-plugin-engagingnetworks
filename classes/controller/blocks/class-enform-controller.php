@@ -64,12 +64,20 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				return;
 			}
 
-			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.3' );
+			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4' );
 			add_action(
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_enqueue_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.3', true );
+					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.5', true );
+
+					// Localize en-ui script.
+					$translation_array = array(
+						'en_fields_description_1' => __( 'What kind of Information do you want to send to EN?', 'planet4-engagingnetworks' ),
+						'en_fields_description_2' => __( 'Make sure to select the same fields of your Engaging Networks page / form', 'planet4-engagingnetworks' ),
+					);
+					wp_localize_script( 'en-ui', 'p4_en_blocks_enform_translations', $translation_array );
+					wp_enqueue_script( 'en-ui' );
 				}
 			);
 		}
@@ -135,6 +143,9 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'description' => $pages ? __( 'Select the Live EN page that this form will be submitted to.', 'planet4-engagingnetworks' ) : __( 'Check your EngagingNetworks settings!', 'planet4-engagingnetworks' ),
 					'attr'        => 'en_page_id',
 					'type'        => 'select',
+					'meta'        => [
+						'required' => '',
+					],
 					'options'     => $options,
 				],
 				[
@@ -144,17 +155,25 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'options' => [
 						[
 							'value' => 'full-width',
-							'label' => __( 'Full Width', 'planet4-engagingnetworks' ),
-							'desc'  => 'Best for use inside pages and posts.',
+							'label' => __( 'Page body / text size width. No background.', 'planet4-engagingnetworks' ),
+							'desc'  => 'Best to use inside pages. Form width will align with body / text width.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidth.png' ),
 						],
 						[
 							'value' => 'full-width-bg',
-							'label' => __( 'Full width background', 'planet4-engagingnetworks' ),
-							'desc'  => 'This options has a background image that expands the full width of the browser.',
+							'label' => __( 'Full page width. With background image.', 'planet4-engagingnetworks' ),
+							'desc'  => 'This form has a background image that expands the full width of the browser.',
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidthbg.png' ),
 						],
 					],
+				],
+				[
+					'label'       => __( 'Background image for full width form (aka "Happy Point")', 'planet4-engagingnetworks' ),
+					'attr'        => 'background',
+					'type'        => 'attachment',
+					'libraryType' => [ 'image' ],
+					'addButton'   => __( 'Select Background Image', 'planet4-engagingnetworks' ),
+					'frameTitle'  => __( 'Select Background Image', 'planet4-engagingnetworks' ),
 				],
 				[
 					'label' => __( 'Title', 'planet4-engagingnetworks' ),
@@ -173,23 +192,24 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
-					'label' => __( 'Button text', 'planet4-engagingnetworks' ),
+					'label' => __( 'Call to Action button (e.g. "Sign up now!")', 'planet4-engagingnetworks' ),
 					'attr'  => 'button_text',
 					'type'  => 'text',
 					'meta'  => [
-						'placeholder' => __( 'Enter the text of the button', 'planet4-engagingnetworks' ),
+						'placeholder' => __( 'Enter the "Call to Action" button text', 'planet4-engagingnetworks' ),
+						'required'    => '',
 					],
 				],
 				[
-					'label' => __( 'Thank you Title', 'planet4-engagingnetworks' ),
+					'label' => __( '"Thank you" main text / Title (e.g. "Thank you for signing!")', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_title',
 					'type'  => 'text',
 					'meta'  => [
-						'placeholder' => __( 'Enter Thank you Title', 'planet4-engagingnetworks' ),
+						'placeholder' => __( 'Enter "Thank you" main text / Title ', 'planet4-engagingnetworks' ),
 					],
 				],
 				[
-					'label' => __( 'Thank you Subtitle', 'planet4-engagingnetworks' ),
+					'label' => __( '"Thank You" secondary message / Subtitle (e.g. "Your support means world")', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_subtitle',
 					'type'  => 'text',
 					'meta'  => [
@@ -197,20 +217,12 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
-					'label' => __( 'Thank you Url', 'planet4-engagingnetworks' ),
+					'label' => __( '"Thank you page" url (Title and Subtitle will not be shown)', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_url',
 					'type'  => 'url',
 					'meta'  => [
-						'placeholder' => __( 'Enter Thank you url', 'planet4-engagingnetworks' ),
+						'placeholder' => __( 'Enter "Thank you page" url', 'planet4-engagingnetworks' ),
 					],
-				],
-				[
-					'label'       => __( 'Background', 'planet4-engagingnetworks' ),
-					'attr'        => 'background',
-					'type'        => 'attachment',
-					'libraryType' => [ 'image' ],
-					'addButton'   => __( 'Select Background Image', 'planet4-engagingnetworks' ),
-					'frameTitle'  => __( 'Select Background Image', 'planet4-engagingnetworks' ),
 				],
 			];
 
@@ -382,7 +394,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
 					'nonce_action'    => 'enform_submit',
 					'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
-					'domain'          => 'planet4-engagingnetworks',
 				]
 			);
 
@@ -451,8 +462,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 					if ( false === $fields ) {
 						$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
-					}
-					if ( $this->ens_api ) {
+					} elseif ( $this->ens_api ) {
 						$response = $this->ens_api->process_page( $fields['en_page_id'], $fields );
 						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
 							$data = json_decode( $response['body'], true );
@@ -483,7 +493,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		public function validate( $input ) : bool {
 			if (
-				( ! isset( $input['en_page_id'] ) || $input['en_page_id'] <= 0 ) ||
+				( ! isset( $input['en_page_id'] ) || '0' === $input['en_page_id'] ) ||
 				( ! isset( $input['supporter.emailAddress'] ) || false === filter_var( $input['supporter.emailAddress'], FILTER_VALIDATE_EMAIL ) )
 			) {
 				return false;
