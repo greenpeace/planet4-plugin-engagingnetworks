@@ -69,7 +69,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.4', true );
+					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.5', true );
 
 					// Localize en-ui script.
 					$translation_array = array(
@@ -141,8 +141,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				[
 					'label'       => __( 'Engaging Network Live Pages', 'planet4-engagingnetworks' ),
 					'description' => $pages ? __( 'Select the Live EN page that this form will be submitted to.', 'planet4-engagingnetworks' ) : __( 'Check your EngagingNetworks settings!', 'planet4-engagingnetworks' ),
-					'attr'        => 'en_page_id_required',
+					'attr'        => 'en_page_id',
 					'type'        => 'select',
+					'meta'        => [
+						'required' => '',
+					],
 					'options'     => $options,
 				],
 				[
