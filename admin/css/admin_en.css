@@ -28,3 +28,7 @@ div.shortcode-ui-edit-shortcake_enform > div:nth-child(-n+9) {
 div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+9):nth-child(odd) {
     margin-right: 40%;
 }
+
+.enform-required-field {
+    border-color: #ff3333 !important;
+}

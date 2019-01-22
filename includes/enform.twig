@@ -20,7 +20,7 @@
 						<form id="p4en_form" name="p4en_form" method="post" novalidate>
 							{{ fn( 'wp_nonce_field', nonce_action, '_wpnonce', true, false )|raw }}
 							<input type="hidden" name="enform_submit" value="{{ enform_submit }}">
-							<input type="hidden" name="en_page_id" value="{{ fields.en_page_id }}">
+							<input type="hidden" name="en_page_id" value="{{ fields.en_page_id_required }}">
 							<input type="hidden" name="thankyou_title" value="{{ fields.thankyou_title }}">
 							<input type="hidden" name="thankyou_subtitle" value="{{ fields.thankyou_subtitle }}">
 
@@ -29,7 +29,7 @@
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
 									<div class="formblock-flex donations-formsection-info">
 										{% for key,data in fields %}
-											{% set errorMessage = __( 'This field is required', domain ) %}
+											{% set errorMessage = __( 'This field is required', 'planet4-engagingnetworks' ) %}
 
 											{% if supporter %}
 												{% if 'title' in data.name %}
@@ -64,10 +64,12 @@
 											{% endif %}
 
 											{% if data.type == 'email' %}
-												{% set errorMessage = __( 'Please enter a valid e-mail address.', domain ) %}
+												{% set errorMessage = __( 'Please enter a valid e-mail address.', 'planet4-engagingnetworks' ) %}
+											{% elseif data.type == 'country' %}
+												{% set errorMessage = __( 'Please select a country.', 'planet4-engagingnetworks' ) %}
 											{% endif %}
 
-											{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
+											{% if 'en_page_id_required' != key and 'en_form_style' != key and '' != data.value %}
 												<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }}">
 													<div class="en__field__element en__field__element--text form-group" style="display: block;">
 														{% if 'text' == data.type or 'email' == data.type %}
@@ -81,7 +83,7 @@
 																{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
 																size="40" />
 														{% elseif 'country' == data.type %}
-																{% include 'country_select.twig' %}
+																{% include 'country_select.twig' with { errorMessage: errorMessage } %}
 														{% endif %}
 													</div>
 												</div>
@@ -125,7 +127,7 @@
 								</div>
 
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
-									<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ '' != fields.button_text ? fields.button_text : __( 'Sign', domain ) }}">
+									<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ '' != fields.button_text ? fields.button_text : __( 'Sign', 'planet4-engagingnetworks' ) }}">
 								</div>
 							</div>
 						</form>
