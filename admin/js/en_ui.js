@@ -30,9 +30,6 @@ jQuery(function ($) {
             let attr_name        = element.get("attr");
             let element_name     = element.get("name");
             let $element         = $("input[name='" + attr_name + "']");
-            let $required_fields = $("[name$='_required']", $('.edit-shortcode-form'));
-
-            $required_fields.prop('required', true);
 
             if ( 'emailAddress' === element_name ) {
               $element
@@ -47,7 +44,10 @@ jQuery(function ($) {
             }
           });
 
-          $('input, textarea, select').filter('[required]:visible').off('change keyup').on('change keyup', function() {
+          let $required_fields = $("[name$='_required']", $('.edit-shortcode-form'));
+          $required_fields.prop('required', true);
+
+          $required_fields.off('change keyup').on('change keyup', function() {
             if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
               $(this).addClass('enform-required-field');
             } else {
@@ -75,9 +75,6 @@ jQuery(function ($) {
             let attr_name    = element.get("attr");
             let element_name = element.get("name");
             let $element     = $("input[name='" + attr_name + "']");
-            let $required_fields = $("[name$='_required']", $('.edit-shortcode-form'));
-
-            $required_fields.prop('required', true);
 
             if (!$element.is(':checked')) {
               $("input[name='" + attr_name + "__mandatory']").parent().parent().hide();
@@ -94,7 +91,10 @@ jQuery(function ($) {
             }
           });
 
-          $('input, textarea, select').filter('[required]:visible').off('change keyup').on('change keyup', function() {
+          let $required_fields = $("[name$='_required']", $('.edit-shortcode-form'));
+          $required_fields.prop('required', true);
+
+          $required_fields.off('change keyup').on('change keyup', function() {
             if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
               $(this).addClass('enform-required-field');
             } else {
@@ -121,7 +121,7 @@ jQuery(function ($) {
           });
 
           if ( flag ) {
-            ;//throw new Error("Required field is empty!");
+            throw new Error("Required field is empty!");
           }
 
           // Get filtered fields names.
