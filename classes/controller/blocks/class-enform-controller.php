@@ -192,24 +192,24 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
-					'label'       => __( 'Button text', 'planet4-engagingnetworks' ),
-					'attr'        => 'button_text',
-					'type'        => 'text',
-					'description' => 'Your default is set to [' . __( 'Sign', 'planet4-engagingnetworks' ) . ']',
-					'meta'        => [
-						'placeholder' => __( 'Enter the text of the button', 'planet4-engagingnetworks' ),
+					'label' => __( 'Call to Action button (e.g. "Sign up now!")', 'planet4-engagingnetworks' ),
+					'attr'  => 'button_text',
+					'type'  => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter the "Call to Action" button text', 'planet4-engagingnetworks' ),
+						'required'    => '',
 					],
 				],
 				[
-					'label' => __( 'Thank you Title', 'planet4-engagingnetworks' ),
+					'label' => __( '"Thank you" main text / Title (e.g. "Thank you for signing!")', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_title',
 					'type'  => 'text',
 					'meta'  => [
-						'placeholder' => __( 'Enter Thank you Title', 'planet4-engagingnetworks' ),
+						'placeholder' => __( 'Enter "Thank you" main text / Title ', 'planet4-engagingnetworks' ),
 					],
 				],
 				[
-					'label' => __( 'Thank you Subtitle', 'planet4-engagingnetworks' ),
+					'label' => __( '"Thank You" secondary message / Subtitle (e.g. "Your support means world")', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_subtitle',
 					'type'  => 'text',
 					'meta'  => [
@@ -217,11 +217,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					],
 				],
 				[
-					'label' => __( 'Thank you Url', 'planet4-engagingnetworks' ),
+					'label' => __( '"Thank you page" url (Title and Subtitle will not be shown)', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_url',
 					'type'  => 'url',
 					'meta'  => [
-						'placeholder' => __( 'Enter Thank you url', 'planet4-engagingnetworks' ),
+						'placeholder' => __( 'Enter "Thank you page" url', 'planet4-engagingnetworks' ),
 					],
 				],
 			];
