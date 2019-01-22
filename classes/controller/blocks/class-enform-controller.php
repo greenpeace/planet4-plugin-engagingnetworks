@@ -64,12 +64,12 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				return;
 			}
 
-			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.3' );
+			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4' );
 			add_action(
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.3', true );
+					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.4', true );
 
 					// Localize en-ui script.
 					$translation_array = array(
@@ -141,7 +141,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				[
 					'label'       => __( 'Engaging Network Live Pages', 'planet4-engagingnetworks' ),
 					'description' => $pages ? __( 'Select the Live EN page that this form will be submitted to.', 'planet4-engagingnetworks' ) : __( 'Check your EngagingNetworks settings!', 'planet4-engagingnetworks' ),
-					'attr'        => 'en_page_id',
+					'attr'        => 'en_page_id_required',
 					'type'        => 'select',
 					'options'     => $options,
 				],
@@ -459,8 +459,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 
 					if ( false === $fields ) {
 						$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
-					}
-					if ( $this->ens_api ) {
+					} elseif ( $this->ens_api ) {
 						$response = $this->ens_api->process_page( $fields['en_page_id'], $fields );
 						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
 							$data = json_decode( $response['body'], true );
@@ -491,7 +490,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		public function validate( $input ) : bool {
 			if (
-				( ! isset( $input['en_page_id'] ) || $input['en_page_id'] <= 0 ) ||
+				( ! isset( $input['en_page_id'] ) || '0' === $input['en_page_id'] ) ||
 				( ! isset( $input['supporter.emailAddress'] ) || false === filter_var( $input['supporter.emailAddress'], FILTER_VALIDATE_EMAIL ) )
 			) {
 				return false;
