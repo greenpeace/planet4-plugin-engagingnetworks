@@ -27,9 +27,9 @@ jQuery(function ($) {
           $("input[name$='__mandatory']").parent().parent().hide();
 
           filtered.forEach(function (element) {
-            let attr_name        = element.get("attr");
-            let element_name     = element.get("name");
-            let $element         = $("input[name='" + attr_name + "']");
+            let attr_name    = element.get("attr");
+            let element_name = element.get("name");
+            let $element     = $("input[name='" + attr_name + "']");
 
             if ( 'emailAddress' === element_name ) {
               $element
