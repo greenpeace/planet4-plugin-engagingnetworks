@@ -44,10 +44,7 @@ jQuery(function ($) {
             }
           });
 
-          let $required_fields = $("[name$='_required']", $('.edit-shortcode-form'));
-          $required_fields.prop('required', true);
-
-          $required_fields.off('change keyup').on('change keyup', function() {
+          $('[required]:visible', $('.edit-shortcode-form')).off('change keyup').on('change keyup', function() {
             if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
               $(this).addClass('enform-required-field');
             } else {
@@ -91,10 +88,7 @@ jQuery(function ($) {
             }
           });
 
-          let $required_fields = $("[name$='_required']", $('.edit-shortcode-form'));
-          $required_fields.prop('required', true);
-
-          $required_fields.off('change keyup').on('change keyup', function() {
+          $('[required]:visible', $('.edit-shortcode-form')).off('change keyup').on('change keyup', function() {
             if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
               $(this).addClass('enform-required-field');
             } else {
@@ -111,16 +105,22 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_destroy: function (shortcode) {
-          var flag = false;
+          var required_is_empty = false;
 
-          $('input, textarea, select').filter('[required]:visible').each( function() {
+          $('[required]:visible', $('.edit-shortcode-form')).each( function() {
           	if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
-              flag = true;
               $(this).addClass('enform-required-field');
+
+              if ( ! required_is_empty ) {
+                $(this).focus();
+              }
+              required_is_empty = true;
             }
           });
 
-          if ( flag ) {
+          // Here we have to prevent the block from Updating so the only way to do this at this point
+          // is to stop JS execution by throwing an error.
+          if ( required_is_empty ) {
             throw new Error("Required field is empty!");
           }
 
