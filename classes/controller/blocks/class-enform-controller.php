@@ -192,7 +192,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					'label' => __( 'Call to Action button (e.g. "Sign up now!")', 'planet4-engagingnetworks' ),
 					'attr'  => 'button_text',
 					'type'  => 'text',
-					'description' => 'Your default is set to [' . __( 'Sign', 'planet4-engagingnetworks' ) . ']',
 					'meta'  => [
 						'placeholder' => __( 'Enter the "Call to Action" button text', 'planet4-engagingnetworks' ),
 						'required'    => '',
