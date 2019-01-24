@@ -111,6 +111,24 @@ if ( ! class_exists( 'Settings_Controller' ) ) {
 					);
 					$has_errors = true;
 				}
+				if ( isset( $settings['p4en_frontend_public_api'] ) && 36 !== strlen( $settings['p4en_frontend_public_api'] ) ) {
+					add_settings_error(
+						'p4en_main_settings-p4en_frontend_public_api',
+						esc_attr( 'p4en_main_settings-p4en_frontend_public_api' ),
+						__( 'Invalid value for Frontend Public API', 'planet4-engagingnetworks' ),
+						'error'
+					);
+					$has_errors = true;
+				}
+				if ( isset( $settings['p4en_frontend_private_api'] ) && 36 !== strlen( $settings['p4en_frontend_private_api'] ) ) {
+					add_settings_error(
+						'p4en_main_settings-p4en_frontend_private_api',
+						esc_attr( 'p4en_main_settings-p4en_frontend_private_api' ),
+						__( 'Invalid value for Frontend Private API', 'planet4-engagingnetworks' ),
+						'error'
+					);
+					$has_errors = true;
+				}
 			}
 			return ! $has_errors;
 		}
