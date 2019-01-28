@@ -55,53 +55,116 @@ $(document).ready(function () {
     return formIsValid;
   }
 
-  $('#p4en_form').submit(function(e) {
+  // Submit to a en page process api endpoint.
+  function submitToEn(formData, sessionToken) {
+    const form = $('#enform');
+    var en_page_id = $('input[name=en_page_id]').val(),
+      uri = `https://e-activist.com/ens/service/page/${en_page_id}/process`;
+    $.ajax({
+      url: uri,
+      type: 'POST',
+      contentType: 'application/json',
+      crossDomain: true,
+      headers: {
+        'ens-auth-token': sessionToken
+      },
+      data: JSON.stringify(formData),
+    }).done(function () {
+      var redirectURL = form.data('redirect-url');
+
+      if (validateUrl(redirectURL)) {
+        window.location = redirectURL;
+      } else {
+        var s =
+          '<h2 class="thankyou">' +
+          '<span class="thankyou-title">'+ $('input[name=thankyou_title]').val() +'</span><br />' +
+          ' <span class="thankyou-subtitle">'+  $('input[name=thankyou_subtitle]').val() +'</span> ' +
+          '</h2>';
+
+        form.html(s);
+      }
+      $('.enform-notice').html('');
+    }).fail(function (response) {
+      $('.enform-notice').html('<span class="enform-error">There was a problem with the submission</span>');
+      console.log(response); //eslint-disable-line no-console
+    }).always(function() {
+      hideENSpinner();
+    });
+  }
+
+  // Get enform fields data and prepare them for submission to en api.
+  function getFormData() {
+    let supporter = {
+      questions: {}
+    };
+
+    // Prepare the questions/optins values the way that ENS api expects them.
+    $('.en__field__input--checkbox:checked').val('Y');
+    $.each($('.en__field__input--checkbox:not(":checked")'), function (i, field) {
+      if (field.name.indexOf('supporter.questions.') >= 0) {
+        let id = field.name.split('.')[2];
+        supporter.questions['question.' + id] = 'N';
+      }
+    });
+
+    $.each($('#p4en_form').serializeArray(), function (i, field) {
+      if (field.name.indexOf('supporter.questions.') >= 0) {
+        let id = field.name.split('.')[2];
+        supporter.questions['question.' + id] = field.value;
+      } else if (field.name.indexOf('supporter.') >= 0 && '' != field.value) {
+        supporter[field.name.replace('supporter.', '')] = field.value;
+      }
+    });
+
+    var requestBody = {
+      standardFieldNames: true,
+      supporter: supporter
+    };
+    return requestBody;
+  }
+
+  function showENSpinner() {
+    $('#p4en_form_save_button').attr('disabled', true);
+    $('.en-spinner').show();
+    $('.enform-notice').html('');
+
+  }
+  function hideENSpinner() {
+    $('#p4en_form_save_button').attr('disabled', false);
+    $('.en-spinner').hide();
+  }
+
+  // Submit handler for enform
+  $('#p4en_form').submit(function (e) {
     e.preventDefault();
 
     // Don't bug users with validation before the first submit
     addChangeListeners(this);
 
-    const $content = $('#enform');
     if (validateForm(this)) {
       const url = en_vars.ajaxurl;
-      let values = {};
 
-      // Prepare the questions/optins values the way that ENS api expects them.
-      $('.en__field__input--checkbox:checked').val('Y');
-      $.each($('.en__field__input--checkbox:not(":checked")'), function(i, field) {
-        if ( field.name.indexOf( 'supporter.questions.' ) >= 0 ) {
-          let id = field.name.split('.')[2];
-          values['supporter.question.' + id] = 'N';
-        }
-      });
-
-      $.each($('#p4en_form').serializeArray(), function(i, field) {
-        if ( field.name.indexOf( 'supporter.questions.' ) >= 0 ) {
-          let id = field.name.split('.')[2];
-          values['supporter.question.' + id] = field.value;
-        } else {
-          values[field.name] = field.value;
-        }
-      });
-
+      showENSpinner();
       $.ajax({
         url: url,
         type: 'POST',
         data: {
-          action:     'handle_submit',
-          '_wpnonce': $( '#_wpnonce', $(this) ).val(),
-          'en_page_id': $('input[name=en_page_id]').val(),
-          values: values,
+          action: 'get_en_session_token',
+          '_wpnonce': $('#_wpnonce', $(this)).val(),
         },
-      }).done(function ( response ) {
-        var redirectURL = $content.data('redirect-url');
+      }).done(function (response) {
+        var token = response.token;
 
-        if ( validateUrl( redirectURL ) ) {
-          window.location = redirectURL;
+        if ('' !== token) {
+          var values = getFormData();
+          submitToEn(values, token);
         } else {
-          $content.html( response );
+          hideENSpinner();
+          $('.enform-notice').html('There was a problem with the submission');
         }
-      }).fail(function ( response ) {
+      }).fail(function (response) {
+        hideENSpinner();
+        $('.enform-notice').html('There was a problem with the submission');
         console.log(response); //eslint-disable-line no-console
       });
     }
