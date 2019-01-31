@@ -24,20 +24,29 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		const ENS_CALL_TIMEOUT   = 10;              // Seconds after which the api call will timeout if not responded.
 
 		/**
-		 * ENS Auth Token
+		 * ENS Auth Token for private user.
 		 *
 		 * @var $ens_auth_token
 		 */
 		private $ens_auth_token = '';
+
+		/**
+		 * ENS Auth Token for public user.
+		 *
+		 * @var $ens_auth_public_token
+		 */
+		private $ens_auth_public_token = '';
 
 
 		/**
 		 * Ensapi_Controller constructor.
 		 *
 		 * @param string $ens_private_token The private api token to be used in order to authenticate for ENS API.
+		 * @param bool $private_user        Defines if a token for a private user is passed.
 		 */
-		public function __construct( $ens_private_token ) {
-			$this->authenticate( $ens_private_token );
+		public function __construct( $ens_private_token, $private_user = true ) {
+			$token_type = $private_user ? 'ens_auth_token' : 'ens_auth_public_token';
+			$this->authenticate( $ens_private_token, $token_type );
 		}
 
 		/**
@@ -53,13 +62,14 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 * Authenticates usage of ENS API calls.
 		 *
 		 * @param string $ens_private_token The private api token to be used in order to authenticate for ENS API.
+		 * @param string $token_name        Defines the token name.
 		 */
-		private function authenticate( $ens_private_token ) {
+		private function authenticate( $ens_private_token, $token_name ) {
 
 			// Get cached auth token.
-			$this->ens_auth_token = get_transient( 'ens_auth_token' );
+			$ens_auth_token = get_transient( $token_name );
 
-			if ( ! $this->ens_auth_token ) {
+			if ( ! $ens_auth_token ) {
 				$url = self::ENS_AUTH_URL;
 				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
 				$response = wp_safe_remote_post(
@@ -74,12 +84,13 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				);
 
 				if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {                   // Communication with ENS API is authenticated.
-					$body                 = json_decode( $response['body'], true );
-					$expiration           = (int) ( $body['expires'] / 1000 );                      // Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
-					$this->ens_auth_token = $body['ens-auth-token'];
-					set_transient( 'ens_auth_token', $this->ens_auth_token, $expiration );
+					$body           = json_decode( $response['body'], true );
+					$expiration     = (int) ( $body['expires'] / 1000 );                      // Time period in seconds to keep the ens_auth_token before refreshing. Typically 1 hour.
+					$ens_auth_token = $body['ens-auth-token'];
+					set_transient( $token_name, $ens_auth_token, $expiration );
 				}
 			}
+			$this->$token_name = $ens_auth_token;
 		}
 
 		/**
@@ -174,7 +185,7 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				'Postcode'      => 'supporter.postcode',
 				'Email'         => 'supporter.emailAddress',
 				'Phone Number'  => 'supporter.phoneNumber',
-				'date_of_birth' => 'supporter.dateOfBirth',
+				'Date of Birth' => 'supporter.birthday',
 				'questions'     => 'supporter.questions',
 			];
 
@@ -320,6 +331,21 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 
 			}
 			return $response;
+		}
+
+		/**
+		 * Get session token for public user.
+		 *
+		 * @return mixed EN Service Token.
+		 */
+		public function get_public_session_token() {
+			if ( ! $this->ens_auth_public_token ) {
+				$main_settings     = get_option( 'p4en_main_settings' );
+				$ens_private_token = $main_settings['p4en_frontend_private_api'];
+				$this->authenticate( $ens_private_token, 'ens_auth_public_token' );
+			}
+
+			return $this->ens_auth_public_token;
 		}
 	}
 }

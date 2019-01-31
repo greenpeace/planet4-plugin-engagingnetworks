@@ -55,7 +55,7 @@
 												{% elseif 'phone' in data.name %}
 													{% set value = supporter['Phone Number'] %}
 												{% elseif 'Birth' in data.name %}
-													{% set value = supporter['date_of_birth'] %}
+													{% set value = supporter['birthday'] %}
 												{% else %}
 													{% set value = '' %}
 												{% endif %}
@@ -79,7 +79,7 @@
 																class="en__field__input en__field__input--text form-control"
 																value="{{ value }}"
 																data-errormessage="{{ errorMessage }}"
-																placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy/mm/dd)' : '' }}"
+																placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}"
 																{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
 																size="40" />
 														{% elseif 'country' == data.type %}
@@ -127,7 +127,10 @@
 								</div>
 
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
-									<input type="submit" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" value="{{ '' != fields.button_text ? fields.button_text : __( 'Sign', 'planet4-engagingnetworks' ) }}">
+									<button type="submit" form="p4en_form" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style != 'full-width-bg' %}w-auto{% endif %}" >{{ '' != fields.button_text ? fields.button_text : __( 'Sign', 'planet4-engagingnetworks' ) }}
+										<div class="three-quarters en-spinner" id="spinner" style="display:none;">...</div>
+									</button>
+									<div class="enform-notice"></div>
 								</div>
 							</div>
 						</form>
