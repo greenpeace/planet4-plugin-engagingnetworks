@@ -273,6 +273,47 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				}
 			}
 
+			// GTM datalayer fields.
+			$fields[] = [
+				'label' => __( 'Campaign name', 'planet4-engagingnetworks' ),
+				'attr'  => 'campaign_name',
+				'type'  => 'text',
+				'meta'  => [
+					'placeholder' => __( 'Enter campaign name', 'planet4-engagingnetworks' ),
+				],
+				'description' => __( 'When form data submitted to EN, The value added in "Campaign name" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
+			];
+
+			$fields[] = [
+				'label' => __( 'Basket name', 'planet4-engagingnetworks' ),
+				'attr'  => 'basket_name',
+				'type'  => 'text',
+				'meta'  => [
+					'placeholder' => __( 'Enter basket name', 'planet4-engagingnetworks' ),
+				],
+				'description' => __( 'When form data submitted to EN, The value added in "Basket name" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
+			];
+
+			$fields[] = [
+				'label' => __( 'Scope', 'planet4-engagingnetworks' ),
+				'attr'  => 'scope',
+				'type'  => 'text',
+				'meta'  => [
+					'placeholder' => __( 'Enter scope', 'planet4-engagingnetworks' ),
+				],
+				'description' => __( 'When form data submitted to EN, The value added in "Scope" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
+			];
+
+			$fields[] = [
+				'label' => __( 'Department', 'planet4-engagingnetworks' ),
+				'attr'  => 'department',
+				'type'  => 'text',
+				'meta'  => [
+					'placeholder' => __( 'Enter department', 'planet4-engagingnetworks' ),
+				],
+				'description' => __( 'When form data submitted to EN, The value added in "Department" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
+			];
+
 			// Define the Shortcode UI arguments.
 			$shortcode_ui_args = [
 				'label'         => __( 'Engaging Networks Form', 'planet4-engagingnetworks' ),
