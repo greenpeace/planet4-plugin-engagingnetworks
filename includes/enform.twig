@@ -24,6 +24,11 @@
 							<input type="hidden" name="thankyou_title" value="{{ fields.thankyou_title }}">
 							<input type="hidden" name="thankyou_subtitle" value="{{ fields.thankyou_subtitle }}">
 
+							<input type="hidden" id="campaign_name" value="{{ fields.campaign_name }}">
+							<input type="hidden" id="basket_name" value="{{ fields.basket_name }}">
+							<input type="hidden" id="scope" value="{{ fields.scope }}">
+							<input type="hidden" id="department" value="{{ fields.department }}">
+
 							{{ error_msg }}
 							<div class="{% if fields.en_form_style == 'full-width-bg' %}row{% endif %}">
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
