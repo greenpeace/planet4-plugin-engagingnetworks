@@ -29,9 +29,9 @@
 .enform {
   font-family: $roboto;
   height: inherit;
-  padding: 20px;
+  padding: $n20;
   background: #074365;
-  margin-bottom: 40px;
+  margin-bottom: $n40;
   width: 100%;
 
   .enform-full-width & {
@@ -63,7 +63,7 @@
       + .invalid-feedback {
         background: #ff3333;
         color: white;
-        padding: 5px;
+        padding: $n5;
       }
     }
 
@@ -102,7 +102,7 @@
 
     .form-check-label-block {
       display: inline-block;
-      padding: 10px 15px;
+      padding: $n10 $n15;
 
       .enform-full-width-bg & {
         background: rgba(255, 255, 255, .5);
@@ -168,4 +168,11 @@
   .thankyou-subtitle {
     font-weight: normal;
   }
+}
+
+.en-spinner {
+  border-color: $white !important;
+  border-right-color: transparent!important;
+  display: none;
+  vertical-align: middle;
 }

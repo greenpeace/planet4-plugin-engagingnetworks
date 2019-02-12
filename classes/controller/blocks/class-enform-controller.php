@@ -28,7 +28,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 */
 		const BLOCK_NAME = 'enform';
 
-    /**
+		/**
 		 * Page types for EN forms
 		 *
 		 * @const array ENFORM_PAGE_TYPES
@@ -50,8 +50,8 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 			add_action( 'admin_print_footer_scripts-post.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_print_footer_scripts-post-new.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
-			add_action( 'wp_ajax_handle_submit', [ $this, 'handle_submit' ] );
-			add_action( 'wp_ajax_nopriv_handle_submit', [ $this, 'handle_submit' ] );
+			add_action( 'wp_ajax_get_en_session_token', [ $this, 'get_session_token' ] );
+			add_action( 'wp_ajax_nopriv_get_en_session_token', [ $this, 'get_session_token' ] );
 		}
 
 		/**
@@ -273,6 +273,47 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				}
 			}
 
+			// GTM datalayer fields.
+			$fields[] = [
+				'label' => __( 'Campaign name', 'planet4-engagingnetworks' ),
+				'attr'  => 'campaign_name',
+				'type'  => 'text',
+				'meta'  => [
+					'placeholder' => __( 'Enter campaign name', 'planet4-engagingnetworks' ),
+				],
+				'description' => __( 'When form data submitted to EN, The value added in "Campaign name" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
+			];
+
+			$fields[] = [
+				'label' => __( 'Basket name', 'planet4-engagingnetworks' ),
+				'attr'  => 'basket_name',
+				'type'  => 'text',
+				'meta'  => [
+					'placeholder' => __( 'Enter basket name', 'planet4-engagingnetworks' ),
+				],
+				'description' => __( 'When form data submitted to EN, The value added in "Basket name" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
+			];
+
+			$fields[] = [
+				'label' => __( 'Scope', 'planet4-engagingnetworks' ),
+				'attr'  => 'scope',
+				'type'  => 'text',
+				'meta'  => [
+					'placeholder' => __( 'Enter scope', 'planet4-engagingnetworks' ),
+				],
+				'description' => __( 'When form data submitted to EN, The value added in "Scope" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
+			];
+
+			$fields[] = [
+				'label' => __( 'Department', 'planet4-engagingnetworks' ),
+				'attr'  => 'department',
+				'type'  => 'text',
+				'meta'  => [
+					'placeholder' => __( 'Enter department', 'planet4-engagingnetworks' ),
+				],
+				'description' => __( 'When form data submitted to EN, The value added in "Department" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
+			];
+
 			// Define the Shortcode UI arguments.
 			$shortcode_ui_args = [
 				'label'         => __( 'Engaging Networks Form', 'planet4-engagingnetworks' ),
@@ -444,43 +485,27 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		}
 
 		/**
-		 * Handle form submit asynchronously.
+		 * Get en session token for frontend api calls.
 		 */
-		public function handle_submit() {
+		public function get_session_token() {
 			// If this is an ajax call.
 			if ( wp_doing_ajax() ) {
-				$main_settings     = get_option( 'p4en_main_settings' );
-				$ens_private_token = $main_settings['p4en_private_api'];
-				$this->ens_api     = new Ensapi( $ens_private_token );
-				$nonce             = $_POST['_wpnonce'];   // CSRF protection.
+
+				$nonce    = $_POST['_wpnonce'];   // CSRF protection.
+				$response = [];
 
 				if ( ! wp_verify_nonce( $nonce, 'enform_submit' ) ) {
-					$data['error_msg'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
+					$response['message'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
+					$response['token']   = '';
 				} else {
-					$values = $_POST['values'] ?? [];
-					$fields = $this->valitize( $values );
 
-					if ( false === $fields ) {
-						$data['error_msg'] = __( 'Invalid input!', 'planet4-engagingnetworks' );
-					} elseif ( $this->ens_api ) {
-						$response = $this->ens_api->process_page( $fields['en_page_id'], $fields );
-						if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
-							$data = json_decode( $response['body'], true );
-						} else {
-							$data['error_msg'] = $response;
-						}
-					}
+					$main_settings     = get_option( 'p4en_main_settings' );
+					$ens_private_token = $main_settings['p4en_frontend_private_api'];
+					$this->ens_api     = new Ensapi( $ens_private_token, false );
+					$token             = $this->ens_api->get_public_session_token();
+					$response['token'] = $token;
 				}
-				Timber::$locations = P4EN_INCLUDES_DIR;
-				Timber::render(
-					[ 'tease-thankyou.twig' ],
-					[
-						'title'    => $fields['thankyou_title'] ?? '',
-						'subtitle' => $fields['thankyou_subtitle'] ?? '',
-						'error'    => $data['error_msg'] ?? '',
-					]
-				);
-				wp_die();
+				wp_send_json( $response );
 			}
 		}
 
