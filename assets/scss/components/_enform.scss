@@ -169,3 +169,10 @@
     font-weight: normal;
   }
 }
+
+.en-spinner {
+  border-color: $white !important;
+  border-right-color: transparent!important;
+  display: none;
+  vertical-align: middle;
+}
