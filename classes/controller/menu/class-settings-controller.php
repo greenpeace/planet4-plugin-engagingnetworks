@@ -15,14 +15,6 @@ if ( ! class_exists( 'Settings_Controller' ) ) {
 	class Settings_Controller extends Controller {
 
 		/**
-		 * Hooks the method that Creates the menu item for the current controller.
-		 */
-		public function load() {
-			parent::load();
-			add_filter( 'plugin_locale', array( $this, 'set_locale' ), 11, 1 );
-		}
-
-		/**
 		 * Create menu/submenu entry.
 		 */
 		public function create_admin_menu() {
