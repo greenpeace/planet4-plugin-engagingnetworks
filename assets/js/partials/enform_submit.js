@@ -158,6 +158,13 @@ $(document).ready(function () {
         if ('' !== token) {
           var values = getFormData();
           submitToEn(values, token);
+
+          // DataLayer push event on EN form submission.
+          if ( typeof google_tag_value !== 'undefined' && google_tag_value ) {
+            dataLayer.push({
+              'event' : 'petitionSignup'
+            });
+          }
         } else {
           hideENSpinner();
           $('.enform-notice').html('There was a problem with the submission');
@@ -170,10 +177,9 @@ $(document).ready(function () {
     }
   });
 
-  // DataLayer push event on EN form page load.
+  // DataLayer push value on EN form page load.
   if ( typeof google_tag_value !== 'undefined' && google_tag_value ) {
     dataLayer.push({
-      'event' : 'petitionSignup',
       'gCampaign' : $('#campaign_name').val(),
       'gBasket' : $('#basket_name').val(),
       'gScope' : $('#scope').val(),
