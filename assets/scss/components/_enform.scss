@@ -45,7 +45,10 @@
   form {
     margin: 0;
 
-    input, .custom-select, select.form-control.en__field__input--select {
+    input,
+    .custom-select,
+    select.form-control.en__field__input--select,
+    button {
       height: 42px;
       border-radius: 0;
       border-color: transparent;
