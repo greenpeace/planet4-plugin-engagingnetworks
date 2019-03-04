@@ -22,6 +22,21 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 		private $questions_option = 'planet4-en-questions';
 
 		/**
+		 * Allowed fields for each question.
+		 *
+		 * @var array
+		 */
+		private $allowed_fields = [
+			'default_value',
+			'hidden',
+			'id',
+			'label',
+			'name',
+			'questionId',
+			'type',
+		];
+
+		/**
 		 * Retrieve a question by id.
 		 *
 		 * @param mixed $id Field id.
@@ -97,7 +112,7 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 					}
 				}
 				if ( $index >= 0 ) {
-					$questions[ $index ] = $question;
+					$questions[ $index ] = $this->filter_fields( $question );
 					$updated             = update_option( $this->questions_option, $questions );
 
 					return $updated;
@@ -105,6 +120,23 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 			}
 
 			return false;
+		}
+
+		/**
+		 * Remove fields from question that are not defined in the allowed fields array.
+		 *
+		 * @param array $question An assosiative array containing the questions fields.
+		 *
+		 * @return array
+		 */
+		private function filter_fields( $question ) {
+			return array_filter(
+				$question,
+				function ( $k ) {
+					return in_array( $k, $this->allowed_fields );
+				},
+				ARRAY_FILTER_USE_KEY
+			);
 		}
 
 		/**
