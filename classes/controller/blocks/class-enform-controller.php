@@ -424,9 +424,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				foreach ( $questions as $key => $question ) {
 					if ( isset( $fields[ $question['questionId'] ] ) ) {
 						$questions[ $question['questionId'] ] = $question;
-						if ( isset( $question['default_value'] ) ) {
-							$questions[ $question['questionId'] ]['value'] = $question['default_value'];
-						}
 					}
 					unset( $questions[ $key ] );
 				}

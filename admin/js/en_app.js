@@ -55,8 +55,6 @@ Backbone.$.ajaxSetup({
           questionId: 0,
           label: '',
           type: null,
-          default_value: '',
-          hidden: 'N',
         }
       }),
 
@@ -153,14 +151,6 @@ Backbone.$.ajaxSetup({
       var id = $("#en_question_id").val();
       var questionId = $("#en_question__id").val();
 
-      var default_value = '';
-      if ($('#en_question_default').length > 0) {
-        default_value = $("#en_question_default").val();
-      } else if ($('input[name=\'en_question_default\']').length > 0) {
-        default_value = $('input[name=\'en_question_default\']:checked').val();
-      }
-
-      var hidden = $("#en_question_hidden").is(":checked") ? 'Y' : 'N';
       if ('' === name || '' === label) {
         alert('Name and Question can\'t be empty');
         return false;
@@ -172,8 +162,6 @@ Backbone.$.ajaxSetup({
         label: label,
         type: type,
         questionId: questionId,
-        hidden: hidden,
-        default_value: default_value,
       };
     },
 
@@ -354,7 +342,7 @@ Backbone.$.ajaxSetup({
     add: function (e) {
       e.preventDefault();
       var newQuestionForm = new p4_en.Views.NewQuestionView({
-        model: new p4_en.Models.Question(this.model.toJSON()),
+        model: this.model,
       });
       $('#new-question-div').html(newQuestionForm.render().$el);
       $('html, body').animate({
