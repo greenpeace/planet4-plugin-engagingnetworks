@@ -28,17 +28,6 @@
 							<input type="hidden" id="basket_name" value="{{ fields.basket_name }}">
 							<input type="hidden" id="scope" value="{{ fields.scope }}">
 							<input type="hidden" id="department" value="{{ fields.department }}">
-							{% if supporter %}
-								{% for key,data in supporter.questions %}
-									{% if 'Y' == data.hidden %}
-											<input type="hidden"
-												   id="en__field_supporter_questions_{{ data.id }}"
-												   name="supporter.questions.{{ data.id }}"
-												   value="{{ data.default_value|e('html_attr') }}"
-											/>
-									{% endif %}
-								{% endfor %}
-							{% endif %}
 
 							{{ error_msg }}
 							<div class="{% if fields.en_form_style == 'full-width-bg' %}row{% endif %}">
@@ -108,7 +97,7 @@
 									</div>
 									{% if supporter %}
 										{% for key,data in supporter.questions %}
-											{% if 'GEN' == data.type and 'Y' != data.hidden %}
+											{% if 'GEN' == data.type %}
 												<div style="display: flex; flex-direction: row;">
 													<label for="en__field_supporter_questions_{{ data.id }}"
 														   class="en__field__label en__field__label--item form-check-label"
@@ -124,7 +113,7 @@
 											{% endif %}
 										{% endfor %}
 										{% for key,data in supporter.questions %}
-											{% if 'OPT' == data.type and 'Y' != data.hidden %}
+											{% if 'OPT' == data.type %}
 												<div class="form-check-label-block custom-control">
 													<input id="en__field_supporter_questions_{{ data.id }}"
 														   name="supporter.questions.{{ data.id }}"
