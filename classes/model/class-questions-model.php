@@ -21,6 +21,7 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 		 */
 		private $questions_option = 'planet4-en-questions';
 
+
 		/**
 		 * Retrieve a question by id.
 		 *
