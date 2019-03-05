@@ -150,6 +150,7 @@ Backbone.$.ajaxSetup({
       var type = $("#en_question_type").val();
       var id = $("#en_question_id").val();
       var questionId = $("#en_question__id").val();
+
       if ('' === name || '' === label) {
         alert('Name and Question can\'t be empty');
         return false;
