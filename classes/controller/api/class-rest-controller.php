@@ -51,10 +51,11 @@ class Rest_Controller {
 	private function setup_rest_endpoints() {
 		$version = 'v1';
 
+		$fields_controller    = new Fields_Controller();
 		$questions_controller = new Questions_Controller();
 
 		/**
-		 * Get a single form's questions.
+		 * Get a available questions from engaging networks api.
 		 *
 		 * Requires authentication.
 		 *
@@ -73,7 +74,7 @@ class Rest_Controller {
 		);
 
 		/**
-		 * Get a single form's questions.
+		 * Get questions stored in planet4.
 		 *
 		 * Requires authentication.
 		 *
@@ -92,7 +93,7 @@ class Rest_Controller {
 		);
 
 		/**
-		 * Add a single location.
+		 * Add a single question.
 		 *
 		 * Requires authentication.
 		 *
@@ -137,7 +138,7 @@ class Rest_Controller {
 		);
 
 		/**
-		 * Update a single location.
+		 * Update a single question.
 		 *
 		 * Requires authentication.
 		 *
@@ -162,7 +163,7 @@ class Rest_Controller {
 		);
 
 		/**
-		 * Delete a single location.
+		 * Delete a single question.
 		 *
 		 * Requires authentication.
 		 *
@@ -181,6 +182,135 @@ class Rest_Controller {
 			]
 		);
 
+		/**
+		 * Get a available fields from engaging networks api.
+		 *
+		 * Requires authentication.
+		 *
+		 * @route   wp-json/planet4-engaging-networks/v1/fields_available
+		 * @method  \WP_REST_Server::READABLE ( GET )
+		 *
+		 * @returns \WP_REST_Response
+		 */
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/fields_available',
+			[
+				'methods'  => \WP_REST_Server::READABLE,
+				'callback' => [ $fields_controller, 'get_available_fields' ],
+			]
+		);
+
+		/**
+		 * Get a single form's fields.
+		 *
+		 * Requires authentication.
+		 *
+		 * @route   wp-json/planet4-engaging-networks/v1/fields
+		 * @method  \WP_REST_Server::READABLE ( GET )
+		 *
+		 * @returns \WP_REST_Response
+		 */
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/fields',
+			[
+				'methods'  => \WP_REST_Server::READABLE,
+				'callback' => [ $fields_controller, 'get_fields' ],
+			]
+		);
+
+		/**
+		 * Add a single field.
+		 *
+		 * Requires authentication.
+		 *
+		 * @route   wp-json/planet4-engaging-networks/v1/fields
+		 * @method  \WP_REST_Server::EDITABLE ( POST, PUT, PATCH )
+		 *
+		 * @params  int     id          required , field id.
+		 * @params  string  label       required, field label.
+		 * @params  boolean mandatory   required, specify if field is mandatory.
+		 * @params  string  name        required, field name.
+		 * @params  string  type        required, specify field's type.
+		 *
+		 * @returns \WP_REST_Response
+		 */
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/fields',
+			[
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => [ $fields_controller, 'add_field' ],
+				'permission_callback' => [ $this, 'is_allowed' ],
+			]
+		);
+
+		/**
+		 * Get a single form's fields.
+		 *
+		 * Requires authentication.
+		 *
+		 * @route   wp-json/planet4-engaging-networks/<v1+>/form/get_field
+		 * @method  \WP_REST_Server::READABLE ( GET )
+		 *
+		 * @returns \WP_REST_Response
+		 */
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/fields/(?P<id>\d+)',
+			[
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => [ $fields_controller, 'get_field' ],
+				'permission_callback' => [ $this, 'is_allowed' ],
+			]
+		);
+
+		/**
+		 * Update a single field.
+		 *
+		 * Requires authentication.
+		 *
+		 * @route   wp-json/planet4-engaging-networks/v1/fields/<id>
+		 * @method  \WP_REST_Server::EDITABLE ( POST, PUT, PATCH )
+		 *
+		 * @params  int     id          required , field id.
+		 * @params  string  label       required, field label.
+		 * @params  boolean mandatory   required, specify if field is mandatory.
+		 * @params  string  name        required, field name.
+		 * @params  string  type        required, specify field's type.
+		 *
+		 * @returns \WP_REST_Response
+		 */
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/fields/(?P<id>\d+)',
+			[
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => [ $fields_controller, 'update_field' ],
+				'permission_callback' => [ $this, 'is_allowed' ],
+			]
+		);
+
+		/**
+		 * Delete a single field.
+		 *
+		 * Requires authentication.
+		 *
+		 * @route   wp-json/planet4-engaging-networks/v1/fields/<id>
+		 * @method  \WP_REST_Server::DELETABLE ( DELETE )
+		 *
+		 * @returns \WP_REST_Response
+		 */
+		register_rest_route(
+			P4_REST_SLUG . '/' . $version,
+			'/fields/(?P<id>\d+)',
+			[
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => [ $fields_controller, 'delete_field' ],
+				'permission_callback' => [ $this, 'is_allowed' ],
+			]
+		);
 	}
 
 	/**

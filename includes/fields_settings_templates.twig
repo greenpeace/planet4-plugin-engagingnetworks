@@ -1,80 +1,139 @@
 <script type="text/html" id="tmpl-en-fields">
-    <h2 class="page-header">{{ __('List of fields', 'planet4-engagingnetworks') }}</h2>
-    <p>
-    <div class="hidden" id="en_loader">
-        <img src="/wp-admin/images/wpspin_light-2x.gif"/>
-    </div>
-    </p>
-    <h5><%= col.length %> {{ __('fields defined', 'planet4-engagingnetworks') }}</h5>
-    <ul class="media-list row fields-container"></ul>
-    <br>
-    <p class="">
-        <a href="#fields/new" class="btn button button-primary">{{ __('Add New Field', 'planet4-engagingnetworks') }}</a>
-        <button class="btn button reload-fields">{{ __('Reload', 'planet4-engagingnetworks') }}</button>
-    </p>
-    <div id="new-field-div"></div>
+	<br>
+	<h5 class="page-header">{{ __('Planet4 configured fields, available for enform', 'planet4-engagingnetworks') }}</h5>
+	<h5><%= col.length %> {{ __('fields defined', 'planet4-engagingnetworks') }}</h5>
+	<p>{{ __('Here you can define how the engaging networks fields will be shown in the enform blocks in planet4 pages', 'planet4-engagingnetworks') }}</p>
+	<p>{{ __('You can change the label of the field and if the field should be hidden in the enform', 'planet4-engagingnetworks') }}</p>
+	<table class="wp-list-table widefat">
+		<thead>
+		<tr>
+			<th>{{ __('Id', 'planet4-engagingnetworks') }}</th>
+			<th>{{ __('Name', 'planet4-engagingnetworks') }}</th>
+			<th>{{ __('Label', 'planet4-engagingnetworks') }}</th>
+			<th>{{ __('Default value', 'planet4-engagingnetworks') }}</th>
+			<th>{{ __('Hidden', 'planet4-engagingnetworks') }}</th>
+			<th>{{ __('Actions', 'planet4-engagingnetworks') }}</th>
+		</tr>
+		</thead>
+		<tbody class="fields-container"></tbody>
+	</table>
+	<br>
+	<div id="new-field-div"></div>
+</script>
+
+
+<script type="text/html" id="tmpl-en-available-fields">
+	<h2 class="page-header">{{ __('List of available fields from engaging networks', 'planet4-engagingnetworks') }}</h2>
+	<p>
+	<div class="hidden" id="en_loader">
+		<img src="/wp-admin/images/wpspin_light-2x.gif"/>
+	</div>
+	</p>
+	<h5><%= col.collection.length %> {{ __('fields available', 'planet4-engagingnetworks') }}</h5>
+	<p>{{ __('In the table below you can find all the fields available from your engaging networks account.', 'planet4-engagingnetworks') }}</p>
+	<p>{{ __('Adding a field will let you define how the field will be shown in the enform blocks in planet4.', 'planet4-engagingnetworks') }}</p>
+
+	<table class="wp-list-table widefat">
+		<thead>
+		<tr>
+			<th>{{ __('Id', 'planet4-engagingnetworks') }}</th>
+			<th>{{ __('Name', 'planet4-engagingnetworks') }}</th>
+			<th>{{ __('Property', 'planet4-engagingnetworks') }}</th>
+			<th>{{ __('Tag', 'planet4-engagingnetworks') }}</th>
+			<th>{{ __('Actions', 'planet4-engagingnetworks') }}</th>
+		</tr>
+		<tr>
+			<th></th>
+			<th><input type="text" id="search_en_name"/></th>
+			<th></th>
+			<th></th>
+			<th></th>
+		</tr>
+		</thead>
+		<tbody class="available-fields-container"></tbody>
+		<tfoot class="available-fields-footer"></tfoot>
+	</table>
+
 </script>
 
 <script type="text/html" id="tmpl-en-field">
-    <div>
-        <h3>
-            <%- name %>
-            <span>
-                <a href="#fields/edit/<%- id %>"><span class="dashicons dashicons-edit field-dashicon"></span></a>
-                <a href="#fields" class="delete-field"><span class="dashicons dashicons-trash field-dashicon"></span></a>
-            </span>
-        </h3>
-    </div>
-    <div class="media-body">
-        <dl>
-            <dt>{{ __('Mandatory', 'planet4-engagingnetworks') }}:</dt>
-            <dd><input type="checkbox" disabled="disabled" class="form-control" <% print( mandatory ?  'checked': '') %>></dd>
-            <dt>{{ __('Label', 'planet4-engagingnetworks') }}:</dt>
-            <dd><%- label %></dd>
-            <dt>{{ __('Type', 'planet4-engagingnetworks') }}:</dt>
-            <dd><%- type %></dd>
-        </dl>
-    </div>
+	<td><%= id  %></td>
+	<td><%= name  %></td>
+	<td><%= label  %></td>
+	<td><%= default_value  %></td>
+	<td><input type="checkbox" value="<%= hidden %>" <% print( hidden == 'Y' ?  'checked' : '') %>  disabled /></td>
+	<td>
+		<button class="btn button edit-this-field"><span class="dashicons dashicons-edit field-dashicon"></span> Edit</button>
+		<button class="btn button delete-field"><span class="dashicons dashicons-trash field-dashicon"></span> Delete</button>
+	</td>
+</script>
+
+
+<script type="text/html" id="tmpl-en-available-field">
+	<td width="10%"><%= id  %></td>
+	<td width="30%"><%= name  %></td>
+	<td width="20%"><%= property  %></td>
+	<td width="20%"><%= tag  %></td>
+	<td><button class="btn button card-link add-field"><span class="dashicons dashicons-plus field-dashicon"></span> Add</button></td>
 </script>
 
 <script type="text/html" id="tmpl-new-en-field">
-    <hr>
-    <h4><%= id <= 0 ? 'Create Field' : 'Edit Field ' + name %> </h4>
-    <form role="form" class="form-horizontal field-form">
-        <div class="form-group">
-            <label class="col-md-3 control-label">{{ __('Field name', 'planet4-engagingnetworks') }}:</label>
-            <div class="col-md-3">
-                <input type="text" class="form-control field-name-input" value="<%- name %>" id="en_field_name">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-3 control-label">{{ __('Is Mandatory', 'planet4-engagingnetworks') }}:</label>
-            <div class="col-md-3">
-                <input type="checkbox" class="form-control field-mandatory-checkbox" id="en_field_mandatory" <% print( mandatory ?  'checked': '') %>>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-3 control-label">{{ __('Label', 'planet4-engagingnetworks') }}:</label>
-            <div class="col-md-3">
-                <input type="text" class="form-control field-label-input" value="<%- label %>" id="en_field_label">
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-3 control-label">{{ __('Type', 'planet4-engagingnetworks') }}:</label>
-            <div class="col-md-3">
-                <select class="form-control field-type-select" id="en_field_type">
-                    <option value="0">--Select--</option>
-                    <option value="text" <% print( type == 'text' ?  'selected': '') %>>Text</option>
-                    <option value="country" <% print( type == 'country' ?  'selected': '') %>>Country selector</option>
-                    <option value="question" <% print( type == 'question' ?  'selected': '') %>>Question</option>
-                </select>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-2">
-                <button class="button button-primary <%= id <= 0 ? 'add-field' : 'edit-field' %>"  <%= id > 0 ? 'data-id="' + id +'"' : '' %>>{{ __('Submit') }}</button>
-                <a href="#fields" class="button">{{ __('Cancel') }}</a>
-            </div>
-        </div>
-    </form>
+	<hr>
+	<h4><%= label == '' ? 'Create Field' : 'Edit Field ' + name %> </h4>
+	<form role="form" class="form-horizontal field-form">
+		<div class="form-group">
+			<label class="col-md-3 control-label">{{ __('Field name', 'planet4-engagingnetworks') }}:</label>
+			<span><%- name %></span>
+			<input type="hidden" value="<%- name %>" id="en_field_name">
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label">{{ __('Label', 'planet4-engagingnetworks') }}:</label>
+			<input type="text" class="field-label-input" value="<%- label %>" id="en_field_label">
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label">{{ __('Default value', 'planet4-engagingnetworks') }}:</label>
+			<input type="text" class="field-default-input" value="<%- default_value %>" id="en_field_default">
+		</div>
+		<div class="form-group">
+			<label class="col-md-3 control-label">{{ __('Hidden field', 'planet4-engagingnetworks') }}:</label>
+			<input type="checkbox" class="field-hidden" id="en_field_hidden" name="en_field_hidden" <%
+			print( hidden == 'Y' ? 'checked' : '') %> />
+		</div>
+		<div class="form-group">
+			<div class="col-md-2">
+
+				<input type="hidden" value="<%- id %>" id="en_field_id">
+				<button class="button button-primary <%= label== '' ? 'add-field' : 'edit-field' %>"
+				<%= id > 0 ? 'data-id="' + id +'"' : '' %>>{{ __('Submit', 'planet4-engagingnetworks') }}</button>
+				<button class="button cancel-field">{{ __('Cancel', 'planet4-engagingnetworks') }}</button>
+			</div>
+		</div>
+	</form>
+</script>
+
+
+<script type="text/template" id="tmpl-fields-pagination">
+	<tr>
+		<th colspan="2">
+			<% if ( col.filtered) { %>
+				<% if ( col.totalFilteredFields < 1) { %>
+					No results
+				<% } else { %>
+					Showing <%= col.start %> to <%= col.end %> of <%= col.totalFilteredFields %> filtered
+				<% } %>
+			<% } else if ( col.totalFields < 1) { %>
+				No results
+			<% } else { %>
+				Showing <%= col.start %> to <%= col.end %> of <%= col.totalFields %>
+			<% } %>
+		</th>
+		<th colspan="3">
+			<% if ( col.filtered) { %>
+					<button class="loadprevious" <% print( col.filteredPage == 0 ? 'disabled' : '') %>  >Previous</button>
+					<button class="loadnext" <% print( col.filteredPage + 1 == col.totalFilteredPages ? 'disabled' : '') %>  >Next</button>
+				<% } else { %>
+					<button class="loadprevious" <% print( col.page == 0 ? 'disabled' : '') %>  >Previous</button>
+					<button class="loadnext" <% print( col.page + 1 == col.totalPages ? 'disabled' : '') %>  >Next</button>
+			<% } %>
+		</th>
 </script>

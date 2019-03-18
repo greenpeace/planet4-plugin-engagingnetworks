@@ -12,6 +12,7 @@ const notify = require('gulp-notify');
 const plumber = require('gulp-plumber');
 const livereload = require('gulp-livereload');
 
+const path_admin_js = 'admin/js/**/*.js';
 const path_js = 'assets/js/**/*.js';
 const path_scss = 'assets/scss/**/*.scss';
 const path_style = 'assets/scss/style.scss';
@@ -34,7 +35,7 @@ function lint_css() {
 }
 
 function lint_js() {
-  return gulp.src(path_js)
+  return gulp.src([path_js, path_admin_js])
     .pipe(plumber(error_handler))
     .pipe(eslint())
     .pipe(eslint.format())
@@ -70,8 +71,24 @@ function watch() {
   gulp.watch(path_js, gulp.series(lint_js, uglify));
 }
 
+function uglify_backbone() {
+  return gulp.src(
+    [
+      './admin/js/backbone/en_app.js',
+      './admin/js/backbone/models/*.js',
+      './admin/js/backbone/collections/*.js',
+      './admin/js/backbone/views/*.js',
+    ])
+    .pipe(plumber(error_handler))
+    .pipe(concat('en_app.js'))
+    .pipe(js())
+    .pipe(gulp.dest(path_dest))
+    .pipe(livereload());
+}
+
 exports.sass = sass;
 exports.uglify = uglify;
+exports.uglify_backbone = uglify_backbone;
 exports.watch = watch;
 exports.test = gulp.parallel(lint_css, lint_js);
 exports.default = gulp.series(lint_css, lint_js, sass, uglify);
