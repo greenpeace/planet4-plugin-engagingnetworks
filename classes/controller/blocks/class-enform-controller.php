@@ -474,6 +474,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				$data['supporter']['questions'] = $questions;
 			}
 
+			if ( isset( $fields['thankyou_url'] ) && 0 !== strpos( $fields['thankyou_url'], 'http' ) ) {
+				$fields['thankyou_url'] = 'http://' . $fields['thankyou_url'];
+			}
+
 			$data = array_merge(
 				$data,
 				[
@@ -578,6 +582,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @param array $input The associative array with the input that the user submitted.
 		 */
 		public function sanitize( &$input ) {
+
 			foreach ( $input as $key => $value ) {
 				if ( 'supporter.emailAddress' === $key ) {
 					$input[ $key ] = sanitize_email( $value );
