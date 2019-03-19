@@ -45,8 +45,11 @@
   form {
     margin: 0;
 
-    input, .custom-select, select.form-control.en__field__input--select {
-      height: 42px;
+    input,
+    .custom-select,
+    select.form-control.en__field__input--select,
+    button {
+      height: 46px;
       border-radius: 0;
       border-color: transparent;
       margin-bottom: 16px;
@@ -103,6 +106,7 @@
     .form-check-label-block {
       display: inline-block;
       padding: $n10 $n15;
+      margin-bottom: $n20;
 
       .enform-full-width-bg & {
         background: rgba(255, 255, 255, .5);
