@@ -124,6 +124,24 @@ jQuery(function ($) {
             throw new Error("Required field is empty!");
           }
 
+          // Prepend Protocol to URL if user has not provided it.
+          let models = shortcode.attributes.attrs.models;
+
+          models.forEach(function (model) {
+            let attr_name = model.get('attr');
+
+            if ( 'thankyou_url' === attr_name ) {
+              let $element  = $('input[name="' + attr_name + '"]');
+              let thankyou_url = $element.val();
+
+              if ( '' !== thankyou_url && 0 !== thankyou_url.indexOf('http') ) {
+                thankyou_url = 'http://' + thankyou_url;
+                model.set('value', thankyou_url);
+                $element.val(thankyou_url);
+              }
+            }
+          });
+
           // Get filtered fields names.
           var filtered = this.filter_enform_fields(shortcode);
 

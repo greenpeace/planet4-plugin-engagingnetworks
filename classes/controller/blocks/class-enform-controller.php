@@ -69,7 +69,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.5', true );
+					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.6', true );
 
 					// Localize en-ui script.
 					$translation_array = array(
@@ -582,7 +582,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 		 * @param array $input The associative array with the input that the user submitted.
 		 */
 		public function sanitize( &$input ) {
-
 			foreach ( $input as $key => $value ) {
 				if ( 'supporter.emailAddress' === $key ) {
 					$input[ $key ] = sanitize_email( $value );
