@@ -198,7 +198,7 @@ jQuery(function ($) {
         },
 
         add_en_fields_separator: function () {
-          var $desc_div = $('.shortcode-ui-attribute-background').parent();
+          var $desc_div = $('.shortcode-ui-attribute-thankyou_url').parent();
           $desc_div.append('<p><h3>' + p4_en_blocks_enform_translations.en_fields_description_1 + '</h3>' +
             '(' + p4_en_blocks_enform_translations.en_fields_description_2 + ')</p>');
         },
