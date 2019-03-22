@@ -69,7 +69,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.5', true );
+					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.6', true );
 
 					// Localize en-ui script.
 					$translation_array = array(
@@ -472,6 +472,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					}
 				}
 				$data['supporter']['questions'] = $questions;
+			}
+
+			if ( isset( $fields['thankyou_url'] ) && 0 !== strpos( $fields['thankyou_url'], 'http' ) ) {
+				$fields['thankyou_url'] = 'http://' . $fields['thankyou_url'];
 			}
 
 			$data = array_merge(
