@@ -176,14 +176,4 @@ $(document).ready(function () {
       });
     }
   });
-
-  // DataLayer push value on EN form page load.
-  if ( typeof google_tag_value !== 'undefined' && google_tag_value ) {
-    dataLayer.push({
-      'gCampaign' : $('#campaign_name').val(),
-      'gBasket' : $('#basket_name').val(),
-      'gScope' : $('#scope').val(),
-      'gDepartment' : $('#department').val()
-    });
-  }
 });
