@@ -57,7 +57,7 @@
 													{% set value = supporter.Email %}
 												{% elseif 'region' in data.name %}
 													{% set value = supporter.County %}
-												{% elseif 'phone' in data.name %}
+												{% elseif 'phoneNumber' in data.name %}
 													{% set value = supporter['Phone Number'] %}
 												{% elseif 'Birth' in data.name %}
 													{% set value = supporter['birthday'] %}
@@ -80,7 +80,7 @@
 														{% if 'text' == data.type or 'email' == data.type %}
 															<input id="en__field_supporter_{{ data.name }}"
 																name="supporter.{{ data.name }}"
-																type="{{ data.type }}"
+																type="{{ 'phoneNumber' == data.name ? 'tel' : data.type }}"
 																class="en__field__input en__field__input--text form-control"
 																value="{{ value }}"
 																data-errormessage="{{ errorMessage }}"

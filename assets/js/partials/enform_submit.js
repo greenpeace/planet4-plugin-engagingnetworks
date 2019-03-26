@@ -4,7 +4,7 @@ $(document).ready(function () {
 
   function addChangeListeners(form) {
     $(form.elements).each(function() {
-      $(this).off('change keyup').on('change keyup', function() {
+      $(this).off('change').on('change', function() {
         validateForm(form);
       });
     });
