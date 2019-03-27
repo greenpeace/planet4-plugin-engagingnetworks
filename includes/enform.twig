@@ -3,10 +3,10 @@
 		{% if fields.en_form_style == 'full-width-bg' %}
 			<picture>
 				<img src="{{ fields.background_src.0|default(fields.default_image) }}"
-					 style="object-position:{{ fields.focus_image }};opacity:{{ fields.opacity }};"
-					 border="0"
-					 srcset="{{ fields.background_srcset }}"
-					 sizes="{{ fields.background_sizes }}"
+					style="object-position:{{ fields.focus_image }};opacity:{{ fields.opacity }};"
+					border="0"
+					srcset="{{ fields.background_srcset }}"
+					sizes="{{ fields.background_sizes }}"
 				/>
 			</picture>
 		{% endif %}
@@ -57,7 +57,7 @@
 													{% set value = supporter.Email %}
 												{% elseif 'region' in data.name %}
 													{% set value = supporter.County %}
-												{% elseif 'phone' in data.name %}
+												{% elseif 'phoneNumber' in data.name %}
 													{% set value = supporter['Phone Number'] %}
 												{% elseif 'Birth' in data.name %}
 													{% set value = supporter['birthday'] %}
@@ -79,16 +79,16 @@
 													<div class="en__field__element en__field__element--text form-group" style="display: block;">
 														{% if 'text' == data.type or 'email' == data.type %}
 															<input id="en__field_supporter_{{ data.name }}"
-																   name="supporter.{{ data.name }}"
-																   type="{{ data.type }}"
-																   class="en__field__input en__field__input--text form-control"
-																   value="{{ value }}"
-																   data-errormessage="{{ errorMessage }}"
-																   placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == data.mandatory ? '*' : '' }}"
-																	{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
-																   size="40" />
+																name="supporter.{{ data.name }}"
+																type="{{ 'phoneNumber' == data.name ? 'tel' : data.type }}"
+																class="en__field__input en__field__input--text form-control"
+																value="{{ value }}"
+																data-errormessage="{{ errorMessage }}"
+																placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == data.mandatory ? '*' : '' }}"
+																{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
+																size="40" />
 														{% elseif 'country' == data.type %}
-															{% include 'country_select.twig' with { errorMessage: errorMessage } %}
+																{% include 'country_select.twig' with { errorMessage: errorMessage } %}
 														{% endif %}
 													</div>
 												</div>
@@ -120,10 +120,10 @@
 														   class="en__field__input en__field__input--checkbox"
 														   type="checkbox"
 														   value="{{ data.value }}" {{ 'Y' == data.value ? 'checked' : '' }}
-															{{ 'true' == data.mandatory ? ' required' : '' }} />
+														   {{ 'true' == data.mandatory ? ' required' : '' }} />
 													<label for="en__field_supporter_questions_{{ data.id }}"
 														   class="custom-control-description form-check-label">
-														{{ data.label }}{{ 'true' == data.mandatory ? '*' : '' }}
+														   {{ data.label }}{{ 'true' == data.mandatory ? '*' : '' }}
 													</label>
 												</div>
 											{% endif %}
