@@ -11,6 +11,20 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 
 	/**
 	 * Class Questions_Model
+	 *
+	 * Handles CRUD operations of questions for database persistence.
+	 * Questions are stored in wp_options table as an array of objects.
+	 *
+	 * A single question has the below structure:
+	 * {
+	 *   default_value: "Y"
+	 *   hidden: "N"
+	 *   id: "174168"
+	 *   label: "phone quest"
+	 *   name: "Phone"
+	 *   questionId: "24227"
+	 *   type: "OPT"
+	 * }
 	 */
 	class Questions_Model extends Model {
 
@@ -21,6 +35,20 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 		 */
 		private $questions_option = 'planet4-en-questions';
 
+		/**
+		 * Allowed attributes for each question.
+		 *
+		 * @var array
+		 */
+		private $allowed_attributes = [
+			'default_value',
+			'hidden',
+			'id',
+			'label',
+			'name',
+			'questionId',
+			'type',
+		];
 
 		/**
 		 * Retrieve a question by id.
@@ -98,7 +126,7 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 					}
 				}
 				if ( $index >= 0 ) {
-					$questions[ $index ] = $question;
+					$questions[ $index ] = $this->filter_attributes( $question );
 					$updated             = update_option( $this->questions_option, $questions );
 
 					return $updated;
@@ -106,6 +134,23 @@ if ( ! class_exists( 'Questions_Model' ) ) {
 			}
 
 			return false;
+		}
+
+		/**
+		 * Remove fields from question that are not defined in the allowed fields array.
+		 *
+		 * @param array $question An assosiative array containing the questions fields.
+		 *
+		 * @return array
+		 */
+		private function filter_attributes( $question ) {
+			return array_filter(
+				$question,
+				function ( $k ) {
+					return in_array( $k, $this->allowed_attributes );
+				},
+				ARRAY_FILTER_USE_KEY
+			);
 		}
 
 		/**

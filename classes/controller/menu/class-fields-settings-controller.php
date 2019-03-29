@@ -40,13 +40,13 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 
 			wp_register_script(
 				'en-app',
-				P4EN_ADMIN_DIR . '/js/en_app.js',
+				plugins_url( P4EN_PLUGIN_DIRNAME ) . '/en_app.js',
 				[
 					'jquery',
 					'wp-api',
 					'wp-backbone',
 				],
-				'0.1',
+				'0.2',
 				true
 			);
 			wp_localize_script(
@@ -58,6 +58,7 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 				]
 			);
 			wp_enqueue_script( 'en-app' );
+			wp_enqueue_script( 'en-fields', P4EN_ADMIN_DIR . '/js/en_fields_settings_page.js', [ 'en-app' ], '0.1', true );
 
 			$data = [
 				'messages' => $this->messages,
@@ -71,6 +72,7 @@ if ( ! class_exists( 'Fields_Settings_Controller' ) ) {
 		 */
 		public function print_admin_footer_scripts() {
 			$this->view->view_template( 'fields_settings_templates', [] );
+			$this->view->view_template( 'questions_settings_templates', [] );
 		}
 
 		/**

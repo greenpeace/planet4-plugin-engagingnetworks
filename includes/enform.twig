@@ -24,6 +24,18 @@
 							<input type="hidden" name="thankyou_title" value="{{ fields.thankyou_title }}">
 							<input type="hidden" name="thankyou_subtitle" value="{{ fields.thankyou_subtitle }}">
 
+							{% if supporter %}
+								{% for key,data in supporter.questions %}
+									{% if 'Y' == data.hidden %}
+											<input type="hidden"
+												   id="en__field_supporter_questions_{{ data.id }}"
+												   name="supporter.questions.{{ data.id }}"
+												   value="{{ data.default_value|e('html_attr') }}"
+											/>
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
 							{{ error_msg }}
 							<div class="{% if fields.en_form_style == 'full-width-bg' %}row{% endif %}">
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
@@ -79,7 +91,7 @@
 																class="en__field__input en__field__input--text form-control"
 																value="{{ value }}"
 																data-errormessage="{{ errorMessage }}"
-																placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}"
+																placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == data.mandatory ? '*' : '' }}"
 																{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
 																size="40" />
 														{% elseif 'country' == data.type %}
@@ -92,11 +104,11 @@
 									</div>
 									{% if supporter %}
 										{% for key,data in supporter.questions %}
-											{% if 'GEN' == data.type %}
+											{% if 'GEN' == data.type and 'Y' != data.hidden %}
 												<div style="display: flex; flex-direction: row;">
 													<label for="en__field_supporter_questions_{{ data.id }}"
 														   class="en__field__label en__field__label--item form-check-label"
-														   style="color: white; margin-right: 20px;">{{ data.label }}</label>
+														   style="color: white; margin-right: 20px;">{{ data.label }}{{ 'true' == data.mandatory ? '*' : '' }}</label>
 													<input id="en__field_supporter_questions_{{ data.id }}"
 														   name="supporter.questions.{{ data.id }}"
 														   type="text"
@@ -108,7 +120,7 @@
 											{% endif %}
 										{% endfor %}
 										{% for key,data in supporter.questions %}
-											{% if 'OPT' == data.type %}
+											{% if 'OPT' == data.type and 'Y' != data.hidden %}
 												<div class="form-check-label-block custom-control">
 													<input id="en__field_supporter_questions_{{ data.id }}"
 														   name="supporter.questions.{{ data.id }}"
@@ -118,12 +130,13 @@
 														   {{ 'true' == data.mandatory ? ' required' : '' }} />
 													<label for="en__field_supporter_questions_{{ data.id }}"
 														   class="custom-control-description form-check-label">
-														   {{ data.label }}
+														   {{ data.label }}{{ 'true' == data.mandatory ? '*' : '' }}
 													</label>
 												</div>
 											{% endif %}
 										{% endfor %}
 									{% endif %}
+									<p>* {{ __( 'Required', 'planet4-engagingnetworks' ) }}</p>
 								</div>
 
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
