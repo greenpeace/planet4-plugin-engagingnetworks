@@ -8,19 +8,12 @@
 namespace P4EN\Controllers\Api;
 
 use P4EN\Models\Fields_Model;
+use P4EN\Controllers\Ensapi_Controller as Ensapi;
 
 /**
  * WP REST API Fields Controller.
  */
 class Fields_Controller {
-
-	/**
-	 * WordPress option name for storing fields.
-	 *
-	 * @access private
-	 * @var string
-	 */
-	private $fields_option = 'planet4-en-fields';
 
 	/**
 	 * Fields model for storing/retrieving fields from db.
@@ -51,21 +44,19 @@ class Fields_Controller {
 
 		$messages = [];
 		if ( ! isset( $field['name'] ) ) {
-			$messages[] = 'Name is not set';
+			$messages[] = __( 'Name is not set', 'planet4-engagingnetworks' );
 		} elseif ( 1 !== preg_match( '/[A-Za-z0-9_\-\.]+$/', $field['name'] ) ) {
-			$messages[] = 'Name should contain alphanumeric characters';
+			$messages[] = __( 'Name should contain alphanumeric characters', 'planet4-engagingnetworks' );
 		}
 
-		if ( ! isset( $field['mandatory'] ) ) {
-			$messages[] = 'Mandatory is not set';
-		} elseif ( ! rest_is_boolean( $field['mandatory'] ) ) {
-			$messages[] = 'Mandatory should be boolean';
+		if ( ! isset( $field['hidden'] ) ) {
+			$messages[] = __( 'Hidden field is not set', 'planet4-engagingnetworks' );
+		} elseif ( ! in_array( $field['hidden'], [ 'Y', 'N' ], true ) ) {
+			$messages[] = __( 'Hidden field should be Y or N', 'planet4-engagingnetworks' );
 		}
 
-		if ( ! isset( $field['type'] ) ) {
-			$messages[] = 'Type is not set';
-		} elseif ( ! in_array( $field['type'], [ 'text', 'country', 'question', 'number' ], true ) ) {
-			$messages[] = 'Type should be one of these values: text, country, question';
+		if ( ! isset( $field['label'] ) ) {
+			$messages[] = __( 'Label is not set', 'planet4-engagingnetworks' );
 		}
 
 		if ( empty( $messages ) ) {
@@ -103,7 +94,7 @@ class Fields_Controller {
 		$updated = $this->model->add_field( $field_data );
 		if ( ! $updated ) {
 			$response_data = [
-				'messages' => [ 'Field could not be added' ],
+				'messages' => [ __( 'Field could not be added. Either it already exists or an unexpected error happened', 'planet4-engagingnetworks' ) ],
 			];
 			$response      = new \WP_REST_Response( $response_data );
 			$response->set_status( 500 );
@@ -114,7 +105,7 @@ class Fields_Controller {
 		$field = $this->model->get_field( $field_data['id'] );
 
 		$response_data = [
-			'messages' => [ 'Field created successfully' ],
+			'messages' => [ __( 'Field was created successfully', 'planet4-engagingnetworks' ) ],
 			'field'    => $field,
 		];
 		$response      = new \WP_REST_Response( $response_data );
@@ -137,6 +128,32 @@ class Fields_Controller {
 		$field         = $this->model->get_field( $id );
 		$response_data = $field;
 		$response      = new \WP_REST_Response( $response_data );
+		$response->set_status( 200 );
+
+		return $response;
+	}
+
+	/**
+	 * Callback for get fields api route.
+	 *
+	 * @param \WP_REST_Request $request Rest request object.
+	 *
+	 * @return \WP_Error| \WP_REST_Response
+	 */
+	public function get_available_fields( \WP_REST_Request $request ) {
+		$main_settings = get_option( 'p4en_main_settings' );
+
+		if ( isset( $main_settings['p4en_private_api'] ) ) {
+
+			$ens_private_token = $main_settings['p4en_private_api'];
+			$ens_api           = new Ensapi( $ens_private_token );
+			$fields            = $ens_api->get_supporter_fields();
+			$response_data     = json_decode( $fields['body'] );
+		} else {
+			$response_data = [];
+		}
+
+		$response = new \WP_REST_Response( $response_data );
 		$response->set_status( 200 );
 
 		return $response;
@@ -220,7 +237,7 @@ class Fields_Controller {
 		$updated = $this->model->update_field( $field_data );
 		if ( ! $updated ) {
 			$response_data = [
-				'messages' => [ 'Field could not be added' ],
+				'messages' => [ __( 'Field could not be updated. Either none of its attributes was changed or an unexpected error happened', 'planet4-engagingnetworks' ) ],
 			];
 			$response      = new \WP_REST_Response( $response_data );
 			$response->set_status( 500 );

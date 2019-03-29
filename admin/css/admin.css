@@ -101,3 +101,7 @@
   cursor: pointer;
   padding-top: 4px;
 }
+
+.engagingnetworks_page_fields-settings, .engagingnetworks_page_questions-settings {
+  background-color: #F1F1F1;
+}

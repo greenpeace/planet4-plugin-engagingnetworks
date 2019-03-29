@@ -11,15 +11,40 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 
 	/**
 	 * Class Fields_Model
+	 *
+	 * Handles CRUD operations of fields for database persistence.
+	 * Fields are stored in wp_options table as an array of objects.
+	 *
+	 * A single field has the below structure:
+	 * {
+	 *   default_value: "address 20"
+	 *   hidden: "Y"
+	 *   id: "28118"
+	 *   label: "label for use in enform"
+	 *   name: "Address 1"
+	 * }
 	 */
 	class Fields_Model extends Model {
 
 		/**
-		 * Fields option
+		 * WordPress option name in which saved data are persisted.
 		 *
 		 * @var string
 		 */
 		private $fields_option = 'planet4-en-fields';
+
+		/**
+		 * Allowed attributes for each field.
+		 *
+		 * @var array
+		 */
+		private $allowed_attributes = [
+			'default_value',
+			'hidden',
+			'id',
+			'label',
+			'name',
+		];
 
 		/**
 		 * Retrieve a field by id.
@@ -65,11 +90,23 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 
 			$options = get_option( $this->fields_option );      // Added default value for the first time.
 			if ( is_array( $options ) || false === $options ) {
-				$fields   = array_values( $options );
-				$fields[] = $field;
-				$updated  = update_option( $this->fields_option, $fields );
+				$fields = array_values( $options );
+				$index  = -1;
+				for ( $i = 0; $i < count( $fields ); $i ++ ) {
+					if ( (int) $fields[ $i ]['id'] === (int) $field['id'] ) {
+						$index = $i;
+						break;
+					}
+				}
 
-				return $updated;
+				if ( $index >= 0 ) {
+					return false;
+				} else {
+					$fields[] = $field;
+					$updated  = update_option( $this->fields_option, $fields );
+
+					return $updated;
+				}
 			}
 
 			return false;
@@ -87,7 +124,7 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 
 			if ( is_array( $options ) ) {
 				$fields        = array_values( $options );
-				$index         = false;
+				$index         = -1;
 				$fields_length = count( $fields );
 				for ( $i = 0; $i < $fields_length; $i ++ ) {
 					if ( (int) $fields[ $i ]['id'] === (int) $field['id'] ) {
@@ -96,7 +133,7 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 					}
 				}
 				if ( $index >= 0 ) {
-					$fields[ $index ] = $field;
+					$fields[ $index ] = $this->filter_attributes( $field );
 					$updated          = update_option( $this->fields_option, $fields );
 
 					return $updated;
@@ -104,6 +141,23 @@ if ( ! class_exists( 'Fields_Model' ) ) {
 			}
 
 			return false;
+		}
+
+		/**
+		 * Remove fields from en field that are not defined in the allowed fields array.
+		 *
+		 * @param array $field An assosiative array containing the en field attributes.
+		 *
+		 * @return array
+		 */
+		private function filter_attributes( $field ) {
+			return array_filter(
+				$field,
+				function ( $k ) {
+					return in_array( $k, $this->allowed_attributes );
+				},
+				ARRAY_FILTER_USE_KEY
+			);
 		}
 
 		/**
