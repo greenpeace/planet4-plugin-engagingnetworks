@@ -24,11 +24,6 @@
 							<input type="hidden" name="thankyou_title" value="{{ fields.thankyou_title }}">
 							<input type="hidden" name="thankyou_subtitle" value="{{ fields.thankyou_subtitle }}">
 
-							<input type="hidden" id="campaign_name" value="{{ fields.campaign_name }}">
-							<input type="hidden" id="basket_name" value="{{ fields.basket_name }}">
-							<input type="hidden" id="scope" value="{{ fields.scope }}">
-							<input type="hidden" id="department" value="{{ fields.department }}">
-
 							{{ error_msg }}
 							<div class="{% if fields.en_form_style == 'full-width-bg' %}row{% endif %}">
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
@@ -57,7 +52,7 @@
 													{% set value = supporter.Email %}
 												{% elseif 'region' in data.name %}
 													{% set value = supporter.County %}
-												{% elseif 'phone' in data.name %}
+												{% elseif 'phoneNumber' in data.name %}
 													{% set value = supporter['Phone Number'] %}
 												{% elseif 'Birth' in data.name %}
 													{% set value = supporter['birthday'] %}
@@ -80,11 +75,11 @@
 														{% if 'text' == data.type or 'email' == data.type %}
 															<input id="en__field_supporter_{{ data.name }}"
 																name="supporter.{{ data.name }}"
-																type="{{ data.type }}"
+																type="{{ 'phoneNumber' == data.name ? 'tel' : data.type }}"
 																class="en__field__input en__field__input--text form-control"
 																value="{{ value }}"
 																data-errormessage="{{ errorMessage }}"
-																placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}"
+																placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == data.mandatory ? '*' : '' }}"
 																{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
 																size="40" />
 														{% elseif 'country' == data.type %}
@@ -101,7 +96,7 @@
 												<div style="display: flex; flex-direction: row;">
 													<label for="en__field_supporter_questions_{{ data.id }}"
 														   class="en__field__label en__field__label--item form-check-label"
-														   style="color: white; margin-right: 20px;">{{ data.label }}</label>
+														   style="color: white; margin-right: 20px;">{{ data.label }}{{ 'true' == data.mandatory ? '*' : '' }}</label>
 													<input id="en__field_supporter_questions_{{ data.id }}"
 														   name="supporter.questions.{{ data.id }}"
 														   type="text"
@@ -123,12 +118,13 @@
 														   {{ 'true' == data.mandatory ? ' required' : '' }} />
 													<label for="en__field_supporter_questions_{{ data.id }}"
 														   class="custom-control-description form-check-label">
-														   {{ data.label }}
+														   {{ data.label }}{{ 'true' == data.mandatory ? '*' : '' }}
 													</label>
 												</div>
 											{% endif %}
 										{% endfor %}
 									{% endif %}
+									<p>* {{ __( 'Required', 'planet4-engagingnetworks' ) }}</p>
 								</div>
 
 								<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
