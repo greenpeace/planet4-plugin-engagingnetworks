@@ -69,7 +69,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.5', true );
+					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.6', true );
 
 					// Localize en-ui script.
 					$translation_array = array(
@@ -273,93 +273,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				}
 			}
 
-			// GTM datalayer fields.
-			$campaign_options = [
-				0                                    => __( '- Select Campaign -', 'planet4-engagingnetworks' ),
-				'Local Campaign'                     => 'Local Campaign',
-				'Ocean Sanctuaries'                  => 'Ocean Sanctuaries',
-				'Climate Emergency Response'         => 'Climate Emergency Response',
-				'All Eyes on the Amazon'             => 'All Eyes on the Amazon',
-				'Asia Energy Transition'             => 'Asia Energy Transition',
-				'BrAndino: Hold the Line'            => 'BrAndino: Hold the Line',
-				'Break Free'                         => 'Break Free',
-				'Climate Justice Liability'          => 'Climate Justice Liability',
-				'Congo Basin Forests'                => 'Congo Basin Forests',
-				'Corporate ICE/ Clean Air Now'       => 'Corporate ICE/ Clean Air Now',
-				'European Energy Transition'         => 'European Energy Transition',
-				'Cross-commodities markets campaign' => 'Cross-commodities markets campaign',
-				'The Future of Europe project'       => 'The Future of Europe project',
-				'Greenpeace Fires'                   => 'Greenpeace Fires',
-				'Indonesia Forests'                  => 'Indonesia Forests',
-				'Meat & Dairy'                       => 'Meat & Dairy',
-				'Plastics Free Future'               => 'Plastics Free Future',
-				'Shifting the trillions'             => 'Shifting the trillions',
-				'Stolen Fish'                        => 'Stolen Fish',
-				'Amazon Reef'                        => 'Amazon Reef',
-				'People vs. Oil'                     => 'People vs. Oil',
-				'Pipelines'                          => 'Pipelines',
-				'Ends of the Earth'                  => 'Ends of the Earth',
-				'Patagonia'                          => 'Patagonia',
-				'Urban Revolution'                   => 'Urban Revolution',
-			];
-
-			$fields[] = [
-				'label'       => __( 'Campaign name', 'planet4-engagingnetworks' ),
-				'attr'        => 'campaign_name',
-				'type'        => 'select',
-				'meta'        => [
-					'required' => '',
-				],
-				'options'     => $campaign_options,
-				'description' => __( 'When form data submitted to EN, The value added in "Campaign name" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
-			];
-
-			$basket_options = [
-				0                      => __( '- Select Basket -', 'planet4-engagingnetworks' ),
-				'Forests'              => 'Forests',
-				'Oceans'               => 'Oceans',
-				'Good Life'            => 'Good Life',
-				'Food'                 => 'Food',
-				'Climate & Energy'     => 'Climate & Energy',
-				'Oil'                  => 'Oil',
-				'Political & Business' => 'Political & Business',
-			];
-
-			$fields[] = [
-				'label'       => __( 'Basket name', 'planet4-engagingnetworks' ),
-				'attr'        => 'basket_name',
-				'type'        => 'select',
-				'options'     => $basket_options,
-				'description' => __( 'When form data submitted to EN, The value added in "Basket name" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
-			];
-
-			$scope_options = [
-				0          => __( '- Select Scope -', 'planet4-engagingnetworks' ),
-				'Global'   => 'Global',
-				'National' => 'National',
-			];
-
-			$fields[] = [
-				'label'       => __( 'Scope', 'planet4-engagingnetworks' ),
-				'attr'        => 'scope',
-				'type'        => 'select',
-				'meta'        => [
-					'required' => '',
-				],
-				'options'     => $scope_options,
-				'description' => __( 'When form data submitted to EN, The value added in "Scope" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
-			];
-
-			$fields[] = [
-				'label'       => __( 'Department', 'planet4-engagingnetworks' ),
-				'attr'        => 'department',
-				'type'        => 'text',
-				'meta'        => [
-					'placeholder' => __( 'Enter department', 'planet4-engagingnetworks' ),
-				],
-				'description' => __( 'When form data submitted to EN, The value added in "Department" field is used in the GTM dataLayer push event.', 'planet4-blocks-backend' ),
-			];
-
 			// Define the Shortcode UI arguments.
 			$shortcode_ui_args = [
 				'label'         => __( 'Engaging Networks Form', 'planet4-engagingnetworks' ),
@@ -472,6 +385,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 					}
 				}
 				$data['supporter']['questions'] = $questions;
+			}
+
+			if ( isset( $fields['thankyou_url'] ) && 0 !== strpos( $fields['thankyou_url'], 'http' ) ) {
+				$fields['thankyou_url'] = 'http://' . $fields['thankyou_url'];
 			}
 
 			$data = array_merge(

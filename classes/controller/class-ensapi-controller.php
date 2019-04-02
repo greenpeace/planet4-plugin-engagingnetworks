@@ -42,7 +42,7 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 * Ensapi_Controller constructor.
 		 *
 		 * @param string $ens_private_token The private api token to be used in order to authenticate for ENS API.
-		 * @param bool $private_user        Defines if a token for a private user is passed.
+		 * @param bool   $private_user        Defines if a token for a private user is passed.
 		 */
 		public function __construct( $ens_private_token, $private_user = true ) {
 			$token_type = $private_user ? 'ens_auth_token' : 'ens_auth_public_token';
