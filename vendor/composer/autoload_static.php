@@ -53,6 +53,7 @@ class ComposerStaticInitf60b29b38a19ee96da3a8a3f7233ddce
         'P4EN\\Controllers\\Blocks\\ENForm_Controller' => __DIR__ . '/../..' . '/classes/controller/blocks/class-enform-controller.php',
         'P4EN\\Controllers\\Ensapi_Controller' => __DIR__ . '/../..' . '/classes/controller/class-ensapi-controller.php',
         'P4EN\\Controllers\\Menu\\Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-controller.php',
+        'P4EN\\Controllers\\Menu\\Enform_Post_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-enform-post-controller.php',
         'P4EN\\Controllers\\Menu\\Fields_Settings_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-fields-settings-controller.php',
         'P4EN\\Controllers\\Menu\\Pages_Datatable_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-pages-datatable-controller.php',
         'P4EN\\Controllers\\Menu\\Questions_Settings_Controller' => __DIR__ . '/../..' . '/classes/controller/menu/class-questions-settings-controller.php',

@@ -104,6 +104,7 @@ P4EN\Loader::get_instance(
 		'P4EN\Controllers\Blocks\ENForm_Controller',
 		'P4EN\Controllers\Menu\Questions_Settings_Controller',
 		'P4EN\Controllers\Api\Rest_Controller',
+		'P4EN\Controllers\Menu\Enform_Post_Controller',
 	],
 	'P4EN\Views\View'
 );
