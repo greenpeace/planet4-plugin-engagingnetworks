@@ -13,6 +13,7 @@ return array(
     'P4EN\\Controllers\\Blocks\\ENForm_Controller' => $baseDir . '/classes/controller/blocks/class-enform-controller.php',
     'P4EN\\Controllers\\Ensapi_Controller' => $baseDir . '/classes/controller/class-ensapi-controller.php',
     'P4EN\\Controllers\\Menu\\Controller' => $baseDir . '/classes/controller/menu/class-controller.php',
+    'P4EN\\Controllers\\Menu\\Enform_Post_Controller' => $baseDir . '/classes/controller/menu/class-enform-post-controller.php',
     'P4EN\\Controllers\\Menu\\Fields_Settings_Controller' => $baseDir . '/classes/controller/menu/class-fields-settings-controller.php',
     'P4EN\\Controllers\\Menu\\Pages_Datatable_Controller' => $baseDir . '/classes/controller/menu/class-pages-datatable-controller.php',
     'P4EN\\Controllers\\Menu\\Questions_Settings_Controller' => $baseDir . '/classes/controller/menu/class-questions-settings-controller.php',
