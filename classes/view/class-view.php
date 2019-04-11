@@ -122,6 +122,15 @@ if ( ! class_exists( 'View' ) ) {
 		}
 
 		/**
+		 * Render the settings page of the plugin.
+		 *
+		 * @param array $data All the data needed to render the template.
+		 */
+		public function selected_meta_box( $data ) {
+			$this->view_template( __FUNCTION__, $data );
+		}
+
+		/**
 		 * Displays a message.
 		 *
 		 * @param array $data All the data needed to render the template.

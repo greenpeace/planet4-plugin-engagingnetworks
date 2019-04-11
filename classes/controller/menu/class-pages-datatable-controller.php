@@ -67,8 +67,17 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 					'EngagingNetworks',
 					'edit_pages',
 					P4EN_PLUGIN_SLUG_NAME,
-					array( $this, 'prepare_pages_datatable' ),
+					'',
 					P4EN_ADMIN_DIR . 'images/logo_menu_page_16x16.jpg'
+				);
+
+				add_submenu_page(
+					P4EN_PLUGIN_SLUG_NAME,
+					'EngagingNetworks',
+					'EngagingNetworks',
+					'edit_pages',
+					'en-pages',
+					[ $this, 'prepare_pages_datatable' ]
 				);
 			}
 		}
@@ -143,8 +152,8 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 		/**
 		 * Handle form submit.
 		 *
-		 * @param mixed[] $current_user The current user.
-		 * @param mixed[] $data The form data.
+		 * @param \WP_User $current_user The current user.
+		 * @param mixed[]  $data The form data.
 		 *
 		 * @return bool Array if validation is ok, false if validation fails.
 		 */
