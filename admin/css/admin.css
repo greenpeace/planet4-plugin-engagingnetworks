@@ -12,10 +12,10 @@
 :-ms-input-placeholder {
     font-style: italic;
 }
-.toplevel_page_engagingnetworks:not(.menu-top), .engagingnetworks_page_settings {
+.engagingnetworks_page_en-pages, .engagingnetworks_page_settings {
     background-color: #F1F1F1 !important;
 }
-.toplevel_page_engagingnetworks .submit {
+.engagingnetworks_page_en-pages .submit {
     display: inline;
 }
 #adminmenu .wp-menu-name, #adminmenu .current {
