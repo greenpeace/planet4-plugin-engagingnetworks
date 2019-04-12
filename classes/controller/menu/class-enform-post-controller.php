@@ -99,7 +99,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 					'rewrite'             => false,
 					'query_var'           => false,
 					'public'              => false,
-					'publicly_queryable'  => true,
+					'publicly_queryable'  => false,
 					'capability_type'     => 'page',
 					'has_archive'         => true,
 					'hierarchical'        => false,
@@ -144,7 +144,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
-		 * Creates a Metabox on the side of the Add/Edit EN Form.
+		 * Creates a Meta box for the Selected Components of the current EN Form.
 		 *
 		 * @param \WP_Post $post The currently Added/Edited EN Form.
 		 */
@@ -161,26 +161,29 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
+		 * Prepares data to render the Selected Components meta box.
+		 *
 		 * @param \WP_Post $post The currently Added/Edited EN Form.
 		 */
 		public function view_meta_box_selected( $post ) {
-			$this->view->selected_meta_box( [
-				'components' => [
-					[
-						'name'     => 'email',
-						'type'     => 'email',
-						'label'    => 'Email',
-						'value'    => 'example@example.com',
-						'required' => true,
-						'hidden'   => false,
+			$this->view->selected_meta_box(
+				[
+					'components' => [
+						[
+							'name'     => 'email',
+							'type'     => 'email',
+							'label'    => 'Email',
+							'value'    => 'example@example.com',
+							'required' => true,
+							'hidden'   => false,
+						],
 					],
-				],
-				'domain'     => 'planet4-engagingnetworks',
-			] );
+				]
+			);
 		}
 
 		/**
-		 *
+		 * Adds a meta box for the EN fields.
 		 */
 		public function add_fields_meta_box() {
 			$prefix = self::POST_TYPE . '-fields-';
@@ -195,10 +198,10 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 
 			$meta_box->add_field(
 				[
-					'name' => __( 'Available Fields', 'planet4-engagingnetworks' ),
-					'desc' => __( 'Available EN Customer Fields', 'planet4-engagingnetworks' ),
-					'id'   => $prefix . 'name',
-					'type' => 'multicheck',
+					'name'    => __( 'Available Fields', 'planet4-engagingnetworks' ),
+					'desc'    => __( 'Available EN Customer Fields', 'planet4-engagingnetworks' ),
+					'id'      => $prefix . 'name',
+					'type'    => 'multicheck',
 					'options' => [
 						'check1' => 'Check One',
 						'check2' => 'Check Two',
@@ -209,7 +212,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
-		 *
+		 * Adds a meta box for the EN questions.
 		 */
 		public function add_questions_meta_box() {
 			$prefix = self::POST_TYPE . '-questions-';
@@ -224,10 +227,10 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 
 			$meta_box->add_field(
 				[
-					'name' => __( 'Available Questions', 'planet4-engagingnetworks' ),
-					'desc' => __( 'Available EN Customer Questions', 'planet4-engagingnetworks' ),
-					'id'   => $prefix . 'name',
-					'type' => 'multicheck',
+					'name'    => __( 'Available Questions', 'planet4-engagingnetworks' ),
+					'desc'    => __( 'Available EN Customer Questions', 'planet4-engagingnetworks' ),
+					'id'      => $prefix . 'name',
+					'type'    => 'multicheck',
 					'options' => [
 						'check1' => 'Check One',
 						'check2' => 'Check Two',
@@ -238,7 +241,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
-		 *
+		 * Adds a meta box for the EN opt-ins.
 		 */
 		public function add_optins_meta_box() {
 			$prefix = self::POST_TYPE . '-optins-';

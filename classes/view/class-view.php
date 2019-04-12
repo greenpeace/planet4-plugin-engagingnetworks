@@ -122,7 +122,7 @@ if ( ! class_exists( 'View' ) ) {
 		}
 
 		/**
-		 * Render the settings page of the plugin.
+		 * Render the Selected Components meta box for EN Forms.
 		 *
 		 * @param array $data All the data needed to render the template.
 		 */
