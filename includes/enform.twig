@@ -70,9 +70,9 @@
 											{% endif %}
 
 											{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
-												<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }}">
-													<div class="en__field__element en__field__element--text form-group" style="display: block;">
-														{% if 'text' == data.type or 'email' == data.type %}
+												{% if 'text' == data.type or 'email' == data.type %}
+													<div class="en__field en__field--text en__field--{{ data.id }} en__field--{{ data.name }}">
+														<div class="en__field__element en__field__element--text form-group" style="display: block;">
 															<input id="en__field_supporter_{{ data.name }}"
 																name="supporter.{{ data.name }}"
 																type="{{ 'phoneNumber' == data.name ? 'tel' : data.type }}"
@@ -82,11 +82,11 @@
 																placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == data.mandatory ? '*' : '' }}"
 																{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
 																size="40" />
-														{% elseif 'country' == data.type %}
-																{% include 'country_select.twig' with { errorMessage: errorMessage } %}
-														{% endif %}
+														</div>
 													</div>
-												</div>
+												{% elseif 'country' == data.type %}
+													{% include 'country_select.twig' with { errorMessage: errorMessage } %}
+												{% endif %}
 											{% endif %}
 										{% endfor %}
 									</div>
