@@ -7,6 +7,8 @@
 
 namespace P4EN\Controllers\Menu;
 
+use P4EN\Controllers\Enform_Fields_List_Table;
+
 if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 
 	/**
@@ -36,7 +38,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			add_filter( 'post_row_actions', [ $this, 'modify_post_row_actions' ], 10, 2 );
 
 			add_action( 'add_meta_boxes', [ $this, 'add_meta_box_selected' ] );
-			add_action( 'cmb2_admin_init', [ $this, 'add_fields_meta_box' ] );
+			add_action( 'add_meta_boxes', [ $this, 'add_fields_custom_box' ] );
 			add_action( 'cmb2_admin_init', [ $this, 'add_questions_meta_box' ] );
 			add_action( 'cmb2_admin_init', [ $this, 'add_optins_meta_box' ] );
 		}
@@ -183,35 +185,6 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
-		 * Adds a meta box for the EN fields.
-		 */
-		public function add_fields_meta_box() {
-			$prefix = self::POST_TYPE . '-fields-';
-
-			$meta_box = new_cmb2_box(
-				[
-					'id'           => $prefix . 'metabox',
-					'title'        => __( 'Fields', 'planet4-engagingnetworks' ),
-					'object_types' => [ self::POST_TYPE ],
-				]
-			);
-
-			$meta_box->add_field(
-				[
-					'name'    => __( 'Available Fields', 'planet4-engagingnetworks' ),
-					'desc'    => __( 'Available EN Customer Fields', 'planet4-engagingnetworks' ),
-					'id'      => $prefix . 'name',
-					'type'    => 'multicheck',
-					'options' => [
-						'check1' => 'Check One',
-						'check2' => 'Check Two',
-						'check3' => 'Check Three',
-					],
-				]
-			);
-		}
-
-		/**
 		 * Adds a meta box for the EN questions.
 		 */
 		public function add_questions_meta_box() {
@@ -239,6 +212,28 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 				]
 			);
 		}
+
+		/**
+		 * Adds available fields custom meta box to p4en_form edit post page.
+		 */
+		public function add_fields_custom_box() {
+			add_meta_box(
+				'fields_list_box',
+				__( 'Available Fields', 'planet4-engagingnetworks' ),
+				[ $this, 'display_fields_custom_box' ],
+				self::POST_TYPE
+			);
+		}
+
+		/**
+		 * Display fields custom box content.
+		 */
+		public function display_fields_custom_box() {
+			$list_table = new Enform_Fields_List_Table();
+			$list_table->prepare_items();
+			$list_table->display();
+		}
+
 
 		/**
 		 * Adds a meta box for the EN opt-ins.
