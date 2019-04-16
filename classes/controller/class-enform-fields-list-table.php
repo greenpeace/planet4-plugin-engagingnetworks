@@ -126,15 +126,16 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Overrides parent function to return a string containing errors (if any) that come from en api.
+	 * Overrides parent function to disable nonce generation, bulk actions and pagination.
+	 * Used to display errors (if any) that come from en api.
 	 *
-	 * @see \WP_List_Table::extra_tablenav
+	 * @see \WP_List_Table::display_tablenav
 	 *
 	 * @param string $which
 	 */
-	protected function extra_tablenav( $which ) {
+	protected function display_tablenav( $which ) {
 		if ( ! empty( $this->error ) && 'top' === $which ) {
-			echo esc_html( $this->error );
+			echo '<div><p>' . esc_html( $this->error ) . '</p></div>';
 		}
 	}
 }
