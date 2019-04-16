@@ -32,3 +32,8 @@ div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+9):nth-child(odd) {
 .enform-required-field {
     border-color: #ff3333 !important;
 }
+
+#questions_list_box {
+    max-height: 400px;
+    overflow: auto;
+}
