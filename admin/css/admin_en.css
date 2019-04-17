@@ -34,6 +34,11 @@ div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+9):nth-child(odd) {
 }
 
 #fields_list_box {
-  max-height: 400px;
-  overflow: auto;
+    max-height: 400px;
+    overflow: auto;
+}
+
+#questions_list_box {
+    max-height: 400px;
+    overflow: auto;
 }
