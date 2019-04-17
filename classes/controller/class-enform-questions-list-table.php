@@ -24,7 +24,9 @@ use P4EN\Controllers\Ensapi_Controller as Ensapi;
 class Enform_Questions_List_Table extends \WP_List_Table {
 
 	/**
-	 * @var string Store errors from en api.
+	 * Store errors from en api.
+	 *
+	 * @var string $error
 	 */
 	private $error;
 
@@ -86,7 +88,7 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 	 * @return bool
 	 */
 	private function test_opt_in( $item ) {
-		return $item['type'] != 'OPT';
+		return 'OPT' !== $item['type'];
 	}
 
 	/**
@@ -127,7 +129,7 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 	/**
 	 * Generates content for the actions column.
 	 *
-	 * @param $item array Column data.
+	 * @param array $item Column data.
 	 *
 	 * @return string Content for actions column.
 	 */
@@ -136,15 +138,16 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Overrides parent function to return a string containing errors (if any) that come from en api.
+	 * Overrides parent function to disable nonce generation, bulk actions and pagination.
+	 * Used to display errors (if any) that come from en api.
 	 *
-	 * @see \WP_List_Table::extra_tablenav
+	 * @see \WP_List_Table::display_tablenav
 	 *
 	 * @param string $which
 	 */
-	protected function extra_tablenav( $which ) {
+	protected function display_tablenav( $which ) {
 		if ( ! empty( $this->error ) && 'top' === $which ) {
-			echo $this->error;
+			echo '<div><p>' . esc_html( $this->error ) . '</p></div>';
 		}
 	}
 }
