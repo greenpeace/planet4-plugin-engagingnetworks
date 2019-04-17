@@ -1,6 +1,8 @@
 <?php
 /**
  * Contains Enform_Fields_List_Table class declaration.
+ *
+ * @package P4EN
  */
 
 namespace P4EN\Controllers;
@@ -24,7 +26,9 @@ use P4EN\Controllers\Ensapi_Controller as Ensapi;
 class Enform_Fields_List_Table extends \WP_List_Table {
 
 	/**
-	 * @var string Store errors from en api.
+	 * Store errors from en api.
+	 *
+	 * @var string $error
 	 */
 	private $error;
 
@@ -117,11 +121,11 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 	/**
 	 * Generates content for the actions column.
 	 *
-	 * @param $item array Column data.
+	 * @param array $item Column data.
 	 *
 	 * @return string Content for actions column.
 	 */
-	public function column_actions( $item ) {
+	public function column_actions( $item ) : string {
 		return '<button disabled>' . __( 'Add', 'planet4-engagingnetworks' ) . '</button>';
 	}
 

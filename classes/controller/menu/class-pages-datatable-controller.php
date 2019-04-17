@@ -73,8 +73,8 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 
 				add_submenu_page(
 					P4EN_PLUGIN_SLUG_NAME,
-					'EngagingNetworks',
-					'EngagingNetworks',
+					__( 'EN Pages', 'planet4-engagingnetworks' ),
+					__( 'EN Pages', 'planet4-engagingnetworks' ),
 					'edit_pages',
 					'en-pages',
 					[ $this, 'prepare_pages_datatable' ]
