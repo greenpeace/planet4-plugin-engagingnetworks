@@ -63,21 +63,25 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				return;
 			}
 
-			wp_enqueue_style( 'p4en_admin_style_blocks-2', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4' );
+			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4' );
 			add_action(
 				'enqueue_shortcode_ui',
 				function () {
-					wp_enqueue_script( 'en-ui-heading-view-2', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_register_script( 'en-ui-2', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.7', true );
+					if ( ! wp_script_is( 'en-ui-heading-view' ) ) {
+						wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
+					}
+					if ( ! wp_script_is( 'en-ui' ) ) {
+						wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.7', true );
 
-					// Localize en-ui script.
-					$translation_array = array(
-						'en_fields_description_1' => __( 'What kind of Information do you want to send to EN?', 'planet4-engagingnetworks' ),
-						'en_fields_description_2' => __( 'Make sure to select the same fields of your Engaging Networks page / form', 'planet4-engagingnetworks' ),
-						'block_name'              => self::BLOCK_NAME,
-					);
-					wp_localize_script( 'en-ui-2', 'p4_enblock', $translation_array );
-					wp_enqueue_script( 'en-ui-2' );
+						// Localize en-ui script.
+						$localization_data = [
+							'en_fields_description_1' => __( 'What kind of Information do you want to send to EN?', 'planet4-engagingnetworks' ),
+							'en_fields_description_2' => __( 'Make sure to select the same fields of your Engaging Networks page / form', 'planet4-engagingnetworks' ),
+							'block_name'              => self::BLOCK_NAME,
+						];
+						wp_localize_script( 'en-ui', 'p4_enblock', $localization_data );
+						wp_enqueue_script( 'en-ui' );
+					}
 				}
 			);
 		}
@@ -262,7 +266,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 			// Define the Shortcode UI arguments.
 			$shortcode_ui_args = [
 				'label'         => __( 'Engaging Networks Form', 'planet4-engagingnetworks' ),
-				'listItemImage' => '<img src="' . esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enform.png' ) . '" />',
+				'listItemImage' => '<img src="' . esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/' . self::BLOCK_NAME . '.png' ) . '" />',
 				'attrs'         => $fields,
 				'post_type'     => P4EN_ALLOWED_PAGETYPE,
 			];
@@ -305,7 +309,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				[
 					'fields'          => $fields,
 					'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
-					'nonce_action'    => 'enform_submit',
+					'nonce_action'    => 'enblock_submit',
 					'form'            => '[' . Enform_Post_Controller::POST_TYPE . ' id="' . $fields['en_form_id'] . '" /]',
 				]
 			);
@@ -366,7 +370,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				$nonce    = $_POST['_wpnonce'];   // CSRF protection.
 				$response = [];
 
-				if ( ! wp_verify_nonce( $nonce, 'enform_submit' ) ) {
+				if ( ! wp_verify_nonce( $nonce, 'enblock_submit' ) ) {
 					$response['message'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
 					$response['token']   = '';
 				} else {

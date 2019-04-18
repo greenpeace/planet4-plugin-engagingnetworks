@@ -277,7 +277,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 			// Define the Shortcode UI arguments.
 			$shortcode_ui_args = [
 				'label'         => __( 'Engaging Networks Form', 'planet4-engagingnetworks' ),
-				'listItemImage' => '<img src="' . esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enform.png' ) . '" />',
+				'listItemImage' => '<img src="' . esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/' . self::BLOCK_NAME . '.png' ) . '" />',
 				'attrs'         => $fields,
 				'post_type'     => [ '' ],
 			];
