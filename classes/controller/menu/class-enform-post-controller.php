@@ -41,7 +41,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			add_action( 'add_meta_boxes', [ $this, 'add_meta_box_selected' ] );
 			add_action( 'add_meta_boxes', [ $this, 'add_fields_custom_box' ] );
 			add_action( 'add_meta_boxes', [ $this, 'add_questions_custom_box' ] );
-			add_action( 'cmb2_admin_init', [ $this, 'add_optins_meta_box' ] );
+			add_action( 'add_meta_boxes', [ $this, 'add_optins_custom_box' ] );
 		}
 
 		/**
@@ -201,7 +201,28 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		 * Display questions custom box content.
 		 */
 		public function display_questions_custom_box() {
-			$list_table = new Enform_Questions_List_Table();
+			$list_table = new Enform_Questions_List_Table( 'GEN' );
+			$list_table->prepare_items();
+			$list_table->display();
+		}
+
+		/**
+		 * Adds available opt-ins custom meta box to p4en_form edit post page.
+		 */
+		public function add_optins_custom_box() {
+			add_meta_box(
+				'optins_list_box',
+				__( 'Available Opt-ins', 'planet4-engagingnetworks' ),
+				[ $this, 'display_optins_custom_box' ],
+				self::POST_TYPE
+			);
+		}
+
+		/**
+		 * Display opt-ins custom box content.
+		 */
+		public function display_optins_custom_box() {
+			$list_table = new Enform_Questions_List_Table( 'OPT' );
 			$list_table->prepare_items();
 			$list_table->display();
 		}
@@ -225,36 +246,6 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			$list_table = new Enform_Fields_List_Table();
 			$list_table->prepare_items();
 			$list_table->display();
-		}
-
-
-		/**
-		 * Adds a meta box for the EN opt-ins.
-		 */
-		public function add_optins_meta_box() {
-			$prefix = self::POST_TYPE . '-optins-';
-
-			$meta_box = new_cmb2_box(
-				[
-					'id'           => $prefix . 'metabox',
-					'title'        => __( 'Opt-ins', 'planet4-engagingnetworks' ),
-					'object_types' => [ self::POST_TYPE ],
-				]
-			);
-
-			$meta_box->add_field(
-				[
-					'name'    => __( 'Available Opt-ins', 'planet4-engagingnetworks' ),
-					'desc'    => __( 'Available EN Customer Opt-ins', 'planet4-engagingnetworks' ),
-					'id'      => $prefix . 'name',
-					'type'    => 'multicheck',
-					'options' => [
-						'check1' => 'Check One',
-						'check2' => 'Check Two',
-						'check3' => 'Check Three',
-					],
-				]
-			);
 		}
 
 		/**

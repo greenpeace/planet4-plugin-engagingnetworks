@@ -33,12 +33,7 @@ div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+9):nth-child(odd) {
     border-color: #ff3333 !important;
 }
 
-#fields_list_box {
-    max-height: 400px;
-    overflow: auto;
-}
-
-#questions_list_box {
+#fields_list_box, #questions_list_box, #optins_list_box {
     max-height: 400px;
     overflow: auto;
 }
