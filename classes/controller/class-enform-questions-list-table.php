@@ -1,6 +1,8 @@
 <?php
 /**
  * Contains Enform_Questions_List_Table class declaration.
+ *
+ * @package P4EN\Controllers
  */
 
 namespace P4EN\Controllers;
@@ -26,20 +28,30 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 	/**
 	 * Store errors from en api.
 	 *
-	 * @var string $error
+	 * @var string
 	 */
 	private $error;
 
 	/**
-	 * Enform_Questions_List_Table constructor.
+	 * Type of questions. Either 'GEN' or 'OPT'.
+	 *
+	 * @var string
 	 */
-	public function __construct() {
+	private $type;
+
+	/**
+	 * Enform_Questions_List_Table constructor.
+	 *
+	 * @param string $type Type of questions that should be displayed. Either 'GEN' or 'OPT'.
+	 */
+	public function __construct( $type = 'GEN' ) {
 		parent::__construct(
 			[
 				'ajax' => false,
 			]
 		);
 		$this->error = '';
+		$this->type  = $type;
 	}
 
 	/**
@@ -60,7 +72,7 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 
 			if ( isset( $response['body'] ) && ! empty( $response['body'] ) ) {
 				$response_data = json_decode( $response['body'], true );
-				$response_data = array_filter( $response_data, [ $this, 'test_opt_in' ] );
+				$response_data = array_filter( $response_data, [ $this, 'check_type' ] );
 			} else {
 				$this->error = implode(
 					[
@@ -81,14 +93,14 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 	}
 
 	/**
-	 * Returns false if item is of type opt-in.
+	 * Used to filter items array based on question type.
 	 *
 	 * @param array $item Item in array.
 	 *
 	 * @return bool
 	 */
-	private function test_opt_in( $item ) {
-		return 'OPT' !== $item['type'];
+	private function check_type( $item ) {
+		return $this->type === $item['type'];
 	}
 
 	/**
@@ -141,9 +153,10 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 	 * Overrides parent function to disable nonce generation, bulk actions and pagination.
 	 * Used to display errors (if any) that come from en api.
 	 *
+	 * @param string $which
+	 *
 	 * @see \WP_List_Table::display_tablenav
 	 *
-	 * @param string $which
 	 */
 	protected function display_tablenav( $which ) {
 		if ( ! empty( $this->error ) && 'top' === $which ) {
