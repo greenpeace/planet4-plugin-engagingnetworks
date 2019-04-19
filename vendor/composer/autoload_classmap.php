@@ -10,6 +10,7 @@ return array(
     'P4EN\\Controllers\\Api\\Questions_Controller' => $baseDir . '/classes/controller/api/class-questions-controller.php',
     'P4EN\\Controllers\\Api\\Rest_Controller' => $baseDir . '/classes/controller/api/class-rest-controller.php',
     'P4EN\\Controllers\\Blocks\\Controller' => $baseDir . '/classes/controller/blocks/class-controller.php',
+    'P4EN\\Controllers\\Blocks\\ENBlock_Controller' => $baseDir . '/classes/controller/blocks/class-enblock-controller.php',
     'P4EN\\Controllers\\Blocks\\ENForm_Controller' => $baseDir . '/classes/controller/blocks/class-enform-controller.php',
     'P4EN\\Controllers\\Enform_Fields_List_Table' => $baseDir . '/classes/controller/class-enform-fields-list-table.php',
     'P4EN\\Controllers\\Enform_Questions_List_Table' => $baseDir . '/classes/controller/class-enform-questions-list-table.php',

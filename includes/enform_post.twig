@@ -1,0 +1,13 @@
+{% block enform_post %}
+	{% for key,value in fields %}
+		{{ value }}<br />
+	{% endfor %}
+	<br />
+	{% for key,value in questions %}
+		{{ value }}<br />
+	{% endfor %}
+	<br />
+	{% for key,value in optins %}
+		{{ value }}<br />
+	{% endfor %}
+{% endblock %}

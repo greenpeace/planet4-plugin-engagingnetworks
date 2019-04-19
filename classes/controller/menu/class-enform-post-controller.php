@@ -36,10 +36,12 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		 */
 		private function hooks() {
 			add_action( 'init', [ $this, 'register_post_type' ] );
+			add_shortcode( self::POST_TYPE, [ $this, 'handle_form_shortcode' ] );
 			add_filter( 'post_row_actions', [ $this, 'modify_post_row_actions' ], 10, 2 );
 
-			add_action( 'add_meta_boxes', [ $this, 'add_meta_box_selected' ] );
-			add_action( 'add_meta_boxes', [ $this, 'add_fields_custom_box' ] );
+			add_action( 'add_meta_boxes', [ $this, 'add_form_meta_box' ], 10 );
+			add_action( 'add_meta_boxes', [ $this, 'add_selected_meta_box' ], 11 );
+			add_action( 'add_meta_boxes', [ $this, 'add_fields_meta_box' ], 12 );
 			add_action( 'add_meta_boxes', [ $this, 'add_questions_custom_box' ] );
 			add_action( 'add_meta_boxes', [ $this, 'add_optins_custom_box' ] );
 		}
@@ -132,7 +134,6 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 
 			// Check if post is of p4en_form_post type.
 			if ( self::POST_TYPE === $post->post_type ) {
-
 				/*
 				 * Hide Quick Edit.
 				 */
@@ -147,15 +148,75 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
+		 * Adds shortcode for this custom post type.
+		 *
+		 * @param array $atts Array of attributes for the shortcode.
+		 */
+		public function handle_form_shortcode( $atts ) {
+			global $pagenow;
+
+			// Define attributes and their defaults.
+			$atts = shortcode_atts(
+				[
+					'id' => 'id',
+				],
+				$atts
+			);
+
+			$post_id = filter_input( INPUT_GET, 'post', FILTER_VALIDATE_INT );
+
+			if ( ! is_admin() || ( 'post.php' === $pagenow && $post_id && self::POST_TYPE === get_post_type( $post_id ) ) ) {
+
+				// TODO - Here we will need to customize how we store/retrieve the components name, type, label, etc.
+				$fields    = get_post_meta( $atts['id'], self::POST_TYPE . '-fields-name', true );
+				$questions = get_post_meta( $atts['id'], self::POST_TYPE . '-questions-name', true );
+				$optins    = get_post_meta( $atts['id'], self::POST_TYPE . '-optins-name', true );
+
+				$data = [
+					'fields'    => $fields,
+					'questions' => $questions,
+					'optins'    => $optins,
+				];
+				$this->view->enform_post( $data );
+			}
+		}
+
+		/**
 		 * Creates a Meta box for the Selected Components of the current EN Form.
 		 *
 		 * @param \WP_Post $post The currently Added/Edited EN Form.
 		 */
-		public function add_meta_box_selected( $post ) {
+		public function add_form_meta_box( $post ) {
+			add_meta_box(
+				'meta-box-form',
+				__( 'Form preview', 'planet4-engagingnetworks' ),
+				[ $this, 'view_meta_box_form' ],
+				[ self::POST_TYPE ],
+				'normal',
+				'high',
+				$post
+			);
+		}
+
+		/**
+		 * View an EN form.
+		 *
+		 * @param \WP_Post $post The currently Added/Edited EN Form.
+		 */
+		public function view_meta_box_form( $post ) {
+			echo do_shortcode( '[' . self::POST_TYPE . ' id="' . $post->ID . '" /]' );
+		}
+
+		/**
+		 * Creates a Meta box for the Selected Components of the current EN Form.
+		 *
+		 * @param \WP_Post $post The currently Added/Edited EN Form.
+		 */
+		public function add_selected_meta_box( $post ) {
 			add_meta_box(
 				'meta-box-selected',
 				__( 'Selected Components', 'planet4-engagingnetworks' ),
-				[ $this, 'view_meta_box_selected' ],
+				[ $this, 'view_selected_meta_box' ],
 				[ self::POST_TYPE ],
 				'normal',
 				'high',
@@ -168,7 +229,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		 *
 		 * @param \WP_Post $post The currently Added/Edited EN Form.
 		 */
-		public function view_meta_box_selected( $post ) {
+		public function view_selected_meta_box( $post ) {
 			$this->view->selected_meta_box(
 				[
 					'components' => [
@@ -186,6 +247,36 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
+		 * Adds available fields custom meta box to p4en_form edit post page.
+		 *
+		 * @param \WP_Post $post The currently Added/Edited EN Form.
+		 */
+		public function add_fields_meta_box( $post ) {
+			add_meta_box(
+				'fields_list_box',
+				__( 'Available Fields', 'planet4-engagingnetworks' ),
+				[ $this, 'view_fields_meta_box' ],
+				self::POST_TYPE,
+				'normal',
+				'high',
+				$post
+			);
+		}
+
+		/**
+		 * Display fields custom box content.
+		 *
+		 * @param \WP_Post $post The currently Added/Edited EN Form.
+		 */
+		public function view_fields_meta_box( $post ) {
+			$list_table = new Enform_Fields_List_Table();
+			$list_table->prepare_items();
+			$list_table->display();
+		}
+
+		/**
+		 * Adds a meta box for the EN questions.
+		 *
 		 * Adds available questions custom meta box to p4en_form edit post page.
 		 */
 		public function add_questions_custom_box() {
@@ -228,34 +319,13 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
-		 * Adds available fields custom meta box to p4en_form edit post page.
-		 */
-		public function add_fields_custom_box() {
-			add_meta_box(
-				'fields_list_box',
-				__( 'Available Fields', 'planet4-engagingnetworks' ),
-				[ $this, 'display_fields_custom_box' ],
-				self::POST_TYPE
-			);
-		}
-
-		/**
-		 * Display fields custom box content.
-		 */
-		public function display_fields_custom_box() {
-			$list_table = new Enform_Fields_List_Table();
-			$list_table->prepare_items();
-			$list_table->display();
-		}
-
-		/**
 		 * Validates the user input.
 		 *
 		 * @param array $settings The associative array with the input that the user submitted.
 		 *
 		 * @return bool
 		 */
-		public function validate( $settings ): bool {
+		public function validate( $settings ) : bool {
 			return true;
 		}
 
@@ -264,8 +334,6 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		 *
 		 * @param array $input The associative array with the input that the user submitted.
 		 */
-		public function sanitize( &$input ) {
-		}
-
+		public function sanitize( &$input ) {}
 	}
 }
