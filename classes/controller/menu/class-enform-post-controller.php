@@ -2,7 +2,7 @@
 /**
  * Enform Post Controller class
  *
- * @package P4EN
+ * @package P4EN\Controllers
  */
 
 namespace P4EN\Controllers\Menu;
@@ -71,6 +71,12 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 					'post-new.php?post_type=' . self::POST_TYPE
 				);
 
+				// Load assets conditionally using pagenow, typenow on new form page.
+				global $pagenow, $typenow;
+				if ( 'post-new.php' === $pagenow && self::POST_TYPE === $typenow ) {
+					add_action( 'load-post-new.php', [ $this, 'load__new_page_assets' ] );
+					add_action( 'admin_print_footer_scripts', [ $this, 'print_admin_footer_scripts' ], 1 );
+				}
 			}
 		}
 
@@ -316,6 +322,45 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			$list_table = new Enform_Questions_List_Table( 'OPT' );
 			$list_table->prepare_items();
 			$list_table->display();
+		}
+
+		/**
+		 * Adds available fields custom meta box to p4en_form edit post page.
+		 */
+		public function add_fields_custom_box() {
+			add_meta_box(
+				'fields_list_box',
+				__( 'Available Fields', 'planet4-engagingnetworks' ),
+				[ $this, 'display_fields_custom_box' ],
+				self::POST_TYPE
+			);
+		}
+
+		/**
+		 * Display fields custom box content.
+		 */
+		public function display_fields_custom_box() {
+			$list_table = new Enform_Fields_List_Table();
+			$list_table->prepare_items();
+			$list_table->display();
+		}
+
+		/**
+		 * Add underscore templates to footer.
+		 */
+		public function print_admin_footer_scripts() {
+			$this->view->view_template( 'selected_enform_fields', [] );
+		}
+
+		/**
+		 * Load assets for new page.
+		 */
+		public function load__new_page_assets() {
+			wp_enqueue_script( 'jquery-ui-core' );
+			wp_enqueue_script( 'jquery-ui-sortable' );
+			wp_enqueue_script( 'jquery-ui-dialog' );
+			wp_enqueue_style( 'wp-jquery-ui-dialog' );
+			wp_enqueue_script( 'enforms', P4EN_ADMIN_DIR . 'js/enforms.js', [ 'jquery' ], '0.1', true );
 		}
 
 		/**

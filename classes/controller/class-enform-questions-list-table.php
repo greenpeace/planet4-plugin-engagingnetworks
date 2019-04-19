@@ -146,17 +146,27 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 	 * @return string Content for actions column.
 	 */
 	public function column_actions( $item ) {
-		return '<button disabled>' . __( 'Add', 'planet4-engagingnetworks' ) . '</button>';
+		$data_attributes = [
+			'id'   => $item['id'],
+			'name' => $item['name'],
+			'type' => $item['type'],
+		];
+
+		$attributes_string = '';
+		foreach ( $data_attributes as $attr => $value ) {
+			$attributes_string .= " data-$attr=\"" . esc_attr( $value ) . '"';
+		}
+
+		return '<button class="add-en-field" ' . $attributes_string . '>' . __( 'Add', 'planet4-engagingnetworks' ) . '</button>';
 	}
 
 	/**
 	 * Overrides parent function to disable nonce generation, bulk actions and pagination.
 	 * Used to display errors (if any) that come from en api.
 	 *
-	 * @param string $which
+	 * @param string $which Navigation position.
 	 *
 	 * @see \WP_List_Table::display_tablenav
-	 *
 	 */
 	protected function display_tablenav( $which ) {
 		if ( ! empty( $this->error ) && 'top' === $which ) {
@@ -164,4 +174,3 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 		}
 	}
 }
-

@@ -2,7 +2,7 @@
 /**
  * Contains Enform_Fields_List_Table class declaration.
  *
- * @package P4EN
+ * @package P4EN\Controllers
  */
 
 namespace P4EN\Controllers;
@@ -103,8 +103,8 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 	/**
 	 * Generates content for a column that does not have each own function defined.
 	 *
-	 * @param object $item
-	 * @param string $column_name
+	 * @param array  $item        Item data.
+	 * @param string $column_name Column name.
 	 *
 	 * @return string Content for column.
 	 */
@@ -125,17 +125,28 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 	 *
 	 * @return string Content for actions column.
 	 */
-	public function column_actions( $item ) : string {
-		return '<button disabled>' . __( 'Add', 'planet4-engagingnetworks' ) . '</button>';
+	public function column_actions( $item ) {
+		$data_attributes = [
+			'id'   => $item['id'],
+			'name' => $item['name'],
+			'type' => __( 'Field', 'planet4-engagingnetworks' ),
+		];
+
+		$attributes_string = '';
+		foreach ( $data_attributes as $attr => $value ) {
+			$attributes_string .= " data-$attr=\"" . esc_attr( $value ) . '"';
+		}
+
+		return '<button class="add-en-field" ' . $attributes_string . '>' . __( 'Add', 'planet4-engagingnetworks' ) . '</button>';
 	}
 
 	/**
 	 * Overrides parent function to disable nonce generation, bulk actions and pagination.
 	 * Used to display errors (if any) that come from en api.
 	 *
-	 * @see \WP_List_Table::display_tablenav
+	 * @param string $which Navigation position.
 	 *
-	 * @param string $which
+	 * @see \WP_List_Table::display_tablenav
 	 */
 	protected function display_tablenav( $which ) {
 		if ( ! empty( $this->error ) && 'top' === $which ) {

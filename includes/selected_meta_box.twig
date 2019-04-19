@@ -1,46 +1,30 @@
 {% block selected_meta_box %}
 	<table id="en_form_selected_fields_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
-		<thead>
-		<tr valign="top">
-			<th>{{ __( 'Name', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Hidden', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Required', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Label', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Type', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Value', 'planet4-engagingnetworks' ) }}</th>
-		</tr>
-		</thead>
-		<tfoot>
-		<tr valign="top">
-			<th>{{ __( 'Name', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Hidden', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Required', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Label', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Type', 'planet4-engagingnetworks' ) }}</th>
-			<th>{{ __( 'Value', 'planet4-engagingnetworks' ) }}</th>
-		</tr>
-		</tfoot>
-		{% for component in components %}
-			<tr valign="top">
-				<td>
-					{{ component.name }}
-				</td>
-				<td>
-					{{ component.hidden }}
-				</td>
-				<td>
-					{{ component.required }}
-				</td>
-				<td>
-					{{ component.label }}
-				</td>
-				<td>
-					{{ component.type }}
-				</td>
-				<td>
-					{{ component.value }}
-				</td>
+		<thead style="text-align: left;">
+			<tr valign="top" align="left">
+				<th></th>
+				<th>{{ __( 'Name', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'EN Type', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'Required', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'Label', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'Type', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'Actions', 'planet4-engagingnetworks' ) }}</th>
 			</tr>
+		</thead>
+		<tbody>
+		</tbody>
+		{% for component in components %}
 		{% endfor %}
+		<tfoot style="text-align: left;">
+			<tr valign="top">
+				<th></th>
+				<th>{{ __( 'Name', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'EN Type', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'Required', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'Label', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'Type', 'planet4-engagingnetworks' ) }}</th>
+				<th>{{ __( 'Actions', 'planet4-engagingnetworks' ) }}</th>
+			</tr>
+		</tfoot>
 	</table>
 {% endblock %}
