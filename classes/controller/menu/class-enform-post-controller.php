@@ -156,9 +156,12 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			global $pagenow;
 
 			// Define attributes and their defaults.
-			$atts = shortcode_atts( [
-				'id' => 'id',
-			], $atts );
+			$atts = shortcode_atts(
+				[
+					'id' => 'id',
+				],
+				$atts
+			);
 
 			$post_id = filter_input( INPUT_GET, 'post', FILTER_VALIDATE_INT );
 
@@ -272,6 +275,8 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
+		 * Adds a meta box for the EN questions.
+		 *
 		 * Adds available questions custom meta box to p4en_form edit post page.
 		 */
 		public function add_questions_custom_box() {

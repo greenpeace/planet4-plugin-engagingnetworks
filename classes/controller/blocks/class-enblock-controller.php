@@ -67,21 +67,17 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 			add_action(
 				'enqueue_shortcode_ui',
 				function () {
-					if ( ! wp_script_is( 'en-ui-heading-view' ) ) {
-						wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					}
-					if ( ! wp_script_is( 'en-ui' ) ) {
-						wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.7', true );
+					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
+					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.7', true );
 
-						// Localize en-ui script.
-						$localization_data = [
-							'en_fields_description_1' => __( 'What kind of Information do you want to send to EN?', 'planet4-engagingnetworks' ),
-							'en_fields_description_2' => __( 'Make sure to select the same fields of your Engaging Networks page / form', 'planet4-engagingnetworks' ),
-							'block_name'              => self::BLOCK_NAME,
-						];
-						wp_localize_script( 'en-ui', 'p4_enblock', $localization_data );
-						wp_enqueue_script( 'en-ui' );
-					}
+					// Localize en-ui script.
+					$localization_data = [
+						'en_fields_description_1' => __( 'What kind of Information do you want to send to EN?', 'planet4-engagingnetworks' ),
+						'en_fields_description_2' => __( 'Make sure to select the same fields of your Engaging Networks page / form', 'planet4-engagingnetworks' ),
+						'block_name'              => self::BLOCK_NAME,
+					];
+					wp_localize_script( 'en-ui', 'p4_enblock', $localization_data );
+					wp_enqueue_script( 'en-ui' );
 				}
 			);
 		}
@@ -99,9 +95,10 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 		 * It is called when the Shortcake action hook `register_shortcode_ui` is called.
 		 */
 		public function prepare_fields() {
-			$pages   = [];
-			$options = [];
-			$forms   = [];
+			$pages         = [];
+			$pages_options = [];
+			$forms         = [];
+			$forms_options = [];
 
 			// Get EN pages only on admin panel.
 			if ( is_admin() ) {
@@ -119,7 +116,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					);
 				}
 
-				$options = [
+				$pages_options = [
 					[
 						'value' => '0',
 						'label' => __( '- Select Page -', 'planet4-engagingnetworks' ),
@@ -134,16 +131,19 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 								'label' => (string) $page['name'],
 							];
 						}
-						$options[] = [
+						$pages_options[] = [
 							'label'   => Pages_Datatable_Controller::SUBTYPES[ $type ]['subType'],
 							'options' => $group_options,
 						];
 					}
 				}
 
+				// Get EN Forms.
 				$query = new \WP_Query( [
-					'post_status' => 'publish',
-					'post_type'   => Enform_Post_Controller::POST_TYPE,
+					'post_status'      => 'publish',
+					'post_type'        => Enform_Post_Controller::POST_TYPE,
+					'orderby'          => 'post_title',
+					'order'            => 'asc',
 					'suppress_filters' => false,
 				] );
 				$forms = $query->posts;
@@ -173,7 +173,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					'meta'        => [
 						'required' => '',
 					],
-					'options'     => $options,
+					'options'     => $pages_options,
 				],
 				[
 					'attr'    => 'en_form_style',
@@ -307,57 +307,14 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 			$data = array_merge(
 				$data,
 				[
-					'fields'          => $fields,
-					'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
-					'nonce_action'    => 'enblock_submit',
-					'form'            => '[' . Enform_Post_Controller::POST_TYPE . ' id="' . $fields['en_form_id'] . '" /]',
+					'fields'       => $fields,
+					'redirect_url' => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
+					'nonce_action' => 'enblock_submit',
+					'form'         => '[' . Enform_Post_Controller::POST_TYPE . ' id="' . $fields['en_form_id'] . '" /]',
 				]
 			);
 
 			return $data;
-		}
-
-		/**
-		 * Retrieve supporter fields from EN and prepare them for use in P4.
-		 *
-		 * @return array Associative array of supporter fields if retrieval from EN was successful or empty array otherwise.
-		 */
-		public function get_supporter_fields() : array {
-			// If we have not initialized yet the Ensapi_Controller then do it here.
-			if ( ! $this->ens_api ) {
-				$main_settings = get_option( 'p4en_main_settings' );
-				if ( isset( $main_settings['p4en_private_api'] ) ) {
-					$ens_private_token = $main_settings['p4en_private_api'];
-					$this->ens_api     = new Ensapi( $ens_private_token );
-				}
-			}
-			if ( $this->ens_api ) {
-				$response = $this->ens_api->get_supporter_fields();
-
-				if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
-					$en_supporter_fields = json_decode( $response['body'], true );
-
-					foreach ( $en_supporter_fields as $en_supporter_field ) {
-						if ( 'Not Tagged' !== $en_supporter_field['tag'] ) {
-							$type = 'text';
-							if ( false !== strpos( $en_supporter_field['property'], 'country' ) ) {
-								$type = 'country';
-							} elseif ( false !== strpos( $en_supporter_field['property'], 'emailAddress' ) ) {
-								$type = 'email';        // Set the type of the email input field as email.
-							}
-
-							$supporter_fields[] = [
-								'id'    => $en_supporter_field['id'],
-								'name'  => $en_supporter_field['property'],
-								'label' => $en_supporter_field['name'],
-								'type'  => $type,
-							];
-						}
-					}
-					return $supporter_fields;
-				}
-			}
-			return [];
 		}
 
 		/**
