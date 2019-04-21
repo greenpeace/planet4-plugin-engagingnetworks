@@ -42,6 +42,10 @@
     background: none;
   }
 
+  .enform-side-style & {
+    background: none;
+  }
+
   form {
     margin: 0;
 
@@ -179,4 +183,46 @@
   border-right-color: transparent!important;
   display: none;
   vertical-align: middle;
+}
+
+.flex-enform {
+  .enform-side-style & {
+    display: flex;
+    flex-direction: row;
+
+    .form-container {
+      padding: $n20;
+      background: $white;
+
+      .formblock-flex .en__field {
+        width: 100%;
+      }
+
+      .en__field__element {
+        position: relative;
+
+        input[type=text],
+        select,
+        input[type=email],
+        input[type=tel] {
+          border: 1px solid #1a1a1a;
+          padding: $n10;
+        }
+      }
+    }
+
+    .en__field__top__label {
+      position: absolute;
+      top: -.6rem;
+      background: white;
+      left: $n10;
+      padding: 0 8px;
+      font-weight: 600;
+      font-size: .75rem;
+    }
+  }
+}
+
+.enform-side-style {
+  border: 5px solid red;
 }

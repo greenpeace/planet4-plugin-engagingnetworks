@@ -391,15 +391,33 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				$fields['thankyou_url'] = 'http://' . $fields['thankyou_url'];
 			}
 
+			$supporter_fields_map = [
+				'title'       => 'Title',
+				'first'       => 'First name',
+				'last'        => 'Last name',
+				'address1'    => 'Address 1',
+				'address2'    => 'Address 2',
+				'city'        => 'City',
+				'country'     => 'Country',
+				'post'        => 'Postcode',
+				'email'       => 'Email',
+				'region'      => 'County',
+				'phoneNumber' => 'Phone Number',
+				'birth'       => 'birthday'
+			];
+
 			$data = array_merge(
 				$data,
 				[
-					'fields'          => $fields,
-					'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
-					'nonce_action'    => 'enform_submit',
-					'second_page_msg' => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
+					'supporter_fields_map' => $supporter_fields_map,
+					'fields'               => $fields,
+					'redirect_url'         => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
+					'nonce_action'         => 'enform_submit',
+					'second_page_msg'      => __( 'Thanks for signing!', 'planet4-engagingnetworks' ),
 				]
 			);
+
+			$data['fields']['en_form_style'] = 'side-style';
 
 			return $data;
 		}
