@@ -183,14 +183,20 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 						[
 							'value' => 'full-width',
 							'label' => __( 'Page body / text size width. No background.', 'planet4-engagingnetworks' ),
-							'desc'  => 'Best to use inside pages. Form width will align with body / text width.',
+							'desc'  => __( 'Best to use inside pages. Form width will align with body / text width.', 'planet4-engagingnetworks' ),
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidth.png' ),
 						],
 						[
 							'value' => 'full-width-bg',
 							'label' => __( 'Full page width. With background image.', 'planet4-engagingnetworks' ),
-							'desc'  => 'This form has a background image that expands the full width of the browser.',
+							'desc'  => __( 'This form has a background image that expands the full width of the browser.', 'planet4-engagingnetworks' ),
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidthbg.png' ),
+						],
+						[
+							'value' => 'side-style',
+							'label' => __( 'Form on the side.', 'planet4-engagingnetworks' ),
+							'desc'  => __( 'Form will be added to the top of the page, on the right side for most languages and on the left side for RTL languages.', 'planet4-engagingnetworks' ),
+							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/submenu-sidebar.jpg' ),
 						],
 					],
 				],
