@@ -44,6 +44,7 @@
 
   .enform-side-style & {
     background: none;
+    padding-top: 36px;
   }
 
   form {
@@ -191,8 +192,12 @@
     flex-direction: row;
 
     .form-container {
-      padding: $n20;
+      padding: 28px 30px 24px 30px;
       background: $white;
+
+      form {
+        width: 444px;
+      }
 
       .formblock-flex .en__field {
         width: 100%;
@@ -207,7 +212,18 @@
         input[type=tel] {
           border: 1px solid #1a1a1a;
           padding: $n10;
+
+          &.is-invalid {
+            border: 1px solid #ff3333;
+          }
         }
+      }
+
+      .invalid-feedback {
+        color: #ff3333;
+        margin: 0;
+        padding: 0;
+        background: none;
       }
     }
 
@@ -224,5 +240,41 @@
 }
 
 .enform-side-style {
-  border: 5px solid red;
+  width: 100vw;
+  min-height: 444px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  background: black;
+
+  .title-and-description {
+    color: $white;
+    padding-top: 96px;
+    padding-right: 168px;
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: bold;
+      line-height: 3rem;
+    }
+  }
+
+  picture {
+    align-self: start;
+
+    img {
+      position: absolute;
+      height: auto;
+      width: 100%;
+      object-fit: cover;
+      object-position: center center;
+      opacity: 0.5;
+
+      @supports (object-fit: cover) {
+        & {
+          height: 100%;
+        }
+      }
+    }
+  }
 }

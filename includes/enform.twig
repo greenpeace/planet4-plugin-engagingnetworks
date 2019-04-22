@@ -1,6 +1,6 @@
 {% block enform %}
 	<div class="enform-wrap enform-{{ fields.en_form_style }} {% if fields.en_form_style == 'full-width-bg' or fields.en_form_style == 'side-style' %}block-wide{% endif %}">
-		{% if fields.en_form_style == 'full-width-bg' %}
+		{% if fields.en_form_style == 'full-width-bg' or fields.en_form_style == 'side-style' %}
 			<picture>
 				<img src="{{ fields.background_src.0|default(fields.default_image) }}"
 					style="object-position:{{ fields.focus_image }};opacity:{{ fields.opacity }};"
@@ -66,7 +66,10 @@
 																		class="en__field__input en__field__input--text form-control"
 																		value="{{ value }}"
 																		data-errormessage="{{ errorMessage }}"
-																		placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == data.mandatory ? '*' : '' }}"
+
+																		{% if fields.en_form_style != 'side-style' %}
+																			placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == data.mandatory ? '*' : '' }}"
+																		{% endif %}
 																		{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
 																		size="40" />
 																{% elseif 'country' == data.type %}
