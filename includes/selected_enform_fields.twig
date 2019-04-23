@@ -1,22 +1,20 @@
 <script type="text/html" id="tmpl-en-selected-fields">
-	<% _.each(items, function(item, key, list) { %>
-		<%= row_template({item: item}) %>
-	<% });%>
+
 </script>
 
 <script type="text/html" id="tmpl-en-selected-field">
-	<tr data-en-id="<%= item.enid %>" data-en-name="<%= item.name %>">
+	<tr class="field-item" data-en-id="<%= id %>" data-en-name="<%= name %>">
 		<td><a><span class="dashicons dashicons-sort pointer"></span></a></td>
-		<td><%= item.name %></td>
-		<td><%= item.type %></td>
+		<td><%= name %></td>
+		<td><%= en_type %></td>
 		<td>
-			<input type="checkbox" />
+			<input type="checkbox" data-attribute="required" />
 		</td>
 		<td>
-			<input type="text" />
+			<input type="text" data-attribute="label" />
 		</td>
 		<td>
-			<select class="field-type-select">
+			<select class="field-type-select" data-attribute="input_type">
 				<option value="0">{{ __( '--Select--', 'planet4-engagingnetworks' ) }}</option>
 				<option value="checkbox">{{ __( 'Checkbox', 'planet4-engagingnetworks' ) }}</option>
 				<option value="text">{{ __( 'Text', 'planet4-engagingnetworks' ) }}</option>
@@ -30,18 +28,17 @@
 
 <script type="text/html" id="tmpl-en-field-dialog">
 	<div style="display: none;" class="dialog">
-
 		<p>{{ __( 'Field/Question customization', 'planet4-engagingnetworks' ) }}</p>
 		<p>
 			<label class="control-label">{{ __( 'Hidden', 'planet4-engagingnetworks' ) }}</label>
 			<div>
-				<input type="checkbox" class="form-control"/>
+				<input type="checkbox" class="form-control" data-attribute="hidden"/>
 			</div>
 		</p>
 		<p>
 			<label class="control-label">{{ __( 'Default Value', 'planet4-engagingnetworks' ) }}</label>
 			<div>
-				<input type="text" class="form-control"/>
+				<input type="text" class="form-control" data-attribute="default_value"/>
 			</div>
 		</p>
 	</div>
