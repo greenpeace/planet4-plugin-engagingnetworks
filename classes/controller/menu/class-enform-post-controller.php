@@ -2,7 +2,7 @@
 /**
  * Enform Post Controller class
  *
- * @package P4EN
+ * @package P4EN\Controllers
  */
 
 namespace P4EN\Controllers\Menu;
@@ -44,6 +44,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			add_action( 'add_meta_boxes', [ $this, 'add_fields_meta_box' ], 12 );
 			add_action( 'add_meta_boxes', [ $this, 'add_questions_custom_box' ] );
 			add_action( 'add_meta_boxes', [ $this, 'add_optins_custom_box' ] );
+			add_action( 'save_post_' . self::POST_TYPE, [ $this, 'save_fields_meta_box' ], 10, 2 );
 		}
 
 		/**
@@ -71,6 +72,12 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 					'post-new.php?post_type=' . self::POST_TYPE
 				);
 
+				// Load assets conditionally using pagenow, typenow on new form page.
+				global $pagenow, $typenow;
+				if ( 'post-new.php' === $pagenow && self::POST_TYPE === $typenow ) {
+					add_action( 'load-post-new.php', [ $this, 'load__new_page_assets' ] );
+					add_action( 'admin_print_footer_scripts', [ $this, 'print_admin_footer_scripts' ], 1 );
+				}
 			}
 		}
 
@@ -118,6 +125,12 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 					'supports'            => [ 'title' ],
 				]
 			);
+
+			$custom_meta_args = [
+				'type'   => 'string',
+				'single' => true,
+			];
+			register_meta( self::POST_TYPE, 'p4enform_fields', $custom_meta_args );
 		}
 
 		/**
@@ -255,23 +268,12 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			add_meta_box(
 				'fields_list_box',
 				__( 'Available Fields', 'planet4-engagingnetworks' ),
-				[ $this, 'view_fields_meta_box' ],
+				[ $this, 'display_fields_custom_box' ],
 				self::POST_TYPE,
 				'normal',
 				'high',
 				$post
 			);
-		}
-
-		/**
-		 * Display fields custom box content.
-		 *
-		 * @param \WP_Post $post The currently Added/Edited EN Form.
-		 */
-		public function view_fields_meta_box( $post ) {
-			$list_table = new Enform_Fields_List_Table();
-			$list_table->prepare_items();
-			$list_table->display();
 		}
 
 		/**
@@ -316,6 +318,76 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			$list_table = new Enform_Questions_List_Table( 'OPT' );
 			$list_table->prepare_items();
 			$list_table->display();
+		}
+
+		/**
+		 * Display fields custom box content.
+		 */
+		public function display_fields_custom_box() {
+			$list_table = new Enform_Fields_List_Table();
+			$list_table->prepare_items();
+			$list_table->display();
+		}
+
+		/**
+		 * Add underscore templates to footer.
+		 */
+		public function print_admin_footer_scripts() {
+			$this->view->view_template( 'selected_enform_fields', [] );
+		}
+
+		/**
+		 * Load assets for new page.
+		 */
+		public function load__new_page_assets() {
+			wp_enqueue_script( 'jquery-ui-core' );
+			wp_enqueue_script( 'jquery-ui-sortable' );
+			wp_enqueue_script( 'jquery-ui-dialog' );
+			wp_enqueue_style( 'wp-jquery-ui-dialog' );
+			wp_enqueue_script(
+				'enforms',
+				P4EN_ADMIN_DIR . 'js/enforms.js',
+				[
+					'jquery',
+					'wp-backbone',
+				],
+				'0.2',
+				true
+			);
+		}
+
+		/**
+		 * Saves the p4 enform fields of the Post.
+		 *
+		 * @param int $post_id The ID of the current Post.
+		 * @param \WP_Post $post The current Post.
+		 */
+		public function save_fields_meta_box( $post_id, $post ) {
+			global $pagenow;
+
+			// Ignore autosave.
+			if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+				return;
+			}
+
+			// Check user's capabilities.
+			if ( ! current_user_can( 'edit_post', $post_id ) ) {
+				return;
+			}
+
+			// Check post input.
+			$form_fields = filter_input(
+				INPUT_POST,
+				'p4enform_fields'
+			);
+
+			// If this is a new post then set form fields meta.
+			if ( $form_fields && 'post.php' === $pagenow ) {
+				$form_fields = json_decode( stripslashes( $form_fields ) );
+
+				// Store form fields meta.
+				update_post_meta( $post_id, 'p4enform_fields', $form_fields );
+			}
 		}
 
 		/**

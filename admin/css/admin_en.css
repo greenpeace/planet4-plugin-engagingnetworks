@@ -34,6 +34,14 @@ div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+9):nth-child(odd) {
 }
 
 #fields_list_box, #questions_list_box, #optins_list_box {
-    max-height: 400px;
-    overflow: auto;
+  max-height: 400px;
+  overflow: auto;
+}
+
+#meta-box-selected .inside {
+  overflow-x: auto ;
+}
+
+.add-en-field, .remove-en-field, .pointer {
+  cursor: pointer;
 }
