@@ -5,40 +5,54 @@
 <script type="text/html" id="tmpl-en-selected-field">
 	<tr class="field-item" data-en-id="<%= id %>" data-en-name="<%= name %>">
 		<td><a><span class="dashicons dashicons-sort pointer"></span></a></td>
-		<td><%= name %></td>
+		<td style="width:25%;"><%= name %></td>
 		<td><%= en_type %></td>
 		<td>
-			<input type="checkbox" data-attribute="required" />
+			<input type="checkbox" data-attribute="required" <% print( required ?  'checked': '') %> <% print( input_type=='hidden' ?  ' disabled': '') %>	/>
 		</td>
 		<td>
-			<input type="text" data-attribute="label" />
+			<input type="text" data-attribute="label" value="<%= label %>" <% print( input_type=='hidden' ?  ' disabled': '') %> />
 		</td>
 		<td>
 			<select class="field-type-select" data-attribute="input_type">
 				<option value="0">{{ __( '--Select--', 'planet4-engagingnetworks' ) }}</option>
-				<option value="checkbox">{{ __( 'Checkbox', 'planet4-engagingnetworks' ) }}</option>
-				<option value="text">{{ __( 'Text', 'planet4-engagingnetworks' ) }}</option>
+				<option value="checkbox"  <% print( input_type == 'checkbox' ?  'selected': '') %> >{{ __( 'Checkbox', 'planet4-engagingnetworks' ) }}</option>
+				<option value="text"  <% print( input_type == 'text' ?  'selected': '') %> >{{ __( 'Text', 'planet4-engagingnetworks' ) }}</option>
+				<option value="hidden"  <% print( input_type == 'hidden' ?  'selected': '') %> >{{ __( 'Hidden', 'planet4-engagingnetworks' ) }}</option>
 			</select>
 		</td>
-		<td>
+		<td class="actions">
 			<a><span class="dashicons dashicons-no remove-en-field"></span></a>
 		</td>
 	</tr>
 </script>
 
-<script type="text/html" id="tmpl-en-field-dialog">
+
+<script type="text/html" id="tmpl-en-hidden-field-dialog">
 	<div style="display: none;" class="dialog">
 		<p>{{ __( 'Field/Question customization', 'planet4-engagingnetworks' ) }}</p>
 		<p>
-			<label class="control-label">{{ __( 'Hidden', 'planet4-engagingnetworks' ) }}</label>
+			<label class="control-label">{{ __( 'Input name', 'planet4-engagingnetworks' ) }}</label>
 			<div>
-				<input type="checkbox" class="form-control" data-attribute="hidden"/>
+				<input type="text" class="form-control" data-attribute="input_name" value="<%= input_name %>" />
 			</div>
 		</p>
 		<p>
 			<label class="control-label">{{ __( 'Default Value', 'planet4-engagingnetworks' ) }}</label>
 			<div>
-				<input type="text" class="form-control" data-attribute="default_value"/>
+				<input type="text" class="form-control" data-attribute="default_value" value="<%= default_value %>" />
+			</div>
+		</p>
+	</div>
+</script>
+
+<script type="text/html" id="tmpl-en-text-field-dialog">
+	<div style="display: none;" class="dialog">
+		<p>{{ __( 'Field/Question customization', 'planet4-engagingnetworks' ) }}</p>
+		<p>
+			<label class="control-label">{{ __( 'Default Value', 'planet4-engagingnetworks' ) }}</label>
+			<div>
+				<input type="text" class="form-control" data-attribute="default_value" value="<%= default_value %>" />
 			</div>
 		</p>
 	</div>
