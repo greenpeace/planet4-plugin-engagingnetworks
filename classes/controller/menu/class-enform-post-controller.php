@@ -20,7 +20,15 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 	 */
 	class Enform_Post_Controller extends Controller {
 
+		/**
+		 * Post type name.
+		 */
 		const POST_TYPE = 'p4en_form';
+
+		/**
+		 * Custom meta field where fields configuration is saved to.
+		 */
+		const FIELDS_META = 'p4enform_fields';
 
 		/**
 		 * Hooks all the needed functions to load the class.
@@ -72,12 +80,8 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 					'post-new.php?post_type=' . self::POST_TYPE
 				);
 
-				// Load assets conditionally using pagenow, typenow on new form page.
-				global $pagenow, $typenow;
-				if ( 'post-new.php' === $pagenow && self::POST_TYPE === $typenow ) {
-					add_action( 'load-post-new.php', [ $this, 'load__new_page_assets' ] );
-					add_action( 'admin_print_footer_scripts', [ $this, 'print_admin_footer_scripts' ], 1 );
-				}
+				//Set hook after screen is determined to load assets for add/edit page.
+				add_action( 'current_screen', [ $this, 'load_assets' ] );
 			}
 		}
 
@@ -130,7 +134,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 				'type'   => 'string',
 				'single' => true,
 			];
-			register_meta( self::POST_TYPE, 'p4enform_fields', $custom_meta_args );
+			register_meta( self::POST_TYPE, self::FIELDS_META, $custom_meta_args );
 		}
 
 		/**
@@ -243,18 +247,10 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		 * @param \WP_Post $post The currently Added/Edited EN Form.
 		 */
 		public function view_selected_meta_box( $post ) {
+			$form_fields = get_post_meta( $post->ID, self::FIELDS_META, true );
 			$this->view->selected_meta_box(
 				[
-					'components' => [
-						[
-							'name'     => 'email',
-							'type'     => 'email',
-							'label'    => 'Email',
-							'value'    => 'example@example.com',
-							'required' => true,
-							'hidden'   => false,
-						],
-					],
+					'fields' => json_encode( $form_fields ),
 				]
 			);
 		}
@@ -337,12 +333,30 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
-		 * Load assets for new page.
+		 * Hook load new page assets conditionally based on current page.
+		 */
+		public function load_assets() {
+			global $pagenow, $typenow;
+			$pages = [
+				'post.php',
+				'post-new.php',
+			];
+
+			// Load assets conditionally using pagenow, typenow on new/edit form page.
+			if ( in_array( $pagenow, $pages ) && self::POST_TYPE === $typenow ) {
+				add_action( "load-$pagenow", [ $this, 'load__new_page_assets' ] );
+				add_action( 'admin_print_footer_scripts', [ $this, 'print_admin_footer_scripts' ], 1 );
+			}
+		}
+
+		/**
+		 * Load assets for new/edit form page.
 		 */
 		public function load__new_page_assets() {
 			wp_enqueue_script( 'jquery-ui-core' );
 			wp_enqueue_script( 'jquery-ui-sortable' );
 			wp_enqueue_script( 'jquery-ui-dialog' );
+			wp_enqueue_script( 'jquery-ui-tooltip' );
 			wp_enqueue_style( 'wp-jquery-ui-dialog' );
 			wp_enqueue_script(
 				'enforms',
@@ -351,7 +365,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 					'jquery',
 					'wp-backbone',
 				],
-				'0.2',
+				'0.3',
 				true
 			);
 		}
@@ -378,15 +392,15 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			// Check post input.
 			$form_fields = filter_input(
 				INPUT_POST,
-				'p4enform_fields'
+				self::FIELDS_META
 			);
 
 			// If this is a new post then set form fields meta.
 			if ( $form_fields && 'post.php' === $pagenow ) {
-				$form_fields = json_decode( stripslashes( $form_fields ) );
+				$form_fields = json_decode( ( $form_fields ) );
 
 				// Store form fields meta.
-				update_post_meta( $post_id, 'p4enform_fields', $form_fields );
+				update_post_meta( $post_id, self::FIELDS_META, $form_fields );
 			}
 		}
 

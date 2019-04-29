@@ -9,13 +9,10 @@ jQuery(function ($) {
     e.preventDefault();
 
     $(this).prop('disabled', true);
-    var id = $(this).data('id');
-    var name = $(this).data('name');
-    var type = $(this).data('type');
     var field_data = {
-      name: name,
-      en_type: type,
-      id: id,
+      name: $(this).data('name'),
+      en_type: $(this).data('type'),
+      id: $(this).data('id'),
     };
     p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
   });
@@ -25,6 +22,9 @@ jQuery(function ($) {
    */
   $('#en_form_selected_fields_table > tbody').sortable({
     handle: '.dashicons-sort',
+    stop: function (event, ui) {
+      ui.item.trigger('sort-field', ui.item.index());
+    }
   });
 
 
@@ -37,7 +37,9 @@ jQuery(function ($) {
 
 });
 
-
+/**
+ * Define models, collections, views for p4 en forms.
+ */
 var p4_enform = (function ($) {
 
   var app = {
@@ -59,7 +61,8 @@ var p4_enform = (function ($) {
       en_type: 'N',
       hidden: false,
       required: false,
-      input_type: 'text',
+      input_type: '0',
+      input_name: '',
     }
   });
 
@@ -78,21 +81,40 @@ var p4_enform = (function ($) {
   app.Views.FieldsListView = Backbone.View.extend({
     el: '#en_form_selected_fields_table',
     template: _.template($('#tmpl-en-selected-fields').html()),
-
     events: {
       'click .remove-en-field': 'removeField',
+      'update-sort': 'updateSort',
     },
     views: {},
 
+    /**
+     * Initialize view.
+     */
     initialize: function () {
       this.listenTo(this.collection, 'add', this.renderOne);
     },
 
+    /**
+     * Render a single field.
+     *
+     * @param field Field model.
+     */
     renderOne: function (field) {
       var fieldView = new app.Views.FieldsListItemView({model: field});
       this.views[field.id] = fieldView;
       $('#en_form_selected_fields_table > tbody').append(fieldView.render());
+      $('.add-en-field').filter('*[data-id="' + field.id + '"]').prop('disabled', true);
       fieldView._delegateEvents();
+      fieldView.createFieldDialog();
+    },
+
+    /**
+     * Render view.
+     */
+    render: function () {
+      _.each(this.collection.models, function (project) {
+        this.renderOne(project);
+      }, this);
     },
 
     /**
@@ -108,6 +130,18 @@ var p4_enform = (function ($) {
       this.views[id].destroy();
       $tr.remove();
     },
+
+    /**
+     * Reorder collection models.
+     *
+     * @param event Event object
+     * @param model Field Model.
+     * @param position New index.
+     */
+    updateSort: function (event, model, position) {
+      this.collection.remove(model, {silent: true}); //
+      this.collection.add(model, {at: position, silent: true});
+    }
   });
 
   /**
@@ -123,8 +157,14 @@ var p4_enform = (function ($) {
       'change input[type="text"]': 'inputChanged',
       'change input[type="checkbox"]': 'checkboxChanged',
       'change select': 'selectChanged',
+      'sort-field': 'sortField'
     },
 
+    /**
+     * Handles input text value changes and stores them to the model.
+     *
+     * @param event Event object.
+     */
     inputChanged(event) {
       var $target = $(event.target);
       var value = $target.val();
@@ -132,6 +172,11 @@ var p4_enform = (function ($) {
       this.model.set(attr, value);
     },
 
+    /**
+     * Handles input checkbox value changes and stores them to the model.
+     *
+     * @param event Event object.
+     */
     checkboxChanged(event) {
       var $target = $(event.target);
       var value = $target.is(':checked');
@@ -146,9 +191,15 @@ var p4_enform = (function ($) {
       var value = $(event.target).val();
       var $tr = $(event.target).closest('tr');
       var id = $tr.data('en-id');
+      var attr = $(event.target).data('attribute');
+      this.model.set(attr, value);
 
       if ('text' === value) {
-        this.dialog_view = new app.Views.FieldDialog({row: id, target: event.target, model: this.model});
+        this.createFieldDialog();
+      } else if ('hidden' === value) {
+        this.$el.find('input[data-attribute="required"]').prop("checked", false).trigger('change').prop('disabled', true);
+        this.$el.find('input[data-attribute="label"]').val('').trigger('change').prop('disabled', true);
+        this.createFieldDialog();
       } else {
         if (null !== this.dialog_view) {
           this.dialog_view.destroy();
@@ -157,42 +208,97 @@ var p4_enform = (function ($) {
         $('body').find('.dialog-' + id).remove();
         $tr.find('.dashicons-edit').remove();
       }
+
+      if ('hidden' !== value) {
+        this.$el.find('input[data-attribute="required"]').prop('disabled', false);
+        this.$el.find('input[data-attribute="label"]').prop('disabled', false);
+      }
     },
 
+    /**
+     * Initialize view.
+     */
     initialize: function () {
       this.listenTo(this.model, 'change', this.render);
     },
 
+    /**
+     * Create field dialog view.
+     */
+    createFieldDialog: function () {
+      var input_type = this.model.get('input_type');
+      if ('hidden' === input_type) {
+        var tmpl = '#tmpl-en-hidden-field-dialog';
+      }
+      if ('text' === input_type) {
+        var tmpl = '#tmpl-en-text-field-dialog';
+      }
+
+      if (null !== this.dialog_view) {
+        this.dialog_view.destroy();
+        $('body').find('.dialog-' + this.model.id).remove();
+        this.$el.find('.dashicons-edit').remove();
+      }
+
+      if (('text' === input_type || 'hidden' === input_type)) {
+        this.dialog_view = new app.Views.FieldDialog({row: this.model.id, model: this.model, template: tmpl});
+      }
+    },
+
+    /**
+     * Delegate events after view is rendered.
+     */
     _delegateEvents: function () {
       this.$el = $('tr[data-en-id="' + this.model.id + '"]');
       this.delegateEvents();
     },
+
+    /**
+     * Render view.
+     */
     render: function () {
       var html = this.template(this.model.toJSON());
       return html;
     },
 
+    /**
+     * Destroy view.
+     */
     destroy: function () {
       if (null !== this.dialog_view) {
         this.dialog_view.destroy();
       }
       this.remove();
-    }
+    },
+
+    /**
+     * Trigger collection sorting.
+     *
+     * @param event Event object
+     * @param index New index for the field model.
+     */
+    sortField: function (event, index) {
+      this.$el.trigger('update-sort', [this.model, index]);
+    },
   });
 
   /**
    * A single field view.
    */
   app.Views.FieldDialog = Backbone.View.extend({
-    template: _.template($('#tmpl-en-field-dialog').html()),
     row: null,
     dialog: null,
     events: {
       'keyup input': 'inputChanged',
-      'change input': 'inputChanged',
+      'change input[type="text"]': 'inputChanged',
       'change input[type="checkbox"]': 'checkboxChanged',
     },
 
+    /**
+     * Handles input text value changes and stores them to the model.
+     *
+     * @param event Event object.
+     */
     inputChanged(event) {
       var $target = $(event.target);
       var value = $target.val();
@@ -200,6 +306,11 @@ var p4_enform = (function ($) {
       this.model.set(attr, value);
     },
 
+    /**
+     * Handles input checkbox value changes and stores them to the model
+     *
+     * @param event Event object.
+     */
     checkboxChanged(event) {
       var $target = $(event.target);
       var value = $target.is(':checked');
@@ -207,24 +318,33 @@ var p4_enform = (function ($) {
       this.model.set(attr, value);
     },
 
+    /**
+     * Initialize view instance.
+     *
+     * @param options Options object.
+     */
     initialize: function (options) {
+      this.template = _.template($(options.template).html());
       this.rowid = options.row;
-      this.row = options.target;
+      this.row = $('tr[data-en-id="' + this.rowid + '"]');
+      this.model = options.model;
       this.render();
     },
 
+    /**
+     * Render dialog view
+     */
     render: function () {
-      $(this.row).parent().next().prepend(this.template());
-      $(this.row).parent().next().prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
+      $(this.row).find('.actions').prepend(this.template(this.model.toJSON()));
+      $(this.row).find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
 
-      var id = $(this.row).closest('tr').data('en-id');
-      this.dialog = $(this.row).closest('tr').find('.dialog').dialog({
+      this.dialog = $(this.row).find('.dialog').dialog({
         autoOpen: false,
         height: 450,
         width: 350,
         modal: true,
         title: 'Edit: ' + this.model.get('name'),
-        dialogClass: 'dialog-' + id,
+        dialogClass: 'dialog-' + this.rowid,
         buttons: {
           'Close': function () {
             dialog.dialog('close');
@@ -233,20 +353,25 @@ var p4_enform = (function ($) {
       });
 
       this.el = '.dialog-' + this.rowid;
-      this.$el = $('.dialog-' + this.rowid).find('.ui-dialog-content');
+      this.$el = $(this.el).find('.ui-dialog-content');
       this.delegateEvents();
 
       var dialog = this.dialog;
-      $(this.row).closest('tr').find('.dashicons-edit').on('click', function (e) {
+      $(this.row).find('.dashicons-edit').on('click', function (e) {
         e.preventDefault();
         dialog.dialog('open');
       });
     },
 
+    /**
+     * Destroy dialog view.
+     * Set default values to model.
+     */
     destroy: function () {
       this.dialog.dialog('destroy');
       this.model.set('default_value', '');
       this.model.set('hidden', false);
+      this.model.set('input_name', '');
       this.remove();
     }
   });
@@ -255,25 +380,49 @@ var p4_enform = (function ($) {
 
 })(jQuery);
 
-
+// Handles initial page load of new/edit enform page.
+// Create fields collections and views and populate views if there are any saved fields.
 (function ($, app) {
 
   /**
-   * Initialize new enform page.
+   * Initialize new/edit enform page.
    */
   app.init_new_enform_page = function () {
 
-    // Instantiate fields collection.
+    // Create fields collection.
     app.fields = new app.Collections.EnformFields();
-    app.fields_view = new app.Views.FieldsListView({collection: app.fields});
 
+    // Instantiate fields collection.
+    var fields = $('#p4enform_fields').val();
+
+    // If fields are set populate the fields collection.
+    if ('' !== fields) {
+
+      fields = JSON.parse(fields);
+      var fields_arr = [];
+      _.each(fields, function (field) {
+        fields_arr.push(new app.Models.EnformField(field))
+      }, this);
+      app.fields.add(fields_arr);
+    }
+
+    app.fields_view = new app.Views.FieldsListView({collection: app.fields});
+    app.fields_view.render();
   };
 
   /**
-   * Initialize page.
+   * Initialize app when page is loaded.
    */
   $(document).ready(function () {
+
+    // Initialize app when document is loaded.
     app.init_new_enform_page();
+
+    // Initialize tooltips.
+    app.fields_view.$el.tooltip({
+      track: true,
+      show: { effect: "fadeIn", duration: 500 }
+    });
   });
 
 })(jQuery, p4_enform);
