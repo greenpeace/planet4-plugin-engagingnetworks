@@ -12,6 +12,7 @@ jQuery(function ($) {
     var field_data = {
       name: $(this).data('name'),
       en_type: $(this).data('type'),
+      property: $(this).data('property'),
       id: $(this).data('id'),
     };
     p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
@@ -35,6 +36,11 @@ jQuery(function ($) {
     $('#p4enform_fields').val(JSON.stringify(p4_enform.fields.toJSON()));
   });
 
+  /**
+   * Disable preview form fields.
+   */
+  $('#meta-box-form :input').prop("disabled", true);
+
 });
 
 /**
@@ -56,6 +62,7 @@ var p4_enform = (function ($) {
     defaults: {
       id: 0,
       name: null,
+      property: '',
       label: '',
       default_value: '',
       en_type: 'N',

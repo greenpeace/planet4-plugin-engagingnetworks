@@ -176,6 +176,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			$atts = shortcode_atts(
 				[
 					'id' => 'id',
+					'en_form_style' => 'full-width',
 				],
 				$atts
 			);
@@ -185,34 +186,12 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			if ( ! is_admin() || ( 'post.php' === $pagenow && $post_id && self::POST_TYPE === get_post_type( $post_id ) ) ) {
 
 				// TODO - Here we will need to customize how we store/retrieve the components name, type, label, etc.
-				$fields    = get_post_meta( $atts['id'], self::POST_TYPE . '-fields-name', true );
-				$questions = get_post_meta( $atts['id'], self::POST_TYPE . '-questions-name', true );
-				$optins    = get_post_meta( $atts['id'], self::POST_TYPE . '-optins-name', true );
+				$fields = get_post_meta( $atts['id'], self::FIELDS_META, true );
 
 				$data = [
-					'fields'    => $fields,
-					'questions' => $questions,
-					'optins'    => $optins,
+					'form_fields'   => $fields,
+					'en_form_style' => $atts['en_form_style'],
 				];
-
-				$supporter_fields_map = [
-					'title'       => 'Title',
-					'first'       => 'First name',
-					'last'        => 'Last name',
-					'address1'    => 'Address 1',
-					'address2'    => 'Address 2',
-					'city'        => 'City',
-					'country'     => 'Country',
-					'post'        => 'Postcode',
-					'email'       => 'Email',
-					'region'      => 'County',
-					'phoneNumber' => 'Phone Number',
-					'birth'       => 'birthday'
-				];
-
-				$dummyData = unserialize('a:5:{s:20:"supporter_fields_map";a:12:{s:5:"title";s:5:"Title";s:5:"first";s:10:"First name";s:4:"last";s:9:"Last name";s:8:"address1";s:9:"Address 1";s:8:"address2";s:9:"Address 2";s:4:"city";s:4:"City";s:7:"country";s:7:"Country";s:4:"post";s:8:"Postcode";s:5:"email";s:5:"Email";s:6:"region";s:6:"County";s:11:"phoneNumber";s:12:"Phone Number";s:5:"birth";s:8:"birthday";}s:6:"fields";a:26:{s:10:"en_page_id";s:4:"9655";s:13:"en_form_style";s:10:"side-style";s:10:"background";s:3:"499";s:5:"title";s:58:"Save the heart of the amazon campaign title on three lines";s:11:"description";s:975:"Quisque commodo placerat lorem nec porttitor. Duis sed libero consequat, tristique sapien vitae, volutpat orci. Maecenas pellentesque dapibus ex et venenatis. Vestibulum sollicitudin pellentesque neque sit amet condimentum. Quisque hendrerit, mauris nec lobortis pharetra, ex enim faucibus nunc, vel suscipit urna ligula posuere quam. Cras dolor orci, porta eu hendrerit non, accumsan sed lacus. Donec efficitur convallis luctus. Aenean interdum velit at est consectetur vehicula. Aenean pellentesque lectus sed elit convallis, a porttitor purus dignissim. Sed placerat purus vel nisl rhoncus, ut malesuada nunc consequat. Aenean sit amet ligula sit amet neque luctus accumsan. Quisque porta lacus quis massa commodo, non rutrum augue mollis. Curabitur efficitur ante a facilisis malesuada. Aliquam neque mi, fermentum pretium placerat non, porttitor accumsan urna. Donec vel eros sit amet purus scelerisque porta. Curabitur cursus malesuada eros, eu feugiat nisl finibus id.";s:11:"button_text";s:17:"Hey you! Sign up!";s:14:"thankyou_title";s:10:"Thank you.";s:17:"thankyou_subtitle";s:22:"No, really, thank you.";s:12:"field__28115";a:6:{s:2:"id";i:28115;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:5:"title";s:5:"label";s:5:"Title";s:4:"type";s:4:"text";}s:12:"field__28116";a:6:{s:2:"id";i:28116;s:9:"mandatory";s:4:"true";s:5:"value";s:4:"true";s:4:"name";s:9:"firstName";s:5:"label";s:10:"First name";s:4:"type";s:4:"text";}s:12:"field__28117";a:6:{s:2:"id";i:28117;s:9:"mandatory";s:4:"true";s:5:"value";s:4:"true";s:4:"name";s:8:"lastName";s:5:"label";s:9:"Last name";s:4:"type";s:4:"text";}s:12:"field__28118";a:6:{s:2:"id";i:28118;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:8:"address1";s:5:"label";s:9:"Address 1";s:4:"type";s:4:"text";}s:12:"field__53481";a:6:{s:2:"id";i:53481;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:8:"address2";s:5:"label";s:9:"Address 2";s:4:"type";s:4:"text";}s:12:"field__28119";a:6:{s:2:"id";i:28119;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:4:"city";s:5:"label";s:4:"City";s:4:"type";s:4:"text";}s:12:"field__28122";a:6:{s:2:"id";i:28122;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:7:"country";s:5:"label";s:7:"Country";s:4:"type";s:7:"country";}s:12:"field__28120";a:6:{s:2:"id";i:28120;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:8:"postcode";s:5:"label";s:8:"Postcode";s:4:"type";s:4:"text";}s:12:"field__42648";a:6:{s:2:"id";i:42648;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:6:"region";s:5:"label";s:6:"County";s:4:"type";s:4:"text";}s:12:"field__53483";a:6:{s:2:"id";i:53483;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:11:"phoneNumber";s:5:"label";s:12:"Phone Number";s:4:"type";s:4:"text";}s:12:"field__53455";a:6:{s:2:"id";i:53455;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:20:"creditCardHolderName";s:5:"label";s:23:"Credit Card Holder Name";s:4:"type";s:4:"text";}s:12:"field__53463";a:6:{s:2:"id";i:53463;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:8:"password";s:5:"label";s:8:"Password";s:4:"type";s:4:"text";}s:12:"field__63628";a:6:{s:2:"id";i:63628;s:9:"mandatory";s:5:"false";s:5:"value";s:4:"true";s:4:"name";s:17:"p2pFundraiserType";s:5:"label";s:13:"ChallengeDate";s:4:"type";s:4:"text";}s:12:"field__28121";a:6:{s:2:"id";i:28121;s:9:"mandatory";s:4:"true";s:5:"value";s:4:"true";s:4:"name";s:12:"emailAddress";s:5:"label";s:5:"Email";s:4:"type";s:5:"email";}s:14:"background_src";a:4:{i:0;s:74:"https://www.planet4.test/wp-content/uploads/2019/04/c3af3e99-gp0stt4tw.jpg";i:1;i:1200;i:2;i:800;i:3;b:0;}s:17:"background_srcset";s:438:"https://www.planet4.test/wp-content/uploads/2019/04/c3af3e99-gp0stt4tw.jpg 1200w, https://www.planet4.test/wp-content/uploads/2019/04/c3af3e99-gp0stt4tw-300x200.jpg 300w, https://www.planet4.test/wp-content/uploads/2019/04/c3af3e99-gp0stt4tw-768x512.jpg 768w, https://www.planet4.test/wp-content/uploads/2019/04/c3af3e99-gp0stt4tw-1024x683.jpg 1024w, https://www.planet4.test/wp-content/uploads/2019/04/c3af3e99-gp0stt4tw-510x340.jpg 510w";s:16:"background_sizes";b:0;s:13:"default_image";s:95:"https://www.planet4.test/wp-content/themes/planet4-master-theme/images/happy-point-block-bg.jpg";}s:12:"redirect_url";s:0:"";s:12:"nonce_action";s:13:"enform_submit";s:15:"second_page_msg";s:19:"Thanks for signing!";}');
-				$data['dummyData'] = $dummyData;
-				$data['supporter_fields_map'] = $supporter_fields_map;
 
 				$this->view->enform_post( $data );
 			}

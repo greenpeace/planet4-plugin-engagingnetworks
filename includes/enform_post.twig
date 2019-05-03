@@ -1,61 +1,106 @@
 {% block enform_post %}
 
-	{% for key,data in dummyData.fields %}
-		{% set errorMessage = __( 'This field is required', 'planet4-engagingnetworks' ) %}
-
-		{% if dummyData.supporter %}
-			{% if data.name in supporter_fields_map %}
-				{% set value = dummyData.supporter[ supporter_fields_map[ data.name ] ] %}
-			{% else %}
-				{% set value = '' %}
+	{# Render enform's hidden fields #}
+	{% for key, field in form_fields %}
+		<div>
+			{% if 'hidden' == field.input_type %}
+				<input type="hidden" name="{{ field.input_name }}" value="{{ field.default_value }}"/>
 			{% endif %}
-		{% else %}
-			{% set value = '' %}
-		{% endif %}
+		</div>
+	{% endfor %}
 
-		{% if data.type == 'email' %}
-			{% set errorMessage = __( 'Please enter a valid e-mail address.', 'planet4-engagingnetworks' ) %}
-		{% elseif data.type == 'country' %}
-			{% set errorMessage = __( 'Please select a country.', 'planet4-engagingnetworks' ) %}
-		{% endif %}
+	<div class="formblock-flex donations-formsection-info">
 
-		{% if 'en_page_id' != key and 'en_form_style' != key and '' != data.value %}
-			<div class="en__field en__field--{{ 'country' == data.type ? 'select' : 'text' }} en__field--{{ data.id }} en__field--{{ data.name }}">
-				<div class="en__field__element en__field__element--text form-group" style="display: block;">
-					{% if fields.en_form_style == 'side-style' or true %}
-						<label class="en__field__top__label">
-							{{ data.label }}
-						</label>
-					{% endif %}
-					{% if 'text' == data.type or 'email' == data.type %}
-						<input id="en__field_supporter_{{ data.name }}"
-							name="supporter.{{ data.name }}"
-							type="{{ 'phoneNumber' == data.name ? 'tel' : data.type }}"
-							class="en__field__input en__field__input--text form-control"
-							value="{{ value }}"
-							data-errormessage="{{ errorMessage }}"
-							{% if false and fields.en_form_style != 'side-style' %}
-								placeholder="{{ data.label }}{{ 'Birth' in data.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == data.mandatory ? '*' : '' }}"
+		{# Iterate over form fields and render each field #}
+		{% for key,field in form_fields %}
+			{% set errorMessage = __( 'This field is required', 'planet4-engagingnetworks' ) %}
+
+			{# Construct input field name based on en type #}
+			{% if field.en_type == 'GEN' or field.en_type == 'OPT' %}
+				{% set en_input_name = 'supporter.questions.'~field.id %}
+			{% elseif field.en_type == 'Field' %}
+				{% set en_input_name = 'supporter.'~field.property %}
+			{% endif %}
+
+			{# Construct error message #}
+			{% if field.input_type == 'email' %}
+				{% set errorMessage = __( 'Please enter a valid e-mail address.', 'planet4-engagingnetworks' ) %}
+			{% elseif field.input_type == 'country' %}
+				{% set errorMessage = __( 'Please select a country.', 'planet4-engagingnetworks' ) %}
+			{% endif %}
+
+			{% if 'hidden' != field.input_type %}
+				{% if ('text' == field.input_type or 'email' == field.input_type ) %}
+					<div
+						class="en__field en__field--{{ 'country' == field.input_type ? 'select' : 'text' }} en__field--{{ field.id }} en__field--{{ field.property }}">
+						<div
+							class="en__field__element en__field__element--text form-group" {{ field.en_type == 'GEN' ? "style=\"display: flex; flex-direction: row;\"" : 'style="display:block;"' }}>
+
+							{% if en_form_style == 'side-style' %}
+								<label class="en__field__top__label">
+									{{ field.label }}
+								</label>
+							{% elseif 'GEN' == field.en_type %}
+								<label for="en__field_supporter_questions_{{ field.id }}"
+									   class="en__field__label en__field__label--item form-check-label">
+									{{ field.label }}{{ 'true' == field.required ? '*' : '' }}
+								</label>
 							{% endif %}
-							{{ 'true' == data.mandatory or 'email' == data.type ? 'required' : '' }}
-							size="40" />
-					{% elseif 'country' == data.type %}
-							{% include 'country_select.twig' with { errorMessage: errorMessage } %}
-					{% endif %}
-				</div>
-			</div>
-		{% endif %}
-	{% endfor %}
+							<input
+								id="en__field_supporter_{{ field.property }}"
+								name="{{ en_input_name }}"
+								type="{{ 'phoneNumber' == field.name ? 'tel' : field.input_type }}"
+								class="en__field__input en__field__input--text form-control"
+								value="{{ value }}"
+								data-errormessage="{{ errorMessage }}"
+								{% if en_form_style != 'side-style' %}
+									placeholder="{{ field.label }}{{ 'Birth' in field.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == field.required ? '*' : '' }}"
+								{% endif %}
+								{{ 'true' == field.required or 'email' == field.input_type ? 'required' : '' }}
+								size="40"/>
+						</div>
+					</div>
+				{% elseif 'checkbox' == field.input_type %}
+					<div class="en__field en__field--check en__field--{{ field.id }}">
+						<div class="en__field__element en__field__element--check form-group form-check-label-block custom-control">
+							<input
+								id="en__field_supporter_{{ field.name }}"
+								name="{{ en_input_name }}"
+								type="checkbox"
+								class="en__field__input en__field__input--checkbox"
+								value="{{ value }}"
+								data-errormessage="{{ errorMessage }}"
+								{% if en_form_style != 'side-style' %}
+									placeholder="{{ field.label }}{{ 'Birth' in field.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == field.required ? '*' : '' }}"
+								{% endif %}
+								{{ 'true' == field.required ? 'required' : '' }}
+							/>
 
-	{% for key,value in fields %}
-		{{ value }}<br />
-	{% endfor %}
-	<br />
-	{% for key,value in questions %}
-		{{ value }}<br />
-	{% endfor %}
-	<br />
-	{% for key,value in optins %}
-		{{ value }}<br />
-	{% endfor %}
+							{% if en_form_style != 'side-style' %}
+								<label for="en__field_supporter_questions_{{ data.id }}" class="custom-control-description form-check-label">
+									{{ field.label }}{{ 'true' == field.required ? '*' : '' }}
+								</label>
+							{% endif %}
+							{% if en_form_style == 'side-style' %}
+								<label class="en__field__top__label">
+									{{ field.label }}
+								</label>
+							{% endif %}
+						</div>
+					</div>
+				{% elseif 'country' == field.input_type %}
+					<div class="en__field en__field--select en__field--{{ field.id }}">
+						<div class="en__field__element en__field__element--select form-group">
+							{% include 'country_select.twig' with { errorMessage: errorMessage } %}
+							{% if en_form_style == 'side-style' %}
+								<label class="en__field__top__label">
+									{{ field.label }}
+								</label>
+							{% endif %}
+						</div>
+					</div>
+				{% endif %}
+			{% endif %}
+		{% endfor %}
+	</div>
 {% endblock %}

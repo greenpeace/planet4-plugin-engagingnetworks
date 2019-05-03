@@ -61,7 +61,7 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 			$response          = $ens_api->get_supporter_fields();
 
 			if ( isset( $response['body'] ) && ! empty( $response['body'] ) ) {
-				$response_data = json_decode( $response['body'], true );
+				$response_data = $this->filter_fields( json_decode( $response['body'], true ) );
 			} else {
 				$this->error = implode(
 					[
@@ -127,9 +127,10 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 	 */
 	public function column_actions( $item ) {
 		$data_attributes = [
-			'id'   => $item['id'],
-			'name' => $item['name'],
-			'type' => __( 'Field', 'planet4-engagingnetworks' ),
+			'id'       => $item['id'],
+			'name'     => $item['name'],
+			'property' => $item['property'],
+			'type'     => __( 'Field', 'planet4-engagingnetworks' ),
 		];
 
 		$attributes_string = '';
@@ -149,8 +150,30 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 	 * @see \WP_List_Table::display_tablenav
 	 */
 	protected function display_tablenav( $which ) {
+		esc_html_e( 'Only tagged fields are listed here', 'planet4-engagingnetworks' );
+		echo '<br/><br/>';
+
 		if ( ! empty( $this->error ) && 'top' === $which ) {
 			echo '<div><p>' . esc_html( $this->error ) . '</p></div>';
 		}
+	}
+
+	/**
+	 * Filter en fields. Use only tagged fields.
+	 *
+	 * @param array $fields Fields array.
+	 *
+	 * @return array Filtered fields.
+	 */
+	private function filter_fields( $fields ) {
+
+		$filtered_fields = [];
+		foreach ( $fields as $field ) {
+			if ( isset( $field['tag'] ) && 'Not Tagged' !== $field['tag'] ) {
+				$filtered_fields[] = $field;
+			}
+		}
+
+		return $filtered_fields;
 	}
 }

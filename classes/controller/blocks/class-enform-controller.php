@@ -50,8 +50,6 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 			add_action( 'admin_print_footer_scripts-post.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_print_footer_scripts-post-new.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
-			add_action( 'wp_ajax_get_en_session_token', [ $this, 'get_session_token' ] );
-			add_action( 'wp_ajax_nopriv_get_en_session_token', [ $this, 'get_session_token' ] );
 		}
 
 		/**

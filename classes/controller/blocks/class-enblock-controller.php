@@ -316,7 +316,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					'fields'       => $fields,
 					'redirect_url' => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
 					'nonce_action' => 'enblock_submit',
-					'form'         => '[' . Enform_Post_Controller::POST_TYPE . ' id="' . $fields['en_form_id'] . '" /]',
+					'form'         => '[' . Enform_Post_Controller::POST_TYPE . ' id="' . $fields['en_form_id'] . '" en_form_style="' . $fields['en_form_style'] . '" /]',
 				]
 			);
 
