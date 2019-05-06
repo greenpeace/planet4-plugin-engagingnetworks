@@ -1,5 +1,5 @@
 {% block enblock %}
-	<div class="enform-wrap enform-{{ fields.en_form_style }} {% if fields.en_form_style == 'full-width-bg' %}block-wide{% endif %}">
+	<div class="enform-wrap enform-{{ fields.en_form_style }} {% if fields.en_form_style == 'full-width-bg' or fields.en_form_style == 'side-style' %}block-wide{% endif %}">
 		{% if fields.en_form_style == 'full-width-bg' %}
 			<picture>
 				<img src="{{ fields.background_src.0|default(fields.default_image) }}"
@@ -11,12 +11,9 @@
 			</picture>
 		{% endif %}
 
-		{# Only wrap in a container if it's not a floating form #}
-		{% if fields.en_form_style != 'side-style' %}
 		<div class="container">
 			<div class="row">
 				<div class="col-md-12">
-		{% endif %}
 
 					<div class="enform" id="enform" data-redirect-url="{{ redirect_url|default('') }}">
 						<div class="title-and-description">
@@ -47,13 +44,9 @@
 							</form>
 						</div>
 					</div>
-
-
-		{% if fields.en_form_style != 'side-style' %}
 				</div>
 			</div>
 		</div>
-		{% endif %}
 
 	</div>
 {% endblock %}

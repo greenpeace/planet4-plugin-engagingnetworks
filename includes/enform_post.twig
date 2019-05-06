@@ -62,28 +62,32 @@
 					</div>
 				{% elseif 'checkbox' == field.input_type %}
 					<div class="en__field en__field--check en__field--{{ field.id }}">
-						<div class="en__field__element en__field__element--check form-group form-check-label-block custom-control">
-							<input
-								id="en__field_supporter_{{ field.name }}"
-								name="{{ en_input_name }}"
-								type="checkbox"
-								class="en__field__input en__field__input--checkbox"
-								value="{{ value }}"
-								data-errormessage="{{ errorMessage }}"
-								{% if en_form_style != 'side-style' %}
-									placeholder="{{ field.label }}{{ 'Birth' in field.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == field.required ? '*' : '' }}"
-								{% endif %}
-								{{ 'true' == field.required ? 'required' : '' }}
-							/>
-
-							{% if en_form_style != 'side-style' %}
-								<label for="en__field_supporter_questions_{{ data.id }}" class="custom-control-description form-check-label">
-									{{ field.label }}{{ 'true' == field.required ? '*' : '' }}
-								</label>
-							{% endif %}
+						<div class="en__field__element en__field__element--check form-group form-check-label-block custom-control p4-custom-control-input">
 							{% if en_form_style == 'side-style' %}
-								<label class="en__field__top__label">
-									{{ field.label }}
+								<label class="custom-checkbox">
+							{% endif %}
+
+								<input
+									id="en__field_supporter_{{ field.name }}"
+									name="{{ en_input_name }}"
+									type="checkbox"
+									class="en__field__input en__field__input--checkbox"
+									value="{{ value }}"
+									data-errormessage="{{ errorMessage }}"
+									{{ 'true' == field.required ? 'required' : '' }}
+								/>
+
+								{% if en_form_style != 'side-style' %}
+									<label for="en__field_supporter_questions_{{ data.id }}" class="custom-control-description form-check-label">
+										{{ field.label }}{{ 'true' == field.required ? '*' : '' }}
+									</label>
+								{% else %}
+									<span class="custom-control-description">
+										{{ field.label }}{{ 'true' == field.required ? '*' : '' }}
+									</span>
+								{% endif %}
+
+							{% if en_form_style == 'side-style' %}
 								</label>
 							{% endif %}
 						</div>
