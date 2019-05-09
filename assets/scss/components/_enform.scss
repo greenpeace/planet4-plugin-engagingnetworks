@@ -131,9 +131,9 @@
   }
 
   h2 {
-    font-size: 1.625rem;
-    line-height: 32px;
-    margin-bottom: 24px;
+    .enform-full-width & {
+      color: white;
+    }
 
     &.thankyou {
       margin-bottom: 0;
@@ -150,22 +150,6 @@
 
     @include x-large-and-up {
       font-size: 2.25rem;
-    }
-  }
-
-  p {
-    font-family: $roboto;
-    line-height: 18px;
-    text-align: left;
-    margin-bottom: 24px;
-    font-size: 1rem;
-
-    @include medium-and-up {
-      text-align: center;
-    }
-
-    @include large-and-up {
-      text-align: left;
     }
   }
 
