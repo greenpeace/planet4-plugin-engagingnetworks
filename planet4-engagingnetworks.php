@@ -91,7 +91,7 @@ if ( ! defined( 'P4_REST_SLUG' ) ) {
 	define( 'P4_REST_SLUG', 'planet4-engaging-networks' );
 }
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/classes/class-loader.php';
 require_once ABSPATH . 'wp-admin/includes/plugin.php';
 
 /**
