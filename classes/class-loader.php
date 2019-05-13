@@ -17,26 +17,29 @@ if ( ! class_exists( 'Loader' ) ) {
 	final class Loader {
 
 		/**
-		 * Loader
+		 * A static instance of Loader.
 		 *
 		 * @var Loader $instance
 		 */
 		private static $instance;
-
 		/**
-		 * Services
+		 * Indexed array of all the classes/services that are needed.
 		 *
 		 * @var array $services
 		 */
 		private $services;
-
+		/**
+		 * An instance of the View class.
+		 *
+		 * @var Views\View $view
+		 */
+		private $view;
 		/**
 		 * Required PHP version
 		 *
 		 * @var string $required_php
 		 */
 		private $required_php = P4EN_REQUIRED_PHP;
-
 		/**
 		 * Required Plugins
 		 *
@@ -53,7 +56,7 @@ if ( ! class_exists( 'Loader' ) ) {
 		 *
 		 * @return Loader
 		 */
-		public static function get_instance( $services = array(), $view_class ) : Loader {
+		public static function get_instance( $services, $view_class ) : Loader {
 			if ( ! isset( self::$instance ) ) {
 				self::$instance = new self( $services, $view_class );
 			}
@@ -69,17 +72,58 @@ if ( ! class_exists( 'Loader' ) ) {
 		 * @param array  $services The Controller services to inject.
 		 * @param string $view_class The View class name.
 		 */
-		private function __construct( $services = array(), $view_class ) {
+		private function __construct( $services, $view_class ) {
+			$this->load_files();
+			$this->load_services( $services, $view_class );
+			$this->check_requirements();
+			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_public_assets' ] );
+		}
+
+		/**
+		 * Load required files. The plugins namespaces should:
+		 * a. include P4BKS string
+		 * b. follow the names of the sub-directories of the current __DIR__ (classes/)
+		 *    - if not, then proper replacements should be added like below
+		 */
+		private function load_files() {
+			try {
+				spl_autoload_register(
+					function ( $class_name ) {
+						if ( false !== strpos( $class_name, 'P4EN' ) ) {
+							$class_name_parts = explode( '\\', $class_name );
+							$real_class_name  = array_pop( $class_name_parts );
+							$file_name        = 'class-' . str_ireplace( '_', '-', strtolower( $real_class_name ) );
+
+							$namespace = implode( '\\', $class_name_parts );
+							$path      = str_ireplace(
+								[ 'P4EN', 'Controllers', 'Views', 'Models', '_', '\\' ],
+								[ '', 'controller', 'view', 'model', '-', '/' ],
+								strtolower( $namespace )
+							);
+							require_once __DIR__ . '/' . $path . '/' . $file_name . '.php';
+						}
+					}
+				);
+			} catch ( \Exception $e ) {
+				echo esc_html( $e->getMessage() );
+			}
+		}
+
+		/**
+		 * Loads all shortcake blocks registered from within this plugin.
+		 *
+		 * @param array  $services The Controller services to inject.
+		 * @param string $view_class The View class name.
+		 */
+		public function load_services( $services, $view_class ) {
 			$this->services = $services;
-			$view           = new $view_class();
+			$this->view     = new $view_class();
 
 			if ( $this->services ) {
 				foreach ( $this->services as $service ) {
-					( new $service( $view ) )->load();
+					( new $service( $this->view ) )->load();
 				}
 			}
-			$this->check_requirements();
-			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_public_assets' ] );
 		}
 
 		/**
