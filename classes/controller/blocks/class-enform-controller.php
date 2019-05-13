@@ -137,6 +137,14 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				}
 			}
 
+			$goal_options = [
+				0                 => __( '- Select Goal -', 'planet4-engagingnetworks' ),
+				'Petition Signup' => 'Petition Signup',
+				'Action Alert'    => 'Action Alert',
+				'Contact Form'    => 'Contact Form',
+				'Other'           => 'Other',
+			];
+
 			$fields = [
 				[
 					'label'       => __( 'Engaging Network Live Pages', 'planet4-engagingnetworks' ),
@@ -147,6 +155,16 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 						'required' => '',
 					],
 					'options'     => $options,
+				],
+				[
+					'label'       => __( 'Goal', 'planet4-engagingnetworks' ),
+					'attr'        => 'goal',
+					'type'        => 'select',
+					'meta'        => [
+						'required' => '',
+					],
+					'options'     => $goal_options,
+					'description' => __( 'When form data submitted to EN, The value added in "Goal" field is used in the GTM dataLayer push event.', 'planet4-engagingnetworks' ),
 				],
 				[
 					'attr'    => 'en_form_style',

@@ -21,11 +21,11 @@ div.shortcode-ui-edit-shortcake_enform > div {
   flex: 0 20%;
 }
 
-div.shortcode-ui-edit-shortcake_enform > div:nth-child(-n+9) {
+div.shortcode-ui-edit-shortcake_enform > div:nth-child(-n+10) {
     flex: 0 100%;
 }
 
-div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+9):nth-child(odd) {
+div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+10):nth-child(odd) {
     margin-right: 40%;
 }
 

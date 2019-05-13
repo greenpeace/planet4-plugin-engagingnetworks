@@ -161,9 +161,15 @@ $(document).ready(function () {
 
           // DataLayer push event on EN form submission.
           if ( typeof google_tag_value !== 'undefined' && google_tag_value ) {
-            dataLayer.push({
+            var dataLayerPayload = {
               'event' : 'petitionSignup'
-            });
+            };
+
+            if ( $('#enform_goal').val() ) {
+              dataLayerPayload.gGoal = $('#enform_goal').val();
+            }
+
+            dataLayer.push(dataLayerPayload);
           }
         } else {
           hideENSpinner();
