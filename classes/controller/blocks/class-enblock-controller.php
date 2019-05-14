@@ -49,8 +49,6 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 			add_action( 'admin_print_footer_scripts-post.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_print_footer_scripts-post-new.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
-			add_action( 'wp_ajax_get_en_session_token', [ $this, 'get_session_token' ] );
-			add_action( 'wp_ajax_nopriv_get_en_session_token', [ $this, 'get_session_token' ] );
 		}
 
 		/**
@@ -315,37 +313,12 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				[
 					'fields'       => $fields,
 					'redirect_url' => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
-					'nonce_action' => 'enblock_submit',
+					'nonce_action' => 'enform_submit',
 					'form'         => '[' . Enform_Post_Controller::POST_TYPE . ' id="' . $fields['en_form_id'] . '" en_form_style="' . $fields['en_form_style'] . '" /]',
 				]
 			);
 
 			return $data;
-		}
-
-		/**
-		 * Get en session token for frontend api calls.
-		 */
-		public function get_session_token() {
-			// If this is an ajax call.
-			if ( wp_doing_ajax() ) {
-
-				$nonce    = $_POST['_wpnonce'];   // CSRF protection.
-				$response = [];
-
-				if ( ! wp_verify_nonce( $nonce, 'enblock_submit' ) ) {
-					$response['message'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
-					$response['token']   = '';
-				} else {
-
-					$main_settings     = get_option( 'p4en_main_settings' );
-					$ens_private_token = $main_settings['p4en_frontend_private_api'];
-					$this->ens_api     = new Ensapi( $ens_private_token, false );
-					$token             = $this->ens_api->get_public_session_token();
-					$response['token'] = $token;
-				}
-				wp_send_json( $response );
-			}
 		}
 
 		/**
