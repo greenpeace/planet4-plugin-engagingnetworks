@@ -26,7 +26,57 @@
   }
 }
 
+.form-caption {
+  float: none;
+  width: 100%;
+  padding-top: 53px;
+  padding-bottom: 53px;
+  padding-left: $n15;
+  padding-right: $n15;
+
+  @include medium-and-up {
+    padding-top: 106px;
+    padding-bottom: 106px;
+  }
+
+  @include large-and-up {
+    float: left;
+    padding-top: 96px;
+    width: 50%;
+    padding-left: 0;
+    padding-right: 0;
+
+    html[dir="rtl"] & {
+      float: right;
+    }
+
+    .form-caption-background {
+      display: none;
+    }
+  }
+
+  h1 {
+    color: white;
+    font-family: $roboto;
+    font-size: 2.5rem;
+    line-height: 3rem;
+    margin-bottom: 32px;
+
+    @include large-and-up {
+      margin-bottom: 36px;
+    }
+  }
+
+  p {
+    color: white;
+    font-family: $roboto;
+    font-size: 1rem;
+    line-height: 1.37rem;
+  }
+}
+
 .enform {
+  margin-top: 36px;
   font-family: $roboto;
   height: inherit;
   padding: $n20;
@@ -156,17 +206,8 @@
   p {
     font-family: $roboto;
     line-height: 18px;
-    text-align: left;
     margin-bottom: 24px;
     font-size: 1rem;
-
-    @include medium-and-up {
-      text-align: center;
-    }
-
-    @include large-and-up {
-      text-align: left;
-    }
   }
 
   .thankyou-subtitle {
@@ -182,47 +223,80 @@
 }
 
 .enform-side-style {
+  @include background-before-opacity(rgb(30, 30, 30), 1);
   width: 100vw;
   min-height: 444px;
   overflow: hidden;
   display: flex;
   align-items: center;
-  background: white;
-  padding-top: 28px;
-  border-top: 1px solid #1a1a1a;
 
-  @include large-and-up {
-    float: right;
+  picture {
+    align-self: start;
 
-    html[dir="rtl"] & {
-      float: left;
+    @include large-and-up {
+      display: block;
     }
 
-    width: 40%;
-    max-width: 444px;
-    box-sizing: content-box;
-    border: 1px solid #1a1a1a;
-    padding: 28px 30px 24px 30px;
-    margin-bottom: 20px;
+    img {
+      position: absolute;
+      height: auto;
+      width: 100%;
+      object-fit: cover;
+      object-position: center center;
+      opacity: .65;
+
+      @supports (object-fit: cover) {
+        & {
+          height: 100%;
+        }
+      }
+    }
   }
 
   .enform {
-    width: 100%;
-    padding-left: $n15;
-    padding-right: $n15;
-    background: none;
+    overflow: hidden;
+    align-items: center;
+    min-height: 444px;
+    background: white;
+    padding-top: 28px;
+    float: none;
+    width: 100vw;
+    margin-top: 0;
+    margin-bottom: 0;
+
+    @include large-and-up {
+      margin-top: 96px;
+      float: right;
+
+      html[dir="rtl"] & {
+        float: left;
+      }
+
+      width: 40%;
+      max-width: 444px;
+      box-sizing: content-box;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
+      padding: 28px 30px 24px 30px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .title-and-description {
+    color: #1a1a1a;
+    padding: $n15;
 
     @include large-and-up {
       padding: 0;
     }
   }
 
-  .title-and-description {
-    color: #1a1a1a;
-  }
-
   .form-container {
     background: $white;
+    padding: $n15;
+
+    @include large-and-up {
+      padding: 0;
+    }
 
     .formblock-flex .en__field {
       width: 100%;
@@ -230,6 +304,15 @@
 
     .en__field__element {
       position: relative;
+
+      &.en__field__element--select {
+        border: 1px solid #1a1a1a;
+        border-radius: 0;
+
+        select {
+          margin-bottom: 0;
+        }
+      }
 
       input[type=text],
       select,
@@ -263,5 +346,10 @@
     padding: 0 8px;
     font-weight: 600;
     font-size: .75rem;
+
+    html[dir="rtl"] & {
+      left: auto;
+      right: $n10;
+    }
   }
 }

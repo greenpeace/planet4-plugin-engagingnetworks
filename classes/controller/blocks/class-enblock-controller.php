@@ -207,7 +207,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					'frameTitle'  => __( 'Select Background Image', 'planet4-engagingnetworks' ),
 				],
 				[
-					'label' => __( 'Title', 'planet4-engagingnetworks' ),
+					'label' => __( 'Form Title', 'planet4-engagingnetworks' ),
 					'attr'  => 'title',
 					'type'  => 'text',
 					'meta'  => [
@@ -215,11 +215,27 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					],
 				],
 				[
-					'label' => __( 'Description', 'planet4-engagingnetworks' ),
+					'label' => __( 'Form Description', 'planet4-engagingnetworks' ),
 					'attr'  => 'description',
 					'type'  => 'textarea',
 					'meta'  => [
 						'placeholder' => __( 'Enter description', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
+					'label' => __( 'Content Title', 'planet4-engagingnetworks' ),
+					'attr'  => 'content_title',
+					'type'  => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter content title', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
+					'label' => __( 'Content Description', 'planet4-engagingnetworks' ),
+					'attr'  => 'content_description',
+					'type'  => 'textarea',
+					'meta'  => [
+						'placeholder' => __( 'Enter content description', 'planet4-engagingnetworks' ),
 					],
 				],
 				[

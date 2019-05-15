@@ -7,46 +7,39 @@ $(document).ready(function() {
     $container = $('div.page-template').eq(0);
   }
 
-  var $enform = $('.enform-wrap.enform-side-style');
+  var $sideStyleForm = $('.enform-wrap.enform-side-style');
+  var $enform = $sideStyleForm.find('.enform');
 
   function setContainerWidth() {
     var isLarge = $(window).width() >= 992;
+    var vw = $(window).width();
 
-    if (isLarge) {
-      $container.find('h1').css('width', '50%');
-      $container.find('h3').css('width', '50%');
-
-      $enform.css('box-sizing', 'border-box')
-        .css('position', 'absolute')
-        .css('z-index', '4')
-        .css('top', '80px');
+    if (!isLarge) {
+      var margin = ((vw - $container.innerWidth()) / 2);
 
       if ($('html').attr('dir') === 'rtl') {
-        var rightOffset = $container.offset().left - $container.width();
-        $enform.css('left', rightOffset + 'px');
-        $enform.css('right', '');
+        $enform.css('margin-left', 'auto');
+        $enform.css('margin-right', - margin + 'px');
+        $enform.css('padding-right', margin + 'px');
+        $enform.css('padding-left', margin + 'px');
       } else {
-        var leftOffset = $container.offset().left;
-        $enform.css('right', leftOffset + 'px');
-        $enform.css('left', '');
+        $enform.css('margin-left', - margin + 'px');
+        $enform.css('padding-left', margin + 'px');
+        $enform.css('padding-right', margin + 'px');
       }
 
-      $container.css('min-height', $enform.height() + 'px');
+      var captionHeight = $sideStyleForm.find('.form-caption').outerHeight();
+      $sideStyleForm.find('picture img').css('height', captionHeight + 'px');
     } else {
-      $container.find('h1').css('width', '');
-      $container.find('h3').css('width', '');
-      $container.find('.row').css('width', '');
-      $container.css('min-height', '');
-      $enform.css('box-sizing', 'border-box')
-        .css('position', '')
-        .css('top', '')
-        .css('right', '')
-        .css('left', '')
-        .css('height', '');
+      $enform.css('margin-left', '');
+      $enform.css('margin-right', '');
+      $enform.css('padding-left', '');
+      $enform.css('padding-right', '');
+      $sideStyleForm.find('picture img').css('height', '100%');
     }
   }
 
-  if ($enform) {
+  if ($sideStyleForm) {
     setContainerWidth();
     $(window).on('resize', setContainerWidth);
   }
