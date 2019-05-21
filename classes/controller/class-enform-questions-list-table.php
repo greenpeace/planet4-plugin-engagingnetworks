@@ -68,17 +68,17 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 
 			$ens_private_token = $main_settings['p4en_private_api'];
 			$ens_api           = new Ensapi( $ens_private_token );
-			$response          = $ens_api->get_supporter_questions();
+			$response_body     = $ens_api->get_supporter_questions();
 
-			if ( isset( $response['body'] ) && ! empty( $response['body'] ) ) {
-				$response_data = json_decode( $response['body'], true );
+			if ( $response_body ) {
+				$response_data = json_decode( $response_body, true );
 				$response_data = array_filter( $response_data, [ $this, 'check_type' ] );
 			} else {
 				$this->error = implode(
 					[
 						__( 'Could not fetch results from engaging networks', 'planet4-engagingnetworks' ),
 						'<br>',
-						$response,
+						$response_body,
 					]
 				);
 			}

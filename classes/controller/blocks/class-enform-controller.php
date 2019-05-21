@@ -420,10 +420,10 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				}
 			}
 			if ( $this->ens_api ) {
-				$response = $this->ens_api->get_supporter_fields();
+				$response_body = $this->ens_api->get_supporter_fields();
 
-				if ( is_array( $response ) && \WP_Http::OK === $response['response']['code'] && $response['body'] ) {
-					$en_supporter_fields = json_decode( $response['body'], true );
+				if ( $response_body ) {
+					$en_supporter_fields = json_decode( $response_body, true );
 
 					foreach ( $en_supporter_fields as $en_supporter_field ) {
 						if ( 'Not Tagged' !== $en_supporter_field['tag'] ) {

@@ -58,16 +58,16 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 		if ( isset( $main_settings['p4en_private_api'] ) ) {
 			$ens_private_token = $main_settings['p4en_private_api'];
 			$ens_api           = new Ensapi( $ens_private_token );
-			$response          = $ens_api->get_supporter_fields();
+			$response_body     = $ens_api->get_supporter_fields();
 
-			if ( isset( $response['body'] ) && ! empty( $response['body'] ) ) {
-				$response_data = json_decode( $response['body'], true );
+			if ( $response_body ) {
+				$response_data = json_decode( $response_body, true );
 			} else {
 				$this->error = implode(
 					[
 						__( 'Could not fetch results from engaging networks', 'planet4-engagingnetworks' ),
 						'<br>',
-						$response,
+						$response_body,
 					]
 				);
 			}

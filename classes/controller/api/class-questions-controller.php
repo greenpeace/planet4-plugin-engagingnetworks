@@ -149,8 +149,8 @@ class Questions_Controller {
 
 			$ens_private_token = $main_settings['p4en_private_api'];
 			$ens_api           = new Ensapi( $ens_private_token );
-			$questions         = $ens_api->get_supporter_questions();
-			$response_data     = json_decode( $questions['body'] );
+			$response_body     = $ens_api->get_supporter_questions();
+			$response_data     = json_decode( $response_body );
 		} else {
 			$response_data = [];
 		}
