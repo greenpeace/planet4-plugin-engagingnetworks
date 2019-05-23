@@ -17,8 +17,10 @@
 			<select class="field-type-select" data-attribute="input_type">
 				<option value="0">{{ __( '--Select--', 'planet4-engagingnetworks' ) }}</option>
 				<option value="checkbox"  <% print( input_type == 'checkbox' ?  'selected': '') %> >{{ __( 'Checkbox', 'planet4-engagingnetworks' ) }}</option>
-				<option value="text"  <% print( input_type == 'text' ?  'selected': '') %> >{{ __( 'Text', 'planet4-engagingnetworks' ) }}</option>
+				<option value="country"  <% print( input_type == 'country' ?  'selected': '') %> >{{ __( 'Country', 'planet4-engagingnetworks' ) }}</option>
+				<option value="email"  <% print( input_type == 'email' ?  'selected': '') %> >{{ __( 'Email', 'planet4-engagingnetworks' ) }}</option>
 				<option value="hidden"  <% print( input_type == 'hidden' ?  'selected': '') %> >{{ __( 'Hidden', 'planet4-engagingnetworks' ) }}</option>
+				<option value="text"  <% print( input_type == 'text' ?  'selected': '') %> >{{ __( 'Text', 'planet4-engagingnetworks' ) }}</option>
 			</select>
 		</td>
 		<td class="actions">
