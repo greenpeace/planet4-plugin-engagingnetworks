@@ -420,11 +420,9 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				}
 			}
 			if ( $this->ens_api ) {
-				$response_body = $this->ens_api->get_supporter_fields();
+				$en_supporter_fields = $this->ens_api->get_supporter_fields();
 
-				if ( $response_body ) {
-					$en_supporter_fields = json_decode( $response_body, true );
-
+				if ( is_array( $en_supporter_fields ) ) {
 					foreach ( $en_supporter_fields as $en_supporter_field ) {
 						if ( 'Not Tagged' !== $en_supporter_field['tag'] ) {
 							$type = 'text';
@@ -442,10 +440,9 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 							];
 						}
 					}
-					return $supporter_fields;
 				}
 			}
-			return [];
+			return $supporter_fields ?? [];
 		}
 
 		/**

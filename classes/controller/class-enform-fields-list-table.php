@@ -52,24 +52,16 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 	 * @see \WP_List_Table::prepare_items
 	 */
 	public function prepare_items() {
+		$supporter_fields = [];
+		$main_settings    = get_option( 'p4en_main_settings' );
 
-		$response_data = [];
-		$main_settings = get_option( 'p4en_main_settings' );
 		if ( isset( $main_settings['p4en_private_api'] ) ) {
 			$ens_private_token = $main_settings['p4en_private_api'];
 			$ens_api           = new Ensapi( $ens_private_token );
-			$response_body     = $ens_api->get_supporter_fields();
+			$supporter_fields  = $ens_api->get_supporter_fields();
 
-			if ( $response_body ) {
-				$response_data = json_decode( $response_body, true );
-			} else {
-				$this->error = implode(
-					[
-						__( 'Could not fetch results from engaging networks', 'planet4-engagingnetworks' ),
-						'<br>',
-						$response_body,
-					]
-				);
+			if ( ! is_array( $supporter_fields ) ) {
+				$this->error = $supporter_fields . ' : ' . __( 'Could not fetch results from engaging networks', 'planet4-engagingnetworks' );
 			}
 		}
 
@@ -78,7 +70,7 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 		$hidden                = [];
 		$sortable              = [];
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
-		$this->items           = $response_data;
+		$this->items           = is_array( $supporter_fields ) ? $supporter_fields : [];
 	}
 
 	/**

@@ -255,7 +255,7 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				}
 				set_transient( 'ens_supporter_fields_response', (string) $response['body'], self::ENS_CACHE_TTL );
 			}
-			return (string) $response['body'];
+			return json_decode( $response['body'], true );
 		}
 
 		/**
@@ -289,7 +289,7 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				}
 				set_transient( 'ens_supporter_questions_response', (string) $response['body'], self::ENS_CACHE_TTL );
 			}
-			return (string) $response['body'];
+			return json_decode( $response['body'], true );
 		}
 
 		/**
