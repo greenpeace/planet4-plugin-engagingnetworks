@@ -19,8 +19,6 @@ jQuery(function ($) {
          */
         render_new: function (shortcode) {
 
-          this.add_en_fields_separator();
-
           // Get filtered fields.
           var filtered = this.filter_enform_fields(shortcode);
 
@@ -62,8 +60,6 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_edit: function (shortcode) {
-
-          this.add_en_fields_separator();
 
           // Get filtered fields
           var filtered = this.filter_enform_fields(shortcode);
@@ -216,11 +212,6 @@ jQuery(function ($) {
           $(filtered_objects).off('click');
         },
 
-        add_en_fields_separator: function () {
-          var $desc_div = $('.shortcode-ui-attribute-thankyou_url').parent();
-          $desc_div.append('<p><h3>' + p4_enblock.en_fields_description_1 + '</h3>' +
-            '(' + p4_enblock.en_fields_description_2 + ')</p>');
-        },
       }
     };
 
