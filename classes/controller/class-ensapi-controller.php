@@ -230,8 +230,8 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 * @return array|string Array with the fields or a message if something goes wrong.
 		 */
 		public function get_supporter_fields() {
-			$response = get_transient( 'ens_supporter_fields_response' );
-			if ( ! $response ) {
+			$response['body'] = get_transient( 'ens_supporter_fields_response' );
+			if ( ! $response['body'] ) {
 				$url = self::ENS_SUPPORTER_URL . '/fields';
 
 				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
@@ -253,9 +253,9 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
 					return $response['response']['message'] . ' ' . $response['response']['code'];
 				}
-				set_transient( 'ens_supporter_fields_response', $response, self::ENS_CACHE_TTL );
+				set_transient( 'ens_supporter_fields_response', (string) $response['body'], self::ENS_CACHE_TTL );
 			}
-			return $response;
+			return json_decode( $response['body'], true );
 		}
 
 		/**
@@ -264,8 +264,8 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 * @return array|string Array with the fields or a message if something goes wrong.
 		 */
 		public function get_supporter_questions() {
-			$response = get_transient( 'ens_supporter_questions_response' );
-			if ( ! $response ) {
+			$response['body'] = get_transient( 'ens_supporter_questions_response' );
+			if ( ! $response['body'] ) {
 				$url = self::ENS_SUPPORTER_URL . '/questions';
 
 				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
@@ -287,9 +287,9 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
 					return $response['response']['message'] . ' ' . $response['response']['code'];
 				}
-				set_transient( 'ens_supporter_questions_response', $response, self::ENS_CACHE_TTL );
+				set_transient( 'ens_supporter_questions_response', (string) $response['body'], self::ENS_CACHE_TTL );
 			}
-			return $response;
+			return json_decode( $response['body'], true );
 		}
 
 		/**

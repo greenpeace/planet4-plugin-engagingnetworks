@@ -249,7 +249,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			$form_fields = get_post_meta( $post->ID, self::FIELDS_META, true );
 			$this->view->selected_meta_box(
 				[
-					'fields' => json_encode( $form_fields ),
+					'fields' => wp_json_encode( $form_fields ),
 				]
 			);
 		}
@@ -269,6 +269,15 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 				'high',
 				$post
 			);
+		}
+
+		/**
+		 * Display fields custom box content.
+		 */
+		public function display_fields_custom_box() {
+			$list_table = new Enform_Fields_List_Table();
+			$list_table->prepare_items();
+			$list_table->display();
 		}
 
 		/**
@@ -316,15 +325,6 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
-		 * Display fields custom box content.
-		 */
-		public function display_fields_custom_box() {
-			$list_table = new Enform_Fields_List_Table();
-			$list_table->prepare_items();
-			$list_table->display();
-		}
-
-		/**
 		 * Add underscore templates to footer.
 		 */
 		public function print_admin_footer_scripts() {
@@ -342,7 +342,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			];
 
 			// Load assets conditionally using pagenow, typenow on new/edit form page.
-			if ( in_array( $pagenow, $pages ) && self::POST_TYPE === $typenow ) {
+			if ( in_array( $pagenow, $pages, true ) && self::POST_TYPE === $typenow ) {
 				add_action( "load-$pagenow", [ $this, 'load__new_page_assets' ] );
 				add_action( 'admin_print_footer_scripts', [ $this, 'print_admin_footer_scripts' ], 1 );
 			}
