@@ -19,15 +19,5 @@
       "composer install",
       "cp -Ru wp-content/plugins/* ${WP_CORE_DIR}/wp-content/plugins/"
     ]
-  },
-  "autoload": {
-    "psr-4": {
-      "P4EN\\": "classes/",
-      "P4EN\\Controllers\\": "classes/controller/",
-      "P4EN\\Controllers\\Blocks\\": "classes/controller/blocks",
-      "P4EN\\Controllers\\Menu\\": "classes/controller/menu",
-      "P4EN\\Models\\": "classes/model/",
-      "P4EN\\Views\\": "classes/view/"
-    }
   }
 }
