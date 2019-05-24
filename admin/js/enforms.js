@@ -12,6 +12,7 @@ jQuery(function ($) {
     var field_data = {
       name: $(this).data('name'),
       en_type: $(this).data('type'),
+      property: $(this).data('property'),
       id: $(this).data('id'),
     };
     p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
@@ -31,9 +32,14 @@ jQuery(function ($) {
   /**
    * Hook into post submit to inject form fields.
    */
-  $('#post').on('submit', function (event) {
+  $('#post').on('submit', function () {
     $('#p4enform_fields').val(JSON.stringify(p4_enform.fields.toJSON()));
   });
+
+  /**
+   * Disable preview form fields.
+   */
+  $('#meta-box-form :input').prop('disabled', true);
 
 });
 
@@ -56,6 +62,7 @@ var p4_enform = (function ($) {
     defaults: {
       id: 0,
       name: null,
+      property: '',
       label: '',
       default_value: '',
       en_type: 'N',
@@ -197,7 +204,7 @@ var p4_enform = (function ($) {
       if ('text' === value) {
         this.createFieldDialog();
       } else if ('hidden' === value) {
-        this.$el.find('input[data-attribute="required"]').prop("checked", false).trigger('change').prop('disabled', true);
+        this.$el.find('input[data-attribute="required"]').prop('checked', false).trigger('change').prop('disabled', true);
         this.$el.find('input[data-attribute="label"]').val('').trigger('change').prop('disabled', true);
         this.createFieldDialog();
       } else {
@@ -227,11 +234,12 @@ var p4_enform = (function ($) {
      */
     createFieldDialog: function () {
       var input_type = this.model.get('input_type');
+      var tmpl = '';
       if ('hidden' === input_type) {
-        var tmpl = '#tmpl-en-hidden-field-dialog';
+        tmpl = '#tmpl-en-hidden-field-dialog';
       }
       if ('text' === input_type) {
-        var tmpl = '#tmpl-en-text-field-dialog';
+        tmpl = '#tmpl-en-text-field-dialog';
       }
 
       if (null !== this.dialog_view) {
@@ -401,7 +409,7 @@ var p4_enform = (function ($) {
       fields = JSON.parse(fields);
       var fields_arr = [];
       _.each(fields, function (field) {
-        fields_arr.push(new app.Models.EnformField(field))
+        fields_arr.push(new app.Models.EnformField(field));
       }, this);
       app.fields.add(fields_arr);
     }
@@ -421,7 +429,7 @@ var p4_enform = (function ($) {
     // Initialize tooltips.
     app.fields_view.$el.tooltip({
       track: true,
-      show: { effect: "fadeIn", duration: 500 }
+      show: { effect: 'fadeIn', duration: 500 }
     });
   });
 

@@ -29,4 +29,3 @@ $(document).ready(function() {
     $('iframe').attr('style','left: 0');
   }
 });
-  

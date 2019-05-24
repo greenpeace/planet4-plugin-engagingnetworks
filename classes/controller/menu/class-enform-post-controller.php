@@ -176,6 +176,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			$atts = shortcode_atts(
 				[
 					'id' => 'id',
+					'en_form_style' => 'full-width',
 				],
 				$atts
 			);
@@ -185,15 +186,13 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			if ( ! is_admin() || ( 'post.php' === $pagenow && $post_id && self::POST_TYPE === get_post_type( $post_id ) ) ) {
 
 				// TODO - Here we will need to customize how we store/retrieve the components name, type, label, etc.
-				$fields    = get_post_meta( $atts['id'], self::POST_TYPE . '-fields-name', true );
-				$questions = get_post_meta( $atts['id'], self::POST_TYPE . '-questions-name', true );
-				$optins    = get_post_meta( $atts['id'], self::POST_TYPE . '-optins-name', true );
+				$fields = get_post_meta( $atts['id'], self::FIELDS_META, true );
 
 				$data = [
-					'fields'    => $fields,
-					'questions' => $questions,
-					'optins'    => $optins,
+					'form_fields'   => $fields,
+					'en_form_style' => $atts['en_form_style'],
 				];
+
 				$this->view->enform_post( $data );
 			}
 		}
@@ -365,7 +364,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 					'jquery',
 					'wp-backbone',
 				],
-				'0.3',
+				'0.4',
 				true
 			);
 		}
