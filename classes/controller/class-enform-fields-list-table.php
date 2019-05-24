@@ -149,23 +149,4 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 			echo '<div><p>' . esc_html( $this->error ) . '</p></div>';
 		}
 	}
-
-	/**
-	 * Filter en fields. Use only tagged fields.
-	 *
-	 * @param array $fields Fields array.
-	 *
-	 * @return array Filtered fields.
-	 */
-	private function filter_fields( $fields ) {
-
-		$filtered_fields = [];
-		foreach ( $fields as $field ) {
-			if ( isset( $field['tag'] ) && 'Not Tagged' !== $field['tag'] ) {
-				$filtered_fields[] = $field;
-			}
-		}
-
-		return $filtered_fields;
-	}
 }
