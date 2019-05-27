@@ -112,8 +112,8 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 						// Communication with ENS API is authenticated.
 						if ( $ens_api->is_authenticated() ) {
 							$response = $ens_api->get_pages( $params );
-							if ( is_array( $response ) && $response['body'] ) {
-								$pages = json_decode( $response['body'], true );
+							if ( is_array( $response ) ) {
+								$pages = $response;
 							} else {
 								$this->error( $response );
 							}
