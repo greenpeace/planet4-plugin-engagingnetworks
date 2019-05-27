@@ -108,11 +108,12 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				foreach ( $types as $type ) {
 					$params['type'] = $type;
 					$response       = $this->get_pages( $params );
-					if ( is_array( $response ) && $response['body'] ) {
-						$pages[ $params['type'] ] = json_decode( $response['body'], true );
+					if ( is_array( $response ) ) {
+						$pages[ $params['type'] ] = $response;
 					}
 				}
 			}
+
 			return $pages;
 		}
 
@@ -128,8 +129,8 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 			'status' => self::ENS_STATUS_DEFAULT,
 		) ) {
 
-			$response = get_transient( 'ens_pages_response_' . implode( '_', $params ) );
-			if ( ! $response ) {
+			$response['body'] = get_transient( 'ens_pages_response_' . implode( '_', $params ) );
+			if ( ! $response['body'] ) {
 				$url = add_query_arg(
 					[
 						'type'   => strtolower( $params['type'] ),
@@ -156,9 +157,10 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 					return $response['response']['message'] . ' ' . $response['response']['code'];         // Authentication failed.
 
 				}
-				set_transient( 'ens_pages_response_' . implode( '_', $params ), $response, self::ENS_CACHE_TTL );
+				set_transient( 'ens_pages_response_' . implode( '_', $params ), $response['body'], self::ENS_CACHE_TTL );
 			}
-			return $response;
+
+			return json_decode( $response['body'], true );
 		}
 
 		/**
