@@ -65,6 +65,7 @@ var p4_enform = (function ($) {
       property: '',
       label: '',
       default_value: '',
+      js_validate_function: '',
       en_type: 'N',
       hidden: false,
       required: false,
@@ -378,6 +379,7 @@ var p4_enform = (function ($) {
     destroy: function () {
       this.dialog.dialog('destroy');
       this.model.set('default_value', '');
+      this.model.set('js_validate_function', '');
       this.model.set('hidden', false);
       this.model.set('input_name', '');
       this.remove();
