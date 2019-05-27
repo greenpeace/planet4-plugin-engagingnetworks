@@ -62,10 +62,7 @@
 				{% elseif 'checkbox' == field.input_type %}
 					<div class="en__field en__field--check en__field--{{ field.id }}">
 						<div class="en__field__element en__field__element--check form-group form-check-label-block custom-control p4-custom-control-input">
-							{% if en_form_style == 'side-style' %}
-								<label class="custom-checkbox">
-							{% endif %}
-
+							<label class="custom-checkbox">
 								<input
 									id="en__field_supporter_{{ field.name }}"
 									name="{{ en_input_name }}"
@@ -75,20 +72,10 @@
 									data-errormessage="{{ errorMessage }}"
 									{{ 'true' == field.required ? 'required' : '' }}
 								/>
-
-								{% if en_form_style != 'side-style' %}
-									<label for="en__field_supporter_questions_{{ data.id }}" class="custom-control-description form-check-label">
-										{{ field.label }}{{ 'true' == field.required ? '*' : '' }}
-									</label>
-								{% else %}
-									<span class="custom-control-description">
-										{{ field.label }}{{ 'true' == field.required ? '*' : '' }}
-									</span>
-								{% endif %}
-
-							{% if en_form_style == 'side-style' %}
-								</label>
-							{% endif %}
+								<span class="custom-control-description">
+									{{ field.label }}{{ 'true' == field.required ? '*' : '' }}
+								</span>
+							</label>
 						</div>
 					</div>
 				{% elseif 'country' == field.input_type %}
