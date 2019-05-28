@@ -158,6 +158,11 @@ var p4_enform = (function ($) {
       $('tr[data-en-name="Email"] span.remove-en-field').remove();
       $('tr[data-en-name="Email"] input[data-attribute="required"]').prop('checked', true).prop('disabled', true);
       $('tr[data-en-name="Email"] select[data-attribute="input_type"]').val('email').prop('disabled', true);
+      emailModel = this.collection.findWhere({property: 'emailAddress'});
+      if ('undefined' !== typeof emailModel) {
+        emailModel.set('input_type', 'email')
+                  .set('required', true);
+      }
     }
   });
 
