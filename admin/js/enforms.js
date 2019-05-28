@@ -123,6 +123,7 @@ var p4_enform = (function ($) {
       _.each(this.collection.models, function (project) {
         this.renderOne(project);
       }, this);
+      this.disableEmailField();
     },
 
     /**
@@ -149,6 +150,15 @@ var p4_enform = (function ($) {
     updateSort: function (event, model, position) {
       this.collection.remove(model, {silent: true}); //
       this.collection.add(model, {at: position, silent: true});
+    },
+
+    /**
+     * Disable email field attributes besides label.
+     */
+    disableEmailField: function () {
+      $('tr[data-en-name="Email"] span.remove-en-field').remove();
+      $('tr[data-en-name="Email"] input[data-attribute="required"]').prop('checked', true).prop('disabled', true);
+      $('tr[data-en-name="Email"] select[data-attribute="input_type"]').val('email').prop('disabled', true);
     }
   });
 
@@ -414,6 +424,11 @@ var p4_enform = (function ($) {
         fields_arr.push(new app.Models.EnformField(field));
       }, this);
       app.fields.add(fields_arr);
+    }
+
+    // If it is a new post, add email field.
+    if ('auto-draft' === $('#original_post_status').val()) {
+      $('button[class="add-en-field"][data-property="emailAddress"] ').click();
     }
 
     app.fields_view = new app.Views.FieldsListView({collection: app.fields});

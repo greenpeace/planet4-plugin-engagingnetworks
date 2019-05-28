@@ -142,9 +142,6 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 	 * @see \WP_List_Table::display_tablenav
 	 */
 	protected function display_tablenav( $which ) {
-		esc_html_e( 'Only tagged fields are listed here', 'planet4-engagingnetworks' );
-		echo '<br/><br/>';
-
 		if ( ! empty( $this->error ) && 'top' === $which ) {
 			echo '<div><p>' . esc_html( $this->error ) . '</p></div>';
 		}
