@@ -1,99 +1,10 @@
 /* global en_vars, google_tag_value, dataLayer */
-$(document).ready(function () {
-  'use strict';
 
-  function addChangeListeners(form) {
-    $(form.elements).each(function() {
-      $(this).off('change').on('change', function() {
-        validateForm(form);
-      });
-    });
-  }
+var p4_enform_frontend = (function ($) {
 
-  function validateEmail(email) {
-    // Reference: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
-    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  }
+  var enform = {};
 
-  function validateUrl(url) {
-    return /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(url);  //eslint-disable-line no-useless-escape
-  }
-
-  function addErrorMessage(element) {
-    $(element).addClass('is-invalid');
-    var $invalidDiv = $('<div>');
-    $invalidDiv.addClass('invalid-feedback');
-    $invalidDiv.html($(element).data('errormessage'));
-    $invalidDiv.insertAfter(element);
-  }
-
-  function removeErrorMessage(element) {
-    $(element).removeClass('is-invalid');
-    var errorDiv = $(element).next();
-    if (errorDiv.length && errorDiv.hasClass('invalid-feedback')) {
-      $(errorDiv).remove();
-    }
-  }
-
-  function validateForm(form) {
-    var formIsValid = true;
-
-    $(form.elements).each(function() {
-      removeErrorMessage(this);
-      var formValue = $(this).val();
-
-      if (
-        $(this).attr('required') && ! formValue ||
-        'email' === $(this).attr('type') && ! validateEmail( formValue )
-      ) {
-        addErrorMessage(this);
-        formIsValid = false;
-      }
-    });
-
-    return formIsValid;
-  }
-
-  // Submit to a en page process api endpoint.
-  function submitToEn(formData, sessionToken) {
-    const form = $('#enform');
-    var en_page_id = $('input[name=en_page_id]').val(),
-      uri = `https://e-activist.com/ens/service/page/${en_page_id}/process`;
-    $.ajax({
-      url: uri,
-      type: 'POST',
-      contentType: 'application/json',
-      crossDomain: true,
-      headers: {
-        'ens-auth-token': sessionToken
-      },
-      data: JSON.stringify(formData),
-    }).done(function () {
-      var redirectURL = form.data('redirect-url');
-
-      if (validateUrl(redirectURL)) {
-        window.location = redirectURL;
-      } else {
-        var s =
-          '<h2 class="thankyou">' +
-          '<span class="thankyou-title">'+ $('input[name=thankyou_title]').val() +'</span><br />' +
-          ' <span class="thankyou-subtitle">'+  $('input[name=thankyou_subtitle]').val() +'</span> ' +
-          '</h2>';
-
-        form.html(s);
-      }
-      $('.enform-notice').html('');
-    }).fail(function (response) {
-      $('.enform-notice').html('<span class="enform-error">There was a problem with the submission</span>');
-      console.log(response); //eslint-disable-line no-console
-    }).always(function() {
-      hideENSpinner();
-    });
-  }
-
-  // Get enform fields data and prepare them for submission to en api.
-  function getFormData() {
+  enform.getFormData = function() {
     let supporter = {
       questions: {}
     };
@@ -111,40 +22,151 @@ $(document).ready(function () {
       if (field.name.indexOf('supporter.questions.') >= 0) {
         let id = field.name.split('.')[2];
         supporter.questions['question.' + id] = field.value;
-      } else if (field.name.indexOf('supporter.') >= 0 && '' != field.value) {
+      } else if (field.name.indexOf('supporter.') >= 0 && '' !== field.value) {
         supporter[field.name.replace('supporter.', '')] = field.value;
       }
     });
 
-    var requestBody = {
+    return {
       standardFieldNames: true,
       supporter: supporter
     };
-    return requestBody;
-  }
+  };
 
-  function showENSpinner() {
+  enform.addChangeListeners = function(form) {
+    $(form.elements).each(function () {
+      $(this).off('change').on('change', function () {
+        enform.validateForm(form);
+      });
+    });
+  };
+
+  enform.validateEmail = function(email) {
+    // Reference: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
+    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  };
+
+  enform.validateUrl = function(url) {
+    return /^(https?|s?ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i.test(url);  //eslint-disable-line no-useless-escape
+  };
+
+  enform.addErrorMessage = function(element,msg) {
+    if ('undefined' === typeof msg) {
+      msg = $(element).data('errormessage');
+    }
+    $(element).addClass('is-invalid');
+    var $invalidDiv = $('<div>');
+    $invalidDiv.addClass('invalid-feedback');
+    $invalidDiv.html(msg);
+    $invalidDiv.insertAfter(element);
+  };
+
+  enform.removeErrorMessage = function(element) {
+    $(element).removeClass('is-invalid');
+    var errorDiv = $(element).next();
+    if (errorDiv.length && errorDiv.hasClass('invalid-feedback')) {
+      $(errorDiv).remove();
+    }
+  };
+
+  enform.validateForm = function(form) {
+    var formIsValid = true;
+
+    $(form.elements).each(function () {
+      enform.removeErrorMessage(this);
+      var formValue = $(this).val();
+
+      if (
+        $(this).attr('required') && !formValue ||
+        'email' === $(this).attr('type') && !enform.validateEmail(formValue)
+      ) {
+        enform.addErrorMessage(this);
+        formIsValid = false;
+      }
+
+      var callbackFunction = $(this).attr('validate_callback');
+      if ('function' === typeof window[callbackFunction]) {
+        var validateField = window[callbackFunction]($(this).val());
+        if (true !== validateField) {
+          enform.addErrorMessage(this, validateField);
+          formIsValid = false;
+        }
+      }
+    });
+
+    return formIsValid;
+  };
+
+  // Submit to a en page process api endpoint.
+  enform.submitToEn = function(formData, sessionToken) {
+    const form = $('#enform');
+    var en_page_id = $('input[name=en_page_id]').val(),
+      uri = `https://e-activist.com/ens/service/page/${en_page_id}/process`;
+    $.ajax({
+      url: uri,
+      type: 'POST',
+      contentType: 'application/json',
+      crossDomain: true,
+      headers: {
+        'ens-auth-token': sessionToken
+      },
+      data: JSON.stringify(formData),
+    }).done(function () {
+      var redirectURL = form.data('redirect-url');
+
+      if (enform.validateUrl(redirectURL)) {
+        window.location = redirectURL;
+      } else {
+        var s =
+          '<h2 class="thankyou">' +
+          '<span class="thankyou-title">' + $('input[name=thankyou_title]').val() + '</span><br />' +
+          ' <span class="thankyou-subtitle">' + $('input[name=thankyou_subtitle]').val() + '</span> ' +
+          '</h2>';
+
+        form.html(s);
+      }
+      $('.enform-notice').html('');
+    }).fail(function (response) {
+      $('.enform-notice').html('<span class="enform-error">There was a problem with the submission</span>');
+      console.log(response); //eslint-disable-line no-console
+    }).always(function () {
+      enform.hideENSpinner();
+    });
+  };
+
+
+  enform.showENSpinner = function() {
     $('#p4en_form_save_button').attr('disabled', true);
     $('.en-spinner').show();
     $('.enform-notice').html('');
 
-  }
-  function hideENSpinner() {
+  };
+
+  enform.hideENSpinner = function() {
     $('#p4en_form_save_button').attr('disabled', false);
     $('.en-spinner').hide();
-  }
+  };
+
+  return enform;
+
+})(jQuery);
+
+
+$(document).ready(function () {
+  'use strict';
 
   // Submit handler for enform
   $('#p4en_form').submit(function (e) {
     e.preventDefault();
 
     // Don't bug users with validation before the first submit
-    addChangeListeners(this);
+    p4_enform_frontend.addChangeListeners(this);
 
-    if (validateForm(this)) {
+    if (p4_enform_frontend.validateForm(this)) {
       const url = en_vars.ajaxurl;
 
-      showENSpinner();
+      p4_enform_frontend.showENSpinner();
       $.ajax({
         url: url,
         type: 'POST',
@@ -156,21 +178,28 @@ $(document).ready(function () {
         var token = response.token;
 
         if ('' !== token) {
-          var values = getFormData();
-          submitToEn(values, token);
+          var values = p4_enform_frontend.getFormData();
+          p4_enform_frontend.submitToEn(values, token);
 
           // DataLayer push event on EN form submission.
           if ( typeof google_tag_value !== 'undefined' && google_tag_value ) {
-            dataLayer.push({
+            var dataLayerPayload = {
               'event' : 'petitionSignup'
-            });
+            };
+
+            var gGoal = $('#enform_goal').val();
+            if ( gGoal ) {
+              dataLayerPayload.gGoal = gGoal;
+            }
+
+            dataLayer.push(dataLayerPayload);
           }
         } else {
-          hideENSpinner();
+          p4_enform_frontend.hideENSpinner();
           $('.enform-notice').html('There was a problem with the submission');
         }
       }).fail(function (response) {
-        hideENSpinner();
+        p4_enform_frontend.hideENSpinner();
         $('.enform-notice').html('There was a problem with the submission');
         console.log(response); //eslint-disable-line no-console
       });

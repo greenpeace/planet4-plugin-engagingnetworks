@@ -1,0 +1,57 @@
+<script type="text/html" id="tmpl-en-selected-fields">
+
+</script>
+
+<script type="text/html" id="tmpl-en-selected-field">
+	<tr class="field-item" data-en-id="<%= id %>" data-en-name="<%= name %>">
+		<td><a><span class="dashicons dashicons-sort pointer"></span></a></td>
+		<td style="width:25%;"><%= name %></td>
+		<td><%= en_type %></td>
+		<td>
+			<input type="checkbox" data-attribute="required" <% print( required ?  'checked': '') %> <% print( input_type=='hidden' ?  ' disabled': '') %>	/>
+		</td>
+		<td>
+			<input type="text" data-attribute="label" value="<%= label %>" <% print( input_type=='hidden' ?  ' disabled': '') %> />
+		</td>
+		<td>
+			<select class="field-type-select" data-attribute="input_type">
+				<option value="0">{{ __( '--Select--', 'planet4-engagingnetworks' ) }}</option>
+				<option value="checkbox"  <% print( input_type == 'checkbox' ?  'selected': '') %> >{{ __( 'Checkbox', 'planet4-engagingnetworks' ) }}</option>
+				<option value="country"  <% print( input_type == 'country' ?  'selected': '') %> >{{ __( 'Country', 'planet4-engagingnetworks' ) }}</option>
+				<option value="email"  <% print( input_type == 'email' ?  'selected': '') %> >{{ __( 'Email', 'planet4-engagingnetworks' ) }}</option>
+				<option value="hidden"  <% print( input_type == 'hidden' ?  'selected': '') %> >{{ __( 'Hidden', 'planet4-engagingnetworks' ) }}</option>
+				<option value="text"  <% print( input_type == 'text' ?  'selected': '') %> >{{ __( 'Text', 'planet4-engagingnetworks' ) }}</option>
+			</select>
+		</td>
+		<td class="actions">
+			<a><span class="dashicons dashicons-no remove-en-field"></span></a>
+		</td>
+	</tr>
+</script>
+
+
+<script type="text/html" id="tmpl-en-hidden-field-dialog">
+	<div style="display: none;" class="dialog">
+		<p>{{ __( 'Hidden Field customization', 'planet4-engagingnetworks' ) }}</p>
+		<p>
+			<label class="control-label">{{ __( 'Default Value', 'planet4-engagingnetworks' ) }}</label>
+			<div>
+				<input type="text" class="form-control" data-attribute="default_value" value="<%= default_value %>" />
+			</div>
+		</p>
+	</div>
+</script>
+
+<script type="text/html" id="tmpl-en-text-field-dialog">
+	<div style="display: none;" class="dialog">
+		<p>{{ __( 'Text Field customization', 'planet4-engagingnetworks' ) }}</p>
+		<p>
+			<label class="control-label">{{ __( 'JS Function validation callback', 'planet4-engagingnetworks' ) }}</label>
+		<div>
+			<input type="text" class="form-control" data-attribute="js_validate_function"
+				   value="<%= js_validate_function %>"/>
+		</div>
+		</p>
+
+	</div>
+</script>

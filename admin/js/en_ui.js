@@ -1,3 +1,5 @@
+/* global p4_enblock */
+
 jQuery(function ($) {
   'use strict';
 
@@ -17,8 +19,6 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_new: function (shortcode) {
-
-          this.add_en_fields_separator();
 
           // Get filtered fields.
           var filtered = this.filter_enform_fields(shortcode);
@@ -61,8 +61,6 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_edit: function (shortcode) {
-
-          this.add_en_fields_separator();
 
           // Get filtered fields
           var filtered = this.filter_enform_fields(shortcode);
@@ -215,17 +213,12 @@ jQuery(function ($) {
           $(filtered_objects).off('click');
         },
 
-        add_en_fields_separator: function () {
-          var $desc_div = $('.shortcode-ui-attribute-thankyou_url').parent();
-          $desc_div.append('<p><h3>' + p4_en_blocks_enform_translations.en_fields_description_1 + '</h3>' +
-            '(' + p4_en_blocks_enform_translations.en_fields_description_2 + ')</p>');
-        },
       }
     };
 
     // Attach hooks when rendering a new en block.
     wp.shortcake.hooks.addAction('shortcode-ui.render_new', function (shortcode) {
-      if ('shortcake_enform' === shortcode.get('shortcode_tag')) {
+      if ('shortcake_' + p4_enblock.block_name === shortcode.get('shortcode_tag')) {
         // Call enform render new function.
         p4_en_blocks.enform.render_new(shortcode);
       }
@@ -233,7 +226,7 @@ jQuery(function ($) {
 
     // Attach hooks when destroying an en block.
     wp.shortcake.hooks.addAction('shortcode-ui.render_destroy', function (shortcode) {
-      if ('shortcake_enform' === shortcode.get('shortcode_tag')) {
+      if ('shortcake_' + p4_enblock.block_name === shortcode.get('shortcode_tag')) {
         // Call enform render destroy function.
         p4_en_blocks.enform.render_destroy(shortcode);
       }
@@ -241,7 +234,7 @@ jQuery(function ($) {
 
     // Attach hooks when editing an existing en block.
     wp.shortcake.hooks.addAction('shortcode-ui.render_edit', function (shortcode) {
-      if ('shortcake_enform' === shortcode.get('shortcode_tag')) {
+      if ('shortcake_' + p4_enblock.block_name === shortcode.get('shortcode_tag')) {
         // Call enform render edit function.
         p4_en_blocks.enform.render_edit(shortcode);
       }

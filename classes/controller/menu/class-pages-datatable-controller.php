@@ -67,7 +67,7 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 					'EngagingNetworks',
 					'edit_pages',
 					P4EN_PLUGIN_SLUG_NAME,
-					array( $this, 'prepare_pages_datatable' ),
+					'',
 					P4EN_ADMIN_DIR . 'images/logo_menu_page_16x16.jpg'
 				);
 			}
@@ -103,8 +103,8 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 						// Communication with ENS API is authenticated.
 						if ( $ens_api->is_authenticated() ) {
 							$response = $ens_api->get_pages( $params );
-							if ( is_array( $response ) && $response['body'] ) {
-								$pages = json_decode( $response['body'], true );
+							if ( is_array( $response ) ) {
+								$pages = $response;
 							} else {
 								$this->error( $response );
 							}
@@ -143,8 +143,8 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 		/**
 		 * Handle form submit.
 		 *
-		 * @param mixed[] $current_user The current user.
-		 * @param mixed[] $data The form data.
+		 * @param \WP_User $current_user The current user.
+		 * @param mixed[]  $data The form data.
 		 *
 		 * @return bool Array if validation is ok, false if validation fails.
 		 */

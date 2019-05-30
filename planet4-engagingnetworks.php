@@ -99,9 +99,11 @@ require_once ABSPATH . 'wp-admin/includes/plugin.php';
  */
 P4EN\Loader::get_instance(
 	[
+		'P4EN\Controllers\Menu\Enform_Post_Controller',
 		'P4EN\Controllers\Menu\Pages_Datatable_Controller',
 		'P4EN\Controllers\Menu\Settings_Controller',
 		'P4EN\Controllers\Blocks\ENForm_Controller',
+		'P4EN\Controllers\Blocks\ENBlock_Controller',
 		'P4EN\Controllers\Menu\Questions_Settings_Controller',
 		'P4EN\Controllers\Api\Rest_Controller',
 	],
