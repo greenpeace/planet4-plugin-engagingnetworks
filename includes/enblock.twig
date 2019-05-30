@@ -25,6 +25,9 @@
 					<div class="enform" id="enform" data-redirect-url="{{ redirect_url|default('') }}">
 						<div class="title-and-description">
 							<h2>{{ fields.title }}</h2>
+							{% if fields.en_form_style == 'side-style' %}
+								<div class="enform-extra-header-placeholder"></div>
+							{% endif %}
 							<p>{{ fields.description|e('wp_kses_post')|raw }}</p>
 						</div>
 						<div class="form-container">
