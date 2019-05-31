@@ -84,7 +84,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 					'post-new.php?post_type=' . self::POST_TYPE
 				);
 
-				//Set hook after screen is determined to load assets for add/edit page.
+				// Set hook after screen is determined to load assets for add/edit page.
 				add_action( 'current_screen', [ $this, 'load_assets' ] );
 			}
 		}
@@ -191,7 +191,6 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 				( 'post.php' === $pagenow && $post_id && self::POST_TYPE === get_post_type( $post_id ) ) ||
 				( 'admin-ajax.php' === $pagenow && self::POST_TYPE === get_post_type( $atts['id'] ) ) ) {
 
-				// TODO - Here we will need to customize how we store/retrieve the components name, type, label, etc.
 				$fields = get_post_meta( $atts['id'], self::FIELDS_META, true );
 
 				$data = [

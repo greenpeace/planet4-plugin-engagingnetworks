@@ -97,8 +97,8 @@ if ( ! class_exists( 'Loader' ) ) {
 							$class_name_parts = explode( '\\', $class_name );
 							$real_class_name  = array_pop( $class_name_parts );
 							$file_name        = 'class-' . str_ireplace( '_', '-', strtolower( $real_class_name ) );
-							$namespace = implode( '\\', $class_name_parts );
-							$path      = str_ireplace(
+							$namespace        = implode( '\\', $class_name_parts );
+							$path             = str_ireplace(
 								[ 'P4EN', 'Controllers', 'Views', 'Models', '_', '\\' ],
 								[ '', 'controller', 'view', 'model', '-', '/' ],
 								strtolower( $namespace )

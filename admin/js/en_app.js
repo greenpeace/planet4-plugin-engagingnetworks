@@ -1,4 +1,4 @@
-$ = jQuery;
+/* global p4_data, jQuery, Backbone, _ */
 
 var p4_en = {
   api_url: p4_data.api_url,
@@ -19,7 +19,7 @@ var p4_en = {
 
 // Define custom event on #en_settings_notices element.
 $('#en_settings_notices').on('message:add', function (event, options) {
-  var $el = $("<div>", {"class": options.type, text: options.message});
+  var $el = $('<div>', {'class': options.type, text: options.message});
   $('#en_settings_notices').append($el);
   setTimeout(function () {
     $el.remove();
@@ -117,7 +117,7 @@ Backbone.$.ajaxSetup({
     initialize: function () {
       this.listenTo(this.collection, 'sync', this.render);
       this.listenTo(this.collection, 'remove', function () {
-        this.collection.fetch()
+        this.collection.fetch();
       });
       this.listenTo(this.collection, 'add', this.render);
     },
@@ -132,9 +132,9 @@ Backbone.$.ajaxSetup({
       this.$el.html(html);
       $('#new-question-div').html('');
 
-      this.$el.find(".questions-container").fadeTo("fast", 0.33);
+      this.$el.find('.questions-container').fadeTo('fast', 0.33);
       this.collection.each(this.renderOne, this);
-      this.$el.find(".questions-container").fadeTo("slow", 1);
+      this.$el.find('.questions-container').fadeTo('slow', 1);
 
       return this;
     },
@@ -147,9 +147,9 @@ Backbone.$.ajaxSetup({
     validateFields: function() {
       var name = $('#en_question_name').val();
       var label = $('#en_question_label').val();
-      var type = $("#en_question_type").val();
-      var id = $("#en_question_id").val();
-      var questionId = $("#en_question__id").val();
+      var type = $('#en_question_type').val();
+      var id = $('#en_question_id').val();
+      var questionId = $('#en_question__id').val();
 
       if ('' === name || '' === label) {
         alert('Name and Question can\'t be empty');
@@ -179,12 +179,12 @@ Backbone.$.ajaxSetup({
         type: 'POST',
         url: p4_data.api_url + '/questions',
 
-        success: function (model, response, options) {
+        success: function () {
           p4_en.add_message('Question has been saved.', 'updated');
           p4_en.hide_loader();
           p4_en.refresh_data();
         },
-        error: function (model, xhr, options) {
+        error: function (model, xhr) {
           var resp = xhr.responseJSON;
           var messages = resp.messages;
           p4_en.add_message(messages.join('<br>'), 'error');
@@ -206,14 +206,14 @@ Backbone.$.ajaxSetup({
       p4_en.show_loader();
       question.save({}, {
 
-        success: function (model, response, options) {
-          console.log("The model has been saved to the server");
+        success: function () {
+          console.log('The model has been saved to the server'); // eslint-disable-line no-console
           p4_en.add_message('Question has been saved.', 'updated');
           p4_en.hide_loader();
           p4_en.refresh_data();
         },
-        error: function (model, xhr, options) {
-          console.log("Something went wrong while saving the model");
+        error: function (model, xhr) {
+          console.log('Something went wrong while saving the model'); // eslint-disable-line no-console
           var resp = xhr.responseJSON;
           p4_en.add_message(resp.messages.join('<br>'), 'error');
           p4_en.hide_loader();
@@ -252,9 +252,10 @@ Backbone.$.ajaxSetup({
         model: this.model,
       });
 
-      $('#new-question-div').html(newQuestionForm.render().$el);
+      let $new_question_div = $('#new-question-div');
+      $new_question_div.html(newQuestionForm.render().$el);
       $('html, body').animate({
-        scrollTop: $('#new-question-div').offset().top
+        scrollTop: $new_question_div.offset().top
       }, 500);
     },
 
@@ -262,10 +263,10 @@ Backbone.$.ajaxSetup({
       e.preventDefault();
       p4_en.show_loader();
       this.model.destroy({
-        success: function (model, response, options) {
+        success: function () {
           p4_en.add_message('Question has been deleted', 'updated');
         },
-        error: function (model, xhr, options) {
+        error: function (model, xhr) {
           var resp = xhr.responseJSON;
           p4_en.add_message(resp.messages.join('<br>'), 'error');
         },
@@ -291,7 +292,7 @@ Backbone.$.ajaxSetup({
     initialize: function () {
       this.listenTo(this.collection, 'sync', this.render);
       this.listenTo(this.collection, 'remove', function () {
-        this.collection.fetch()
+        this.collection.fetch();
       });
       this.listenTo(this.collection, 'add', this.render);
     },
@@ -304,9 +305,9 @@ Backbone.$.ajaxSetup({
     render: function () {
       var html = this.template({col: this.collection});
       this.$el.html(html);
-      this.$el.find(".available-questions-container").fadeTo("fast", 0.33);
+      this.$el.find('.available-questions-container').fadeTo('fast', 0.33);
       this.collection.each(this.renderOne, this);
-      this.$el.find(".available-questions-container").fadeTo("slow", 1);
+      this.$el.find('.available-questions-container').fadeTo('slow', 1);
 
       return this;
     },
@@ -344,9 +345,10 @@ Backbone.$.ajaxSetup({
       var newQuestionForm = new p4_en.Views.NewQuestionView({
         model: this.model,
       });
-      $('#new-question-div').html(newQuestionForm.render().$el);
+      let $new_question_div = $('#new-question-div');
+      $new_question_div.html(newQuestionForm.render().$el);
       $('html, body').animate({
-        scrollTop: $('#new-question-div').offset().top
+        scrollTop: $new_question_div.offset().top
       }, 500);
     },
   });
@@ -378,7 +380,7 @@ Backbone.$.ajaxSetup({
   p4_en.refresh_data = function () {
     p4_en.show_loader();
     p4_en.questions.fetch({
-      success: function (collection, response, options) {
+      success: function (collection) {
         p4_en.add_message('Questions reloaded', 'updated');
         p4_en.questions_view.collection = collection;
         p4_en.questions_view.render();
@@ -395,7 +397,7 @@ Backbone.$.ajaxSetup({
   p4_en.refresh_available = function () {
     p4_en.show_loader();
     p4_en.available_questions.fetch({
-      success: function (collection, response, options) {
+      success: function (collection) {
         p4_en.add_message('Available Questions reloaded', 'updated');
         p4_en.available_questions_view.collection = collection;
         p4_en.available_questions_view.render();
@@ -428,7 +430,6 @@ Backbone.$.ajaxSetup({
   p4_en.add_message = function (message, type) {
     $('#en_settings_notices').trigger('message:add', {message: message, type: type});
   };
-
 
   /**
    * Initialize data.
@@ -468,8 +469,7 @@ Backbone.$.ajaxSetup({
         });
         return;
       }
-      var question = p4_en.questions.get(id);
-      p4_en.new_question_view.model = question;
+      p4_en.new_question_view.model = p4_en.questions.get(id);
       $('#new-question-div').html(p4_en.new_question_view.render().$el);
     });
 

@@ -137,14 +137,16 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				}
 
 				// Get EN Forms.
-				$query = new \WP_Query( [
-					'post_status'      => 'publish',
-					'post_type'        => Enform_Post_Controller::POST_TYPE,
-					'orderby'          => 'post_title',
-					'order'            => 'asc',
-					'suppress_filters' => false,
-					'numberposts'      => 100,
-				] );
+				$query = new \WP_Query(
+					[
+						'post_status'      => 'publish',
+						'post_type'        => Enform_Post_Controller::POST_TYPE,
+						'orderby'          => 'post_title',
+						'order'            => 'asc',
+						'suppress_filters' => false,
+						'numberposts'      => 100,
+					]
+				);
 				$forms = $query->posts;
 
 				$forms_options = [
