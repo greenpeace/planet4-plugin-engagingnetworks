@@ -3,7 +3,7 @@
 </script>
 
 <script type="text/html" id="tmpl-en-selected-field">
-	<tr class="field-item" data-en-id="<%= id %>" data-en-name="<%= name %>">
+	<tr class="field-item" data-en-id="<%= id %>" data-en-name="<%= name %>" data-en-type="<%= en_type %>">
 		<td><a><span class="dashicons dashicons-sort pointer"></span></a></td>
 		<td style="width:25%;"><%= name %></td>
 		<td><%= en_type %></td>
@@ -11,7 +11,7 @@
 			<input type="checkbox" data-attribute="required" <% print( required ?  'checked': '') %> <% print( input_type=='hidden' ?  ' disabled': '') %>	/>
 		</td>
 		<td>
-			<input type="text" data-attribute="label" value="<%= label %>" <% print( input_type=='hidden' ?  ' disabled': '') %> />
+			<input type="text" data-attribute="label" value="<%- label %>" <% print( input_type=='hidden' || en_type=='OPT' ?  ' disabled': '') %> />
 		</td>
 		<td>
 			<select class="field-type-select" data-attribute="input_type">
@@ -52,6 +52,23 @@
 				   value="<%= js_validate_function %>"/>
 		</div>
 		</p>
+	</div>
+</script>
 
+<script type="text/html" id="tmpl-en-question-dialog">
+	<div style="display: none;" class="dialog" data-en-id="<%= id %>">
+		<p>{{ __( 'Opt-in customization', 'planet4-engagingnetworks' ) }}</p>
+		<p>
+			<label class="control-label">{{ __( 'Locale', 'planet4-engagingnetworks' ) }}</label>
+			<div>
+				<select class="form-control question-locale-select" data-attribute="locales">
+					<% _.each( locales, function( label_option, locale ) { %>
+					<option value="<%= label_option %>" <% print( label == label_option ?  'selected': '') %>><%= locale %></option>
+					<% }); %>
+				</select>
+			</div>
+			<br /><strong>{{ __( 'Opt-in label', 'planet4-engagingnetworks' ) }}</strong>
+			<br /><label class="question-label"></label>
+		</p>
 	</div>
 </script>

@@ -10,7 +10,6 @@ namespace P4EN\Controllers\Blocks;
 use P4EN\Controllers\Ensapi_Controller as Ensapi;
 use P4EN\Controllers\Menu\Pages_Datatable_Controller;
 use P4EN\Models\Questions_Model;
-use Timber\Timber;
 
 if ( ! class_exists( 'ENForm_Controller' ) ) {
 
@@ -70,7 +69,7 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
 					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.7', true );
-					
+
 					wp_localize_script( 'en-ui', 'p4_enblock', $translation_array );
 					wp_enqueue_script( 'en-ui' );
 				}

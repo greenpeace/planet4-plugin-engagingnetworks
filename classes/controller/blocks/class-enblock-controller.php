@@ -143,6 +143,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					'orderby'          => 'post_title',
 					'order'            => 'asc',
 					'suppress_filters' => false,
+					'numberposts'      => 100,
 				] );
 				$forms = $query->posts;
 
