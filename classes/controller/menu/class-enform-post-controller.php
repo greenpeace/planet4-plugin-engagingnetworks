@@ -9,6 +9,7 @@ namespace P4EN\Controllers\Menu;
 
 use P4EN\Controllers\Enform_Fields_List_Table;
 use P4EN\Controllers\Enform_Questions_List_Table;
+use P4EN\Controllers\Ensapi_Controller as Ensapi;
 
 if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 
@@ -53,6 +54,9 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 			add_action( 'add_meta_boxes', [ $this, 'add_questions_custom_box' ] );
 			add_action( 'add_meta_boxes', [ $this, 'add_optins_custom_box' ] );
 			add_action( 'save_post_' . self::POST_TYPE, [ $this, 'save_fields_meta_box' ], 10, 2 );
+
+			add_action( 'wp_ajax_get_supporter_question_by_id', [ $this, 'get_supporter_question_by_id' ] );
+			add_action( 'wp_ajax_nopriv_get_supporter_question_by_id', [ $this, 'get_supporter_question_by_id' ] );
 		}
 
 		/**
@@ -327,6 +331,22 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		}
 
 		/**
+		 * Retrieves data of a specific question/opt-in.
+		 */
+		public function get_supporter_question_by_id() {
+			// If this is an ajax call.
+			if ( wp_doing_ajax() ) {
+				$id                = filter_input( INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT );
+				$main_settings     = get_option( 'p4en_main_settings' );
+				$ens_private_token = $main_settings['p4en_private_api'];
+				$ens_api           = new Ensapi( $ens_private_token );
+				$response          = $ens_api->get_supporter_question_by_id( $id );
+
+				wp_send_json( $response );
+			}
+		}
+
+		/**
 		 * Add underscore templates to footer.
 		 */
 		public function print_admin_footer_scripts() {
@@ -374,7 +394,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 		/**
 		 * Saves the p4 enform fields of the Post.
 		 *
-		 * @param int $post_id The ID of the current Post.
+		 * @param int      $post_id The ID of the current Post.
 		 * @param \WP_Post $post The current Post.
 		 */
 		public function save_fields_meta_box( $post_id, $post ) {

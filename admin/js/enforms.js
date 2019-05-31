@@ -1,4 +1,4 @@
-/* global jQuery, Backbone, _ */
+/* global ajaxurl, jQuery, Backbone, _ */
 
 jQuery(function ($) {
 
@@ -14,8 +14,30 @@ jQuery(function ($) {
       en_type: $(this).data('type'),
       property: $(this).data('property'),
       id: $(this).data('id'),
+      locales: {},
     };
-    p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
+
+    // If we add an Opt-in then retrieve the labels for all locales that exist for it from EN.
+    if( 'OPT' === field_data.en_type ) {
+      $.ajax({
+        url: ajaxurl,
+        type: 'GET',
+        data: {
+          action: 'get_supporter_question_by_id',
+          id: $(this).data('id')
+        },
+      }).done(function (response) {
+        $.each(response, function (i, value) {
+          let label = value.content.data[0].label;
+          field_data['locales'][value.locale] = _.escape( label );
+        });
+        p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
+      }).fail(function (response) {
+        console.log(response); //eslint-disable-line no-console
+      });
+    } else {
+      p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
+    }
   });
 
   /**
@@ -70,6 +92,7 @@ var p4_enform = (function ($) {
       hidden: false,
       required: false,
       input_type: '0',
+      locales: {},
     }
   });
 
@@ -158,10 +181,10 @@ var p4_enform = (function ($) {
       $('tr[data-en-name="Email"] span.remove-en-field').remove();
       $('tr[data-en-name="Email"] input[data-attribute="required"]').prop('checked', true).prop('disabled', true);
       $('tr[data-en-name="Email"] select[data-attribute="input_type"]').val('email').prop('disabled', true);
-      emailModel = this.collection.findWhere({property: 'emailAddress'});
+      let emailModel = this.collection.findWhere({property: 'emailAddress'});
       if ('undefined' !== typeof emailModel) {
         emailModel.set('input_type', 'email')
-                  .set('required', true);
+          .set('required', true);
       }
     }
   });
@@ -178,7 +201,7 @@ var p4_enform = (function ($) {
       'keyup input[type="text"]': 'inputChanged',
       'change input[type="text"]': 'inputChanged',
       'change input[type="checkbox"]': 'checkboxChanged',
-      'change select': 'selectChanged',
+      'change select.field-type-select': 'selectChanged',
       'sort-field': 'sortField'
     },
 
@@ -210,17 +233,22 @@ var p4_enform = (function ($) {
      * Register event listener for field type select box.
      */
     selectChanged(event) {
-      var value = $(event.target).val();
-      var $tr = $(event.target).closest('tr');
-      var id = $tr.data('en-id');
-      var attr = $(event.target).data('attribute');
+      var value   = $(event.target).val();
+      var $tr     = $(event.target).closest('tr');
+      var id      = $tr.data('en-id');
+      var attr    = $(event.target).data('attribute');
+      var en_type = this.model.get('en_type');
       this.model.set(attr, value);
 
+      $tr.find('.dashicons-edit').parent().remove();
       if ('text' === value) {
         this.createFieldDialog();
       } else if ('hidden' === value) {
         this.$el.find('input[data-attribute="required"]').prop('checked', false).trigger('change').prop('disabled', true);
         this.$el.find('input[data-attribute="label"]').val('').trigger('change').prop('disabled', true);
+        this.createFieldDialog();
+      } else if ('OPT' === en_type) {
+        this.$el.find('input[data-attribute="label"]').trigger('change').prop('disabled', true);
         this.createFieldDialog();
       } else {
         if (null !== this.dialog_view) {
@@ -228,12 +256,13 @@ var p4_enform = (function ($) {
           this.dialog_view = null;
         }
         $('body').find('.dialog-' + id).remove();
-        $tr.find('.dashicons-edit').remove();
       }
 
       if ('hidden' !== value) {
         this.$el.find('input[data-attribute="required"]').prop('disabled', false);
-        this.$el.find('input[data-attribute="label"]').prop('disabled', false);
+        if ('OPT' !== en_type) {
+          this.$el.find('input[data-attribute="label"]').prop('disabled', false);
+        }
       }
     },
 
@@ -249,21 +278,26 @@ var p4_enform = (function ($) {
      */
     createFieldDialog: function () {
       var input_type = this.model.get('input_type');
-      var tmpl = '';
-      if ('hidden' === input_type) {
-        tmpl = '#tmpl-en-hidden-field-dialog';
-      }
-      if ('text' === input_type) {
-        tmpl = '#tmpl-en-text-field-dialog';
+      var en_type    = this.model.get('en_type');
+      var tmpl       = '';
+
+      if ( 'Field' === en_type || 'GEN' === en_type ) {
+        if ('hidden' === input_type) {
+          tmpl = '#tmpl-en-hidden-field-dialog';
+        } else if ('text' === input_type) {
+          tmpl = '#tmpl-en-text-field-dialog';
+        }
+
+        if (null !== this.dialog_view) {
+          this.dialog_view.destroy();
+          $('body').find('.dialog-' + this.model.id).remove();
+          this.$el.find('.dashicons-edit').parent().remove();
+        }
+      } else if ( 'OPT' === en_type ) {
+        tmpl = '#tmpl-en-question-dialog';
       }
 
-      if (null !== this.dialog_view) {
-        this.dialog_view.destroy();
-        $('body').find('.dialog-' + this.model.id).remove();
-        this.$el.find('.dashicons-edit').remove();
-      }
-
-      if (('text' === input_type || 'hidden' === input_type)) {
+      if ( tmpl ) {
         this.dialog_view = new app.Views.FieldDialog({row: this.model.id, model: this.model, template: tmpl});
       }
     },
@@ -315,6 +349,7 @@ var p4_enform = (function ($) {
       'keyup input': 'inputChanged',
       'change input[type="text"]': 'inputChanged',
       'change input[type="checkbox"]': 'checkboxChanged',
+      'change .question-locale-select': 'localeChanged',
     },
 
     /**
@@ -324,21 +359,39 @@ var p4_enform = (function ($) {
      */
     inputChanged(event) {
       var $target = $(event.target);
-      var value = $target.val();
-      var attr = $target.data('attribute');
+      var value   = $target.val();
+      var attr    = $target.data('attribute');
       this.model.set(attr, value);
     },
 
     /**
-     * Handles input checkbox value changes and stores them to the model
+     * Handles input checkbox value changes and stores them to the model.
      *
      * @param event Event object.
      */
     checkboxChanged(event) {
       var $target = $(event.target);
-      var value = $target.is(':checked');
-      var attr = $target.data('attribute');
+      var value   = $target.is(':checked');
+      var attr    = $target.data('attribute');
       this.model.set(attr, value);
+    },
+
+    /**
+     * Handles locale select changes and stores them to the model.
+     *
+     * @param event Event object.
+     */
+    localeChanged(event) {
+      let $dialog  = $(event.target).closest('div.dialog');
+      let field_id = $dialog.attr('data-en-id');
+      let label    = $(event.target).val();
+
+      $('.question-label', $dialog).html( $(event.target).val() );
+      $('input[data-attribute="label"]', $('tr[data-en-id="' + field_id + '"]'))
+        .prop('disabled', false)
+        .val( label )
+        .trigger('change')
+        .prop('disabled', true);
     },
 
     /**
@@ -348,9 +401,9 @@ var p4_enform = (function ($) {
      */
     initialize: function (options) {
       this.template = _.template($(options.template).html());
-      this.rowid = options.row;
-      this.row = $('tr[data-en-id="' + this.rowid + '"]');
-      this.model = options.model;
+      this.rowid    = options.row;
+      this.row      = $('tr[data-en-id="' + this.rowid + '"]');
+      this.model    = options.model;
       this.render();
     },
 
@@ -375,8 +428,9 @@ var p4_enform = (function ($) {
         },
       });
 
-      this.el = '.dialog-' + this.rowid;
-      this.$el = $(this.el).find('.ui-dialog-content');
+      this.el   = '.dialog-' + this.rowid;
+      this.$el  = $(this.el).find('.ui-dialog-content');
+      let label = $('.question-locale-select', this.$el).val();
       this.delegateEvents();
 
       var dialog = this.dialog;
@@ -384,6 +438,10 @@ var p4_enform = (function ($) {
         e.preventDefault();
         dialog.dialog('open');
       });
+
+      // Handle Label selection.
+      $('.question-label', this.$el).html( label );
+      $('.question-locale-select').change();
     },
 
     /**
@@ -395,6 +453,7 @@ var p4_enform = (function ($) {
       this.model.set('default_value', '');
       this.model.set('js_validate_function', '');
       this.model.set('hidden', false);
+      this.model.set('locales', {});
       this.remove();
     }
   });

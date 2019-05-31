@@ -74,7 +74,7 @@
 									{{ 'true' == field.required ? 'required' : '' }}
 								/>
 								<span class="custom-control-description">
-									{{ field.label }}{{ 'true' == field.required ? '*' : '' }}
+									{{ field.label|e('wp_kses_post')|raw }}{{ 'true' == field.required ? '*' : '' }}
 								</span>
 							</label>
 						</div>

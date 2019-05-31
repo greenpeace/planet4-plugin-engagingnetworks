@@ -62,13 +62,13 @@ if ( ! class_exists( 'Pages_Datatable_Controller' ) ) {
 			$current_user = wp_get_current_user();
 
 			if ( in_array( 'administrator', $current_user->roles, true ) || in_array( 'editor', $current_user->roles, true ) ) {
-				add_menu_page(
-					'EngagingNetworks',
-					'EngagingNetworks',
-					'edit_pages',
+				add_submenu_page(
 					P4EN_PLUGIN_SLUG_NAME,
-					'',
-					P4EN_ADMIN_DIR . 'images/logo_menu_page_16x16.jpg'
+					__( 'EN Pages', 'planet4-engagingnetworks' ),
+					__( 'EN Pages', 'planet4-engagingnetworks' ),
+					'edit_pages',
+					'en-pages',
+					[ $this, 'prepare_pages_datatable' ]
 				);
 			}
 		}

@@ -295,6 +295,42 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		}
 
 		/**
+		 * Gets specific questions/optin that exists in the EN client account.
+		 *
+		 * @param int $question_id The id of the question/optin.
+		 *
+		 * @return array|string Array with the fields or a message if something goes wrong.
+		 */
+		public function get_supporter_question_by_id( $question_id ) {
+			$response['body'] = get_transient( 'ens_supporter_question_by_id_response_' . $question_id );
+			if ( ! $response['body'] ) {
+				$url = self::ENS_SUPPORTER_URL . '/questions/' . $question_id;
+
+				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
+				$response = wp_safe_remote_get(
+					$url,
+					[
+						'headers' => [
+							'ens-auth-token' => $this->ens_auth_token,
+							'Content-Type'   => 'application/json; charset=UTF-8',
+						],
+						'timeout' => self::ENS_CALL_TIMEOUT,
+					]
+				);
+
+				// Authentication failure.
+				if ( is_wp_error( $response ) ) {
+					return $response->get_error_message() . ' ' . $response->get_error_code();
+
+				} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
+					return $response['response']['message'] . ' ' . $response['response']['code'];
+				}
+				set_transient( 'ens_supporter_question_by_id_response_' . $question_id, (string) $response['body'], self::ENS_CACHE_TTL );
+			}
+			return json_decode( $response['body'], true );
+		}
+
+		/**
 		 * Authenticates usage of ENS API calls.
 		 *
 		 * @param string $email The supporter's email address.
