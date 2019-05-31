@@ -68,8 +68,11 @@ if ( ! class_exists( 'ENForm_Controller' ) ) {
 				'enqueue_shortcode_ui',
 				function () {
 					wp_enqueue_script( 'en-ui-heading-view', P4EN_ADMIN_DIR . 'js/en_ui_heading_view.js', [ 'shortcode-ui' ], '0.1', true );
-					wp_register_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.7', true );
+					wp_enqueue_script( 'en-ui', P4EN_ADMIN_DIR . 'js/en_ui.js', [ 'shortcode-ui' ], '0.7', true );
 
+					$translation_array = [
+						'block_name' => self::BLOCK_NAME,
+					];
 					wp_localize_script( 'en-ui', 'p4_enblock', $translation_array );
 					wp_enqueue_script( 'en-ui' );
 				}

@@ -1,36 +1,37 @@
+/* global _, sui, wp */
 var editAttributeHeadingEN = sui.views.editAttributeField.extend({
-	tagName: "span",
-	className: 'en-attribute-wrapper',
-	events: {
-		'change input[type="radio"]': 'inputChanged',
-	},
-	inputChanged: function (e) {
-		var $el;
+  tagName: 'span',
+  className: 'en-attribute-wrapper',
+  events: {
+    'change input[type="radio"]': 'inputChanged',
+  },
+  inputChanged: function () {
+    var $el;
 
-		if (this.model.get('attr')) {
-			$el = this.$el.find('[name="' + this.model.get('attr') + '"]');
-		}
+    if (this.model.get('attr')) {
+      $el = this.$el.find('[name="' + this.model.get('attr') + '"]');
+    }
 
-		if ('p4en_radio' === this.model.attributes.type) {
-			this.setValue($el.filter(':checked').first().val());
-		}
+    if ('p4en_radio' === this.model.attributes.type) {
+      this.setValue($el.filter(':checked').first().val());
+    }
 
-		this.triggerCallbacks();
-	},
+    this.triggerCallbacks();
+  },
 
-	setValue: function (val) {
-		this.model.set('value', val);
-	},
+  setValue: function (val) {
+    this.model.set('value', val);
+  },
 
-	triggerCallbacks: function () {
-		var shortcodeName = this.shortcode.attributes.shortcode_tag,
-			attributeName = this.model.get('attr'),
-			hookName = [shortcodeName, attributeName].join('.'),
-			changed = this.model.changed,
-			collection = _.flatten(_.values(this.views.parent.views._views)),
-			shortcode = this.shortcode;
+  triggerCallbacks: function () {
+    var shortcodeName = this.shortcode.attributes.shortcode_tag,
+      attributeName   = this.model.get('attr'),
+      hookName        = [shortcodeName, attributeName].join('.'),
+      changed         = this.model.changed,
+      collection      = _.flatten(_.values(this.views.parent.views._views)),
+      shortcode       = this.shortcode;
 
-		/*
+    /*
 		 * Action run when an attribute value changes on a shortcode
 		 *
 		 * Called as `{shortcodeName}.{attributeName}`.
@@ -43,15 +44,15 @@ var editAttributeHeadingEN = sui.views.editAttributeField.extend({
 		 * @param shortcode (object)
 		 *           Reference to the shortcode model which this attribute belongs to.
 		 */
-		wp.shortcake.hooks.doAction(hookName, changed, collection, shortcode);
+    wp.shortcake.hooks.doAction(hookName, changed, collection, shortcode);
 
-		const en_form_style = $('input[name=' + attributeName + ']:checked').val();
-		if ('full-width' == en_form_style) {
-			$("#background").prop('disabled', 'disabled');
-		} else if ('full-width-bg' == en_form_style) {
-			$("#background").prop('disabled', false);
-		}
-	}
+    const en_form_style = $('input[name=' + attributeName + ']:checked').val();
+    if ('full-width' === en_form_style) {
+      $('#background').prop('disabled', 'disabled');
+    } else if ('full-width-bg' === en_form_style) {
+      $('#background').prop('disabled', false);
+    }
+  }
 });
 
 sui.views.editAttributeHeadingEN = editAttributeHeadingEN;
