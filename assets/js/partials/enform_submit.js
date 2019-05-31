@@ -85,7 +85,18 @@ var p4_enform_frontend = (function ($) {
         formIsValid = false;
       }
 
-      var callbackFunction = $(this).attr('validate_callback');
+      var regexPattern = $(this).attr('data-validate_regex');
+      if (regexPattern) {
+        var regex = new RegExp(regexPattern);
+        var res = regex.test(formValue);
+        if (!res) {
+          enform.addErrorMessage(this, $(this).attr('data-validate_regex_msg'));
+          formIsValid = false;
+        }
+      }
+
+
+      var callbackFunction = $(this).attr('data-validate_callback');
       if ('function' === typeof window[callbackFunction]) {
         var validateField = window[callbackFunction]($(this).val());
         if (true !== validateField) {

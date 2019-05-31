@@ -52,7 +52,9 @@
 								class="en__field__input en__field__input--text form-control"
 								value="{{ value }}"
 								data-errormessage="{{ errorMessage }}"
-								validate_callback="{{ field.js_validate_function }}"
+								data-validate_regex="{{ field.js_validate_regex }}"
+								data-validate_regex_msg="{{ field.js_validate_regex_msg }}"
+								data-validate_callback="{{ field.js_validate_function }}"
 								{% if en_form_style != 'side-style' %}
 									placeholder="{{ field.label }}{{ 'Birth' in field.name ? ' (yyyy-mm-dd)' : '' }}{{ 'true' == field.required ? '*' : '' }}"
 								{% endif %}
