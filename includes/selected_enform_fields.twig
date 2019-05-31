@@ -45,13 +45,30 @@
 <script type="text/html" id="tmpl-en-text-field-dialog">
 	<div style="display: none;" class="dialog">
 		<p>{{ __( 'Text Field customization', 'planet4-engagingnetworks' ) }}</p>
-		<p>
-			<label class="control-label">{{ __( 'JS Function validation callback', 'planet4-engagingnetworks' ) }}</label>
+		<hr>
+		<p>{{ __( 'The next two fields handle the validation of the text input. If both regex and function name are entered, only the regex will be used.', 'planet4-engagingnetworks' ) }}</p>
+		<hr>
+		<label class="control-label">{{ __( 'JS Function validation regex', 'planet4-engagingnetworks' ) }}</label>
 		<div>
+			<p>Use the regex <b>without</b> leading and trailing / character</p>
+			<p> <a href="https://planet4.greenpeace.org/handbook/block-form/#regex-validation" target="_blank"> Documentation in handbook </a></p>
+			<input type="text" class="form-control" data-attribute="js_validate_regex"
+				   value="<%= js_validate_regex %>"/>
+		</div>
+		<label class="control-label">{{ __( 'JS validation regex error message', 'planet4-engagingnetworks' ) }}</label>
+		<div>
+			<input type="text" class="form-control" data-attribute="js_validate_regex_msg"
+				   value="<%= js_validate_regex_msg %>"/>
+		</div>
+
+		<hr>
+		<label class="control-label">{{ __( 'JS Function validation callback', 'planet4-engagingnetworks' ) }}</label>
+		<div>
+			<p><a href="https://planet4.greenpeace.org/handbook/block-form/#callback-js-function" target="_blank">
+					Documentation in handbook </a></p>
 			<input type="text" class="form-control" data-attribute="js_validate_function"
 				   value="<%= js_validate_function %>"/>
 		</div>
-		</p>
 	</div>
 </script>
 
