@@ -19,16 +19,6 @@ if ( ! class_exists( 'Questions_Settings_Controller' ) ) {
 		 */
 		public function create_admin_menu() {
 
-			if ( current_user_can( 'manage_options' ) ) {
-				add_submenu_page(
-					P4EN_PLUGIN_SLUG_NAME,
-					__( 'Questions Settings', 'planet4-engagingnetworks' ),
-					__( 'Questions Settings', 'planet4-engagingnetworks' ),
-					'manage_options',
-					'questions-settings',
-					[ $this, 'prepare_page' ]
-				);
-			}
 		}
 
 		/**

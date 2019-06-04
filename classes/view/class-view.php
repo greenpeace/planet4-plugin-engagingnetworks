@@ -122,6 +122,24 @@ if ( ! class_exists( 'View' ) ) {
 		}
 
 		/**
+		 * Render EN Form Post.
+		 *
+		 * @param array $data All the data needed to render the template.
+		 */
+		public function enform_post( $data ) {
+			$this->view_template( __FUNCTION__, $data );
+		}
+
+		/**
+		 * Render the Selected Components meta box for EN Forms.
+		 *
+		 * @param array $data All the data needed to render the template.
+		 */
+		public function selected_meta_box( $data ) {
+			$this->view_template( __FUNCTION__, $data );
+		}
+
+		/**
 		 * Displays a message.
 		 *
 		 * @param array $data All the data needed to render the template.

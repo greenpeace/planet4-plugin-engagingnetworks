@@ -20,6 +20,15 @@ if ( ! class_exists( 'Settings_Controller' ) ) {
 		public function create_admin_menu() {
 
 			if ( current_user_can( 'manage_options' ) ) {
+				add_menu_page(
+					'EngagingNetworks',
+					'EngagingNetworks',
+					'edit_pages',
+					P4EN_PLUGIN_SLUG_NAME,
+					'',
+					P4EN_ADMIN_DIR . 'images/logo_menu_page_16x16.jpg'
+				);
+
 				add_submenu_page(
 					P4EN_PLUGIN_SLUG_NAME,
 					__( 'Settings', 'planet4-engagingnetworks' ),

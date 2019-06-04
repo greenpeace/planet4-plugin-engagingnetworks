@@ -1,11 +1,13 @@
+/* global p4_enblock, wp, shortcodeUIFieldData */
+
 jQuery(function ($) {
   'use strict';
 
   if ('undefined' !== typeof (wp.shortcake)) {
     shortcodeUIFieldData.p4en_radio = {
       encode: false,
-      template: "shortcode-ui-field-p4-en-radio",
-      view: "editAttributeHeadingEN"
+      template: 'shortcode-ui-field-p4-en-radio',
+      view: 'editAttributeHeadingEN'
     };
 
     var p4_en_blocks = {
@@ -18,29 +20,27 @@ jQuery(function ($) {
          */
         render_new: function (shortcode) {
 
-          this.add_en_fields_separator();
-
           // Get filtered fields.
           var filtered = this.filter_enform_fields(shortcode);
 
           // Hide all mandatory checkboxes for new enforms.
-          $("input[name$='__mandatory']").parent().parent().hide();
+          $('input[name$="__mandatory"]').parent().parent().hide();
 
           filtered.forEach(function (element) {
-            let attr_name    = element.get("attr");
-            let element_name = element.get("name");
-            let $element     = $("input[name='" + attr_name + "']");
+            let attr_name    = element.get('attr');
+            let element_name = element.get('name');
+            let $element     = $('input[name="' + attr_name + '"]');
 
             if ( 'emailAddress' === element_name ) {
               $element
-                  .click()  // Do click instead of setting checked property, because shortcake needs to catch the click event.
-                  .attr('readonly', 'readonly')
-                  .attr('onclick', 'return false;');
-              $("input[name=" + attr_name + "__mandatory]")
-                  .click()
-                  .attr('readonly', 'readonly')
-                  .attr('onclick',  'return false;')
-                  .parent().parent().show();
+                .click()  // Do click instead of setting checked property, because shortcake needs to catch the click event.
+                .attr('readonly', 'readonly')
+                .attr('onclick', 'return false;');
+              $('input[name=' + attr_name + '__mandatory]')
+                .click()
+                .attr('readonly', 'readonly')
+                .attr('onclick',  'return false;')
+                .parent().parent().show();
             }
           });
 
@@ -62,29 +62,27 @@ jQuery(function ($) {
          */
         render_edit: function (shortcode) {
 
-          this.add_en_fields_separator();
-
           // Get filtered fields
           var filtered = this.filter_enform_fields(shortcode);
 
           // Hide all mandatory checkboxes for non selected en fields.
           filtered.forEach(function (element) {
-            let attr_name    = element.get("attr");
-            let element_name = element.get("name");
-            let $element     = $("input[name='" + attr_name + "']");
+            let attr_name    = element.get('attr');
+            let element_name = element.get('name');
+            let $element     = $('input[name="' + attr_name + '"]');
 
             if (!$element.is(':checked')) {
-              $("input[name='" + attr_name + "__mandatory']").parent().parent().hide();
+              $('input[name="' + attr_name + '__mandatory"]').parent().parent().hide();
             }
 
             if ( 'emailAddress' === element_name ) {
               $element
-                  .attr('readonly', 'readonly')
-                  .attr('onclick',  'return false;');
-              $("input[name=" + attr_name + "__mandatory]")
-                  .attr('readonly', 'readonly')
-                  .attr('onclick',  'return false;')
-                  .parent().parent().show();
+                .attr('readonly', 'readonly')
+                .attr('onclick',  'return false;');
+              $('input[name=' + attr_name + '__mandatory]')
+                .attr('readonly', 'readonly')
+                .attr('onclick',  'return false;')
+                .parent().parent().show();
             }
           });
 
@@ -108,7 +106,7 @@ jQuery(function ($) {
           var required_is_empty = false;
 
           $('[required]:visible', $('.edit-shortcode-form')).each( function() {
-          	if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
+            if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
               $(this).addClass('enform-required-field');
 
               if ( ! required_is_empty ) {
@@ -121,7 +119,7 @@ jQuery(function ($) {
           // Here we have to prevent the block from Updating so the only way to do this at this point
           // is to stop JS execution by throwing an error.
           if ( required_is_empty ) {
-            throw new Error("Required field is empty!");
+            throw new Error('Required field is empty!');
           }
 
           // Prepend Protocol to URL if user has not provided it.
@@ -156,13 +154,13 @@ jQuery(function ($) {
          */
         filter_enform_fields: function (shortcode) {
           return shortcode.attributes.attrs.filter(function (field) {
-            return ( field.get("attr").match(/^\d+/) || field.get("attr").match(/^field__+/) ) && !field.get("attr").match(/_mandatory$/);
+            return ( field.get('attr').match(/^\d+/) || field.get('attr').match(/^field__+/) ) && !field.get('attr').match(/_mandatory$/);
           });
         },
 
         get_filtered_names: function (filtered) {
           return filtered.map(function (field) {
-            return field.get("attr");
+            return field.get('attr');
           });
         },
 
@@ -178,7 +176,7 @@ jQuery(function ($) {
 
           // Get jquery objects for each element.
           var element_list = $.map(fields_names, function (el) {
-            return $("input[name='" + el + "']").get()
+            return $('input[name="' + el + '"]').get();
           });
 
           // Add click event handlers for the elements.
@@ -191,9 +189,9 @@ jQuery(function ($) {
             }
 
             if ($element.is(':checked')) {
-              $("input[name='" + element_name + "__mandatory']").parent().parent().show();
+              $('input[name="' + element_name + '__mandatory"]').parent().parent().show();
             } else {
-              $("input[name='" + element_name + "__mandatory']").prop('checked', false).parent().parent().hide();
+              $('input[name="' + element_name + '__mandatory"]').prop('checked', false).parent().parent().hide();
             }
           });
         },
@@ -210,22 +208,17 @@ jQuery(function ($) {
 
           // Remove click events for filtered en fields.
           var filtered_objects = $.map(filtered_names, function (element_name) {
-            return $("input[name='" + element_name + "']").get()
+            return $('input[name="' + element_name + '"]').get();
           });
           $(filtered_objects).off('click');
         },
 
-        add_en_fields_separator: function () {
-          var $desc_div = $('.shortcode-ui-attribute-thankyou_url').parent();
-          $desc_div.append('<p><h3>' + p4_en_blocks_enform_translations.en_fields_description_1 + '</h3>' +
-            '(' + p4_en_blocks_enform_translations.en_fields_description_2 + ')</p>');
-        },
       }
     };
 
     // Attach hooks when rendering a new en block.
     wp.shortcake.hooks.addAction('shortcode-ui.render_new', function (shortcode) {
-      if ('shortcake_enform' === shortcode.get('shortcode_tag')) {
+      if ('shortcake_' + p4_enblock.block_name === shortcode.get('shortcode_tag')) {
         // Call enform render new function.
         p4_en_blocks.enform.render_new(shortcode);
       }
@@ -233,7 +226,7 @@ jQuery(function ($) {
 
     // Attach hooks when destroying an en block.
     wp.shortcake.hooks.addAction('shortcode-ui.render_destroy', function (shortcode) {
-      if ('shortcake_enform' === shortcode.get('shortcode_tag')) {
+      if ('shortcake_' + p4_enblock.block_name === shortcode.get('shortcode_tag')) {
         // Call enform render destroy function.
         p4_en_blocks.enform.render_destroy(shortcode);
       }
@@ -241,7 +234,7 @@ jQuery(function ($) {
 
     // Attach hooks when editing an existing en block.
     wp.shortcake.hooks.addAction('shortcode-ui.render_edit', function (shortcode) {
-      if ('shortcake_enform' === shortcode.get('shortcode_tag')) {
+      if ('shortcake_' + p4_enblock.block_name === shortcode.get('shortcode_tag')) {
         // Call enform render edit function.
         p4_en_blocks.enform.render_edit(shortcode);
       }

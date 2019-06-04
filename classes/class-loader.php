@@ -22,24 +22,28 @@ if ( ! class_exists( 'Loader' ) ) {
 		 * @var Loader $instance
 		 */
 		private static $instance;
+
 		/**
 		 * Indexed array of all the classes/services that are needed.
 		 *
 		 * @var array $services
 		 */
 		private $services;
+
 		/**
 		 * An instance of the View class.
 		 *
 		 * @var Views\View $view
 		 */
 		private $view;
+
 		/**
 		 * Required PHP version
 		 *
 		 * @var string $required_php
 		 */
 		private $required_php = P4EN_REQUIRED_PHP;
+
 		/**
 		 * Required Plugins
 		 *
@@ -56,7 +60,7 @@ if ( ! class_exists( 'Loader' ) ) {
 		 *
 		 * @return Loader
 		 */
-		public static function get_instance( $services, $view_class ) : Loader {
+		public static function get_instance( $services = array(), $view_class ) : Loader {
 			if ( ! isset( self::$instance ) ) {
 				self::$instance = new self( $services, $view_class );
 			}
@@ -93,9 +97,8 @@ if ( ! class_exists( 'Loader' ) ) {
 							$class_name_parts = explode( '\\', $class_name );
 							$real_class_name  = array_pop( $class_name_parts );
 							$file_name        = 'class-' . str_ireplace( '_', '-', strtolower( $real_class_name ) );
-
-							$namespace = implode( '\\', $class_name_parts );
-							$path      = str_ireplace(
+							$namespace        = implode( '\\', $class_name_parts );
+							$path             = str_ireplace(
 								[ 'P4EN', 'Controllers', 'Views', 'Models', '_', '\\' ],
 								[ '', 'controller', 'view', 'model', '-', '/' ],
 								strtolower( $namespace )
@@ -260,7 +263,7 @@ if ( ! class_exists( 'Loader' ) ) {
 				wp_enqueue_script( 'p4en_datatables', 'https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js', array( 'p4en_jquery' ), '1.10.15', true );
 				wp_enqueue_script( 'p4en_datatables_bootstrap', 'https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js', array( 'p4en_datatables' ), '1.10.15', true );
 			}
-			wp_enqueue_style( 'p4en_admin_style', P4EN_ADMIN_DIR . 'css/admin.css', array(), '0.2' );
+			wp_enqueue_style( 'p4en_admin_style', P4EN_ADMIN_DIR . 'css/admin.css', array(), '0.3' );
 			wp_enqueue_script( 'p4en_admin_script', P4EN_ADMIN_DIR . 'js/admin.js', array(), '0.2', true );
 		}
 

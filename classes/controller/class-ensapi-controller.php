@@ -108,11 +108,12 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				foreach ( $types as $type ) {
 					$params['type'] = $type;
 					$response       = $this->get_pages( $params );
-					if ( is_array( $response ) && $response['body'] ) {
-						$pages[ $params['type'] ] = json_decode( $response['body'], true );
+					if ( is_array( $response ) ) {
+						$pages[ $params['type'] ] = $response;
 					}
 				}
 			}
+
 			return $pages;
 		}
 
@@ -128,8 +129,8 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 			'status' => self::ENS_STATUS_DEFAULT,
 		) ) {
 
-			$response = get_transient( 'ens_pages_response_' . implode( '_', $params ) );
-			if ( ! $response ) {
+			$response['body'] = get_transient( 'ens_pages_response_' . implode( '_', $params ) );
+			if ( ! $response['body'] ) {
 				$url = add_query_arg(
 					[
 						'type'   => strtolower( $params['type'] ),
@@ -156,9 +157,10 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 					return $response['response']['message'] . ' ' . $response['response']['code'];         // Authentication failed.
 
 				}
-				set_transient( 'ens_pages_response_' . implode( '_', $params ), $response, self::ENS_CACHE_TTL );
+				set_transient( 'ens_pages_response_' . implode( '_', $params ), $response['body'], self::ENS_CACHE_TTL );
 			}
-			return $response;
+
+			return json_decode( $response['body'], true );
 		}
 
 		/**
@@ -230,8 +232,8 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 * @return array|string Array with the fields or a message if something goes wrong.
 		 */
 		public function get_supporter_fields() {
-			$response = get_transient( 'ens_supporter_fields_response' );
-			if ( ! $response ) {
+			$response['body'] = get_transient( 'ens_supporter_fields_response' );
+			if ( ! $response['body'] ) {
 				$url = self::ENS_SUPPORTER_URL . '/fields';
 
 				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
@@ -253,9 +255,9 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
 					return $response['response']['message'] . ' ' . $response['response']['code'];
 				}
-				set_transient( 'ens_supporter_fields_response', $response, self::ENS_CACHE_TTL );
+				set_transient( 'ens_supporter_fields_response', (string) $response['body'], self::ENS_CACHE_TTL );
 			}
-			return $response;
+			return json_decode( $response['body'], true );
 		}
 
 		/**
@@ -264,8 +266,8 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 		 * @return array|string Array with the fields or a message if something goes wrong.
 		 */
 		public function get_supporter_questions() {
-			$response = get_transient( 'ens_supporter_questions_response' );
-			if ( ! $response ) {
+			$response['body'] = get_transient( 'ens_supporter_questions_response' );
+			if ( ! $response['body'] ) {
 				$url = self::ENS_SUPPORTER_URL . '/questions';
 
 				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
@@ -287,9 +289,45 @@ if ( ! class_exists( 'Ensapi_Controller' ) ) {
 				} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
 					return $response['response']['message'] . ' ' . $response['response']['code'];
 				}
-				set_transient( 'ens_supporter_questions_response', $response, self::ENS_CACHE_TTL );
+				set_transient( 'ens_supporter_questions_response', (string) $response['body'], self::ENS_CACHE_TTL );
 			}
-			return $response;
+			return json_decode( $response['body'], true );
+		}
+
+		/**
+		 * Gets specific questions/optin that exists in the EN client account.
+		 *
+		 * @param int $question_id The id of the question/optin.
+		 *
+		 * @return array|string Array with the fields or a message if something goes wrong.
+		 */
+		public function get_supporter_question_by_id( $question_id ) {
+			$response['body'] = get_transient( 'ens_supporter_question_by_id_response_' . $question_id );
+			if ( ! $response['body'] ) {
+				$url = self::ENS_SUPPORTER_URL . '/questions/' . $question_id;
+
+				// With the safe version of wp_remote_{VERB) functions, the URL is validated to avoid redirection and request forgery attacks.
+				$response = wp_safe_remote_get(
+					$url,
+					[
+						'headers' => [
+							'ens-auth-token' => $this->ens_auth_token,
+							'Content-Type'   => 'application/json; charset=UTF-8',
+						],
+						'timeout' => self::ENS_CALL_TIMEOUT,
+					]
+				);
+
+				// Authentication failure.
+				if ( is_wp_error( $response ) ) {
+					return $response->get_error_message() . ' ' . $response->get_error_code();
+
+				} elseif ( is_array( $response ) && \WP_Http::OK !== $response['response']['code'] ) {
+					return $response['response']['message'] . ' ' . $response['response']['code'];
+				}
+				set_transient( 'ens_supporter_question_by_id_response_' . $question_id, (string) $response['body'], self::ENS_CACHE_TTL );
+			}
+			return json_decode( $response['body'], true );
 		}
 
 		/**
