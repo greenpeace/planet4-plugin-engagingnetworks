@@ -19,10 +19,6 @@ Note that a new clean database should be provided as the argument, because datab
     $ bin/install-wp-tests <db-name> <db-user> <db-pass> [db-host]
     $ bin/install-wp-tests planet4_test planet4 planet4 localhost
     ```
-1. Run composer script to install plugin's dependencies and copy them to $WP_TESTS_DIR directory.
-    ```
-    $ composer run-script bootstrap_testing_environment
-    ```
 1. Run phpunit
     ```
     $ phpunit

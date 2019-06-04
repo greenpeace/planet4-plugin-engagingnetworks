@@ -1,12 +1,12 @@
 {% block country_options %}
 	<div class="en__field en__field--select en__field--{{ data.id }} en__field--{{ data.name }}">
 		<div class="en__field__element en__field__element--text form-group" style="display: block;">
-			<select id="en__field_supporter_{{ data.name }}"
-				name="supporter.{{ data.name }}"
+			<select id="en__field_supporter_{{ field.name }}"
+				name="supporter.{{ field.property }}"
 				class="en__field__input en__field__input--select en_select_country form-control"
 				data-errormessage="{{ errorMessage }}"
-				{{ 'true' == data.mandatory ? 'required' : '' }}>
-				<option value="" selected="selected">- {{ __( 'Select Country', domain ) }} -</option>
+				{{ 'true' == field.required ? 'required' : '' }}>
+				<option value="" selected="selected">- {{ __( 'Select Country', 'planet4-engagingnetworks' ) }} -</option>
 				<option value="AF">Afghanistan</option>
 				<option value="AX">Åland Islands</option>
 				<option value="AL">Albania</option>

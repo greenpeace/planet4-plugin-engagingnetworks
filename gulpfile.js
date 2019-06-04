@@ -13,6 +13,7 @@ const plumber = require('gulp-plumber');
 const livereload = require('gulp-livereload');
 
 const path_js = 'assets/js/**/*.js';
+const path_css = 'admin/css/*.css';
 const path_scss = 'assets/scss/**/*.scss';
 const path_style = 'assets/scss/style.scss';
 const path_dest = './';
@@ -25,7 +26,7 @@ let error_handler = {
 };
 
 function lint_css() {
-  return gulp.src(path_scss)
+  return gulp.src([path_css, path_scss])
     .pipe(plumber(error_handler))
     .pipe(stylelint({
       reporters: [{ formatter: 'string', console: true}]
@@ -66,6 +67,7 @@ function uglify() {
 
 function watch() {
   livereload.listen({'port': 35729});
+  gulp.watch(path_css, gulp.series(lint_css));
   gulp.watch(path_scss, gulp.series(lint_css, sass));
   gulp.watch(path_js, gulp.series(lint_js, uglify));
 }

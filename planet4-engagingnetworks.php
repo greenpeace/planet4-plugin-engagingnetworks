@@ -3,7 +3,7 @@
  * Plugin Name: Planet4 - EngagingNetworks
  * Description: Connects Planet4 with the Engaging Networks platform.
  * Plugin URI: http://github.com/greenpeace/planet4-plugin-engagingnetworks
- * Version: 1.8
+ * Version: 2.0.0
  * Php Version: 7.0
  *
  * Author: Greenpeace International
@@ -99,10 +99,10 @@ require_once ABSPATH . 'wp-admin/includes/plugin.php';
  */
 P4EN\Loader::get_instance(
 	[
-		'P4EN\Controllers\Menu\Pages_Datatable_Controller',
+		'P4EN\Controllers\Menu\Enform_Post_Controller',
 		'P4EN\Controllers\Menu\Settings_Controller',
 		'P4EN\Controllers\Blocks\ENForm_Controller',
-		'P4EN\Controllers\Menu\Questions_Settings_Controller',
+		'P4EN\Controllers\Blocks\ENBlock_Controller',
 		'P4EN\Controllers\Api\Rest_Controller',
 	],
 	'P4EN\Views\View'
