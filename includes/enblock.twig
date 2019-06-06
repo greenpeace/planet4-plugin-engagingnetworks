@@ -17,6 +17,7 @@
 
 					{% if fields.en_form_style == 'side-style' %}
 						<div class="form-caption">
+							<div class="caption-overlay"></div>
 							<h1>{{ fields.content_title }}</h1>
 							<p>{{ fields.content_description|e('wp_kses_post')|raw }}</p>
 						</div>
