@@ -221,29 +221,22 @@
   align-items: center;
 
   .caption-overlay {
-    display: none;
+    display: block;
     background: url("public/images/carousel-blurred-overlay.png");
     background-position: bottom right;
     background-size: cover;
     height: 100%;
-    width: 50%;
+    width: 90%;
     position: absolute;
-    opacity: 0;
-    margin-left: -15%;
-    z-index: -1;
+    margin-left: 0;
+    z-index: 1;
 
     html[dir="rtl"] & {
       background-position: bottom left;
     }
 
-    @include large-and-up {
-      margin-top: -176px;
-      display: block;
-      opacity: 1;
-    }
-
-    @include x-large-and-up {
-      width: 580px;
+    @include medium-and-up {
+      width: 50%;
     }
   }
 
@@ -251,11 +244,7 @@
   &::after {
     @include fill-container;
     content: "";
-    background: none;
-
-    @include large-and-up {
-      background: rgba(30, 30, 30, 0.45);
-    }
+    background: rgba(30, 30, 30, 0.45);
   }
 
   picture {
