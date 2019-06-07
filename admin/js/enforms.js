@@ -15,6 +15,7 @@ jQuery(function ($) {
       property: $(this).data('property'),
       id: $(this).data('id'),
       locales: {},
+      radio_options: [],
     };
 
     // If we add an Opt-in then retrieve the labels for all locales that exist for it from EN.
@@ -27,10 +28,25 @@ jQuery(function ($) {
           id: $(this).data('id')
         },
       }).done(function (response) {
-        $.each(response, function (i, value) {
-          let label = value.content.data[0].label;
-          field_data['locales'][value.locale] = _.escape( label );
-        });
+        let label   = '';
+
+        // Checking response type to avoid error if string was returned (in case of an error).
+        if ( 'object' === typeof response ) {
+          $.each(response, function (i, value) {
+
+            if ('undefined' !== typeof value.content.data[0]) {
+              if ('radio' === value.htmlFieldType) {
+                $.each(value.content.data, function (i, value) {
+                  label = value.label;
+                  field_data['radio_options'].push( _.escape(label) );
+                });
+              } else {
+                label = value.content.data[0].label;
+                field_data['locales'][value.locale] = _.escape(label);
+              }
+            }
+          });
+        }
         p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
       }).fail(function (response) {
         console.log(response); //eslint-disable-line no-console
@@ -95,6 +111,7 @@ var p4_enform = (function ($) {
       required: false,
       input_type: '0',
       locales: {},
+      radio_options: [],
     }
   });
 
@@ -296,7 +313,11 @@ var p4_enform = (function ($) {
           this.$el.find('.dashicons-edit').parent().remove();
         }
       } else if ( 'OPT' === en_type ) {
-        tmpl = '#tmpl-en-question-dialog';
+        if ('radio' === input_type) {
+          tmpl = '#tmpl-en-question-radio-dialog';
+        } else {
+          tmpl = '#tmpl-en-question-dialog';
+        }
       }
 
       if ( tmpl ) {
@@ -458,6 +479,7 @@ var p4_enform = (function ($) {
       this.model.set('js_validate_function', '');
       this.model.set('hidden', false);
       this.model.set('locales', {});
+      this.model.set('radio_options', []);
       this.remove();
     }
   });

@@ -81,6 +81,27 @@
 							</label>
 						</div>
 					</div>
+				{% elseif 'radio' == field.input_type %}
+					<div class="en__field en__field--check en__field--{{ field.id }}">
+						<div class="en__field__element en__field__element--check form-group form-check-label-block custom-control p4-custom-control-input">
+							<label class="custom-radio">
+								{% for value, label in field.radio_options %}
+								<input
+										id="en__field_supporter_{{ field.name }}"
+										name="{{ en_input_name }}"
+										type="radio"
+										class="en__field__input en__field__input--radio"
+										value="{{ value }}"
+										data-errormessage="{{ errorMessage }}"
+										{{ 'true' == field.required ? 'required' : '' }}
+								/> {{ label }}
+								{% endfor %}
+								<span class="custom-control-description">
+									{{ field.label|e('wp_kses_post')|raw }}{{ 'true' == field.required ? '*' : '' }}
+								</span>
+							</label>
+						</div>
+					</div>
 				{% elseif 'country' == field.input_type %}
 					<div class="en__field en__field--select en__field--{{ field.id }}">
 						<div class="en__field__element en__field__element--select form-group">

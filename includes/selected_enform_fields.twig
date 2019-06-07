@@ -21,6 +21,7 @@
 				<option value="email"  <% print( input_type == 'email' ?  'selected': '') %> >{{ __( 'Email', 'planet4-engagingnetworks' ) }}</option>
 				<option value="hidden"  <% print( input_type == 'hidden' ?  'selected': '') %> >{{ __( 'Hidden', 'planet4-engagingnetworks' ) }}</option>
 				<option value="text"  <% print( input_type == 'text' ?  'selected': '') %> >{{ __( 'Text', 'planet4-engagingnetworks' ) }}</option>
+				<option value="radio"  <% print( input_type == 'radio' ?  'selected': '') %> >{{ __( 'Radio', 'planet4-engagingnetworks' ) }}</option>
 			</select>
 		</td>
 		<td class="actions">
@@ -86,6 +87,26 @@
 			</div>
 			<br /><strong>{{ __( 'Opt-in label', 'planet4-engagingnetworks' ) }}</strong>
 			<br /><label class="question-label"></label>
+		</p>
+	</div>
+</script>
+
+<script type="text/html" id="tmpl-en-question-radio-dialog">
+	<div style="display: none;" class="dialog" data-en-id="<%= id %>">
+		<p>{{ __( 'Opt-in Radio customization', 'planet4-engagingnetworks' ) }}</p>
+		<p>
+			<label class="control-label">{{ __( 'Radio Question Label', 'planet4-engagingnetworks' ) }}</label>
+		<div>
+			<% _.each( radio_options, function( radio_text, radio_value ) { %>
+			<input
+					id="en__field_supporter_{{ field.name }}"
+					type="radio"
+					class="en__field__input en__field__input--radio"
+					value="<%= radio_value %>"
+					data-errormessage="{{ errorMessage }}"
+			/> <%= radio_text %>
+			<% }); %>
+		</div>
 		</p>
 	</div>
 </script>
