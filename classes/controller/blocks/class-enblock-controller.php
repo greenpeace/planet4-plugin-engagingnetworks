@@ -208,19 +208,19 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 						[
 							'value' => 'full-width-bg',
 							'label' => __( 'Full page width. With background image.', 'planet4-engagingnetworks' ),
-							'desc'  => __( 'This form has a background image that expands the full width of the browser.', 'planet4-engagingnetworks' ),
+							'desc'  => __( 'This form has a background image that expands the full width of the browser (aka "Happy Point").', 'planet4-engagingnetworks' ),
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/enfullwidthbg.png' ),
 						],
 						[
 							'value' => 'side-style',
 							'label' => __( 'Form on the side.', 'planet4-engagingnetworks' ),
-							'desc'  => __( 'Form will be added to the top of the page, on the right side for most languages and on the left side for RTL languages.', 'planet4-engagingnetworks' ),
+							'desc'  => __( 'Form will be added to the top of the page, on the right side for most languages and on the left side for Right-to-left(RTL) languages.', 'planet4-engagingnetworks' ),
 							'image' => esc_url( plugins_url() . '/planet4-plugin-engagingnetworks/admin/images/submenu-sidebar.jpg' ),
 						],
 					],
 				],
 				[
-					'label'       => __( 'Background image for full width form (aka "Happy Point")', 'planet4-engagingnetworks' ),
+					'label'       => __( 'Background image for full width / on the side forms styles', 'planet4-engagingnetworks' ),
 					'attr'        => 'background',
 					'type'        => 'attachment',
 					'libraryType' => [ 'image' ],
@@ -293,7 +293,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					],
 				],
 				[
-					'label'       => __( 'EN Forms', 'planet4-engagingnetworks' ),
+					'label'       => __( 'Planet 4 Engaging Networks form', 'planet4-engagingnetworks' ),
 					'description' => $forms ? __( 'Select the P4EN Form that will be displayed.', 'planet4-engagingnetworks' ) : __( 'Create an EN Form', 'planet4-engagingnetworks' ),
 					'attr'        => 'en_form_id',
 					'type'        => 'select',

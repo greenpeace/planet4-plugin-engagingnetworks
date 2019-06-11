@@ -214,12 +214,38 @@
 }
 
 .enform-side-style {
-  @include background-before-opacity(rgb(30, 30, 30), 1);
   width: 100vw;
   min-height: 444px;
   overflow: hidden;
   display: flex;
   align-items: center;
+
+  .caption-overlay {
+    display: block;
+    background: url("public/images/carousel-blurred-overlay.png");
+    background-position: bottom right;
+    background-size: cover;
+    height: 100%;
+    width: 90%;
+    position: absolute;
+    margin-left: 0;
+    z-index: 1;
+
+    html[dir="rtl"] & {
+      background-position: bottom left;
+    }
+
+    @include medium-and-up {
+      width: 50%;
+    }
+  }
+
+  // Darken background
+  &::after {
+    @include fill-container;
+    content: "";
+    background: rgba(30, 30, 30, 0.45);
+  }
 
   picture {
     align-self: start;
@@ -234,7 +260,7 @@
       width: 100%;
       object-fit: cover;
       object-position: center center;
-      opacity: .65;
+      opacity: 1;
 
       @supports (object-fit: cover) {
         & {
