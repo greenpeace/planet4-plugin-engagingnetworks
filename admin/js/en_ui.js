@@ -19,6 +19,7 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_new: function (shortcode) {
+          this.toggleContentFields();
 
           // Get filtered fields.
           var filtered = this.filter_enform_fields(shortcode);
@@ -61,6 +62,7 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_edit: function (shortcode) {
+          this.toggleContentFields();
 
           // Get filtered fields
           var filtered = this.filter_enform_fields(shortcode);
@@ -162,6 +164,20 @@ jQuery(function ($) {
           return filtered.map(function (field) {
             return field.get('attr');
           });
+        },
+
+        /**
+         * Toggle content fields
+         */
+        toggleContentFields: function () {
+          const en_form_style = $('input[name=en_form_style]:checked').val();
+          if ('side-style' === en_form_style) {
+            $('.field-block.shortcode-ui-attribute-content_title').show();
+            $('.field-block.shortcode-ui-attribute-content_description').show();
+          } else {
+            $('.field-block.shortcode-ui-attribute-content_title').hide();
+            $('.field-block.shortcode-ui-attribute-content_description').hide();
+          }
         },
 
         /**

@@ -16,6 +16,7 @@ const path_js = 'assets/js/**/*.js';
 const path_css = 'admin/css/*.css';
 const path_scss = 'assets/scss/**/*.scss';
 const path_style = 'assets/scss/style.scss';
+const path_git_hooks = '.githooks/*';
 const path_dest = './';
 
 let error_handler = {
@@ -72,8 +73,16 @@ function watch() {
   gulp.watch(path_js, gulp.series(lint_js, uglify));
 }
 
+function git_hooks() {
+  return gulp.src(path_git_hooks)
+    .pipe(plumber(error_handler))
+    .pipe(gulp.dest('.git/hooks/', {'mode': '755', 'overwrite': true}))
+    .pipe(notify('Copied git hooks'));
+}
+
 exports.sass = sass;
 exports.uglify = uglify;
 exports.watch = watch;
+exports.git_hooks = git_hooks;
 exports.test = gulp.parallel(lint_css, lint_js);
 exports.default = gulp.series(lint_css, lint_js, sass, uglify);
