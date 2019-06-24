@@ -2,8 +2,13 @@
 
 	{# Render enform's hidden fields #}
 	{% for key, field in form_fields %}
-		{% if 'hidden' == field.input_type and 'Field' == field.en_type %}
-			{% set en_input_name = 'supporter.'~field.property %}
+		{% if 'hidden' == field.input_type and ('Field' == field.en_type or 'OPT' == field.en_type) %}
+			{% if field.en_type == 'OPT' %}
+				{% set en_input_name = 'supporter.questions.'~field.id %}
+			{% elseif field.en_type == 'Field' %}
+				{% set en_input_name = 'supporter.'~field.property %}
+			{% endif %}
+
 			<input type="hidden" name="{{ en_input_name }}" value="{{ field.default_value|e('html_attr') }}"/>
 		{% endif %}
 	{% endfor %}
