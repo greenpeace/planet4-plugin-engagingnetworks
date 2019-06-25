@@ -296,7 +296,11 @@ var p4_enform = (function ($) {
           this.$el.find('.dashicons-edit').parent().remove();
         }
       } else if ( 'OPT' === en_type ) {
-        tmpl = '#tmpl-en-question-dialog';
+        if ('hidden' === input_type) {
+          tmpl = '#tmpl-en-hidden-field-dialog';
+        } else {
+          tmpl = '#tmpl-en-question-dialog';
+        }
       }
 
       if ( tmpl ) {
