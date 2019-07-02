@@ -124,6 +124,20 @@ var p4_enform_frontend = (function ($) {
       },
       data: JSON.stringify(formData),
     }).done(function () {
+      // DataLayer push event on successful EN form submission.
+      if ( typeof google_tag_value !== 'undefined' && google_tag_value ) {
+        var dataLayerPayload = {
+          'event' : 'petitionSignup'
+        };
+
+        var gGoal = $('#enform_goal').val();
+        if ( gGoal ) {
+          dataLayerPayload.gGoal = gGoal;
+        }
+
+        dataLayer.push(dataLayerPayload);
+      }
+
       var redirectURL = form.data('redirect-url');
 
       if (enform.validateUrl(redirectURL)) {
@@ -191,20 +205,6 @@ $(document).ready(function () {
         if ('' !== token) {
           var values = p4_enform_frontend.getFormData();
           p4_enform_frontend.submitToEn(values, token);
-
-          // DataLayer push event on EN form submission.
-          if ( typeof google_tag_value !== 'undefined' && google_tag_value ) {
-            var dataLayerPayload = {
-              'event' : 'petitionSignup'
-            };
-
-            var gGoal = $('#enform_goal').val();
-            if ( gGoal ) {
-              dataLayerPayload.gGoal = gGoal;
-            }
-
-            dataLayer.push(dataLayerPayload);
-          }
         } else {
           p4_enform_frontend.hideENSpinner();
           $('.enform-notice').html('There was a problem with the submission');
