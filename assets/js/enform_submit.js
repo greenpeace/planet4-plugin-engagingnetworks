@@ -143,13 +143,8 @@ const p4_enform_frontend = (function ($) {
       if (enform.validateUrl(redirectURL)) {
         window.location = redirectURL;
       } else {
-        const s =
-          '<h2 class="thankyou">' +
-          '<span class="thankyou-title">' + $('input[name=thankyou_title]').val() + '</span><br />' +
-          ' <span class="thankyou-subtitle">' + $('input[name=thankyou_subtitle]').val() + '</span> ' +
-          '</h2>';
-
-        form.html(s);
+        $('#enform-content').hide();
+        $('.thankyou').show();
       }
       $('.enform-notice').html('');
     }).fail(function (response) {

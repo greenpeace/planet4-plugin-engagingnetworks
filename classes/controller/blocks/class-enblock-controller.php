@@ -293,6 +293,22 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					],
 				],
 				[
+					'label' => __( '"Thank You" social media message', 'planet4-engagingnetworks' ),
+					'attr'  => 'thankyou_social_media_message',
+					'type'  => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter Social Media Message', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
+					'label' => __( '"Thank You" take action message', 'planet4-engagingnetworks' ),
+					'attr'  => 'thankyou_take_action_message',
+					'type'  => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter Take Action Message', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
 					'label' => __( '"Thank you page" url (Title and Subtitle will not be shown)', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_url',
 					'type'  => 'url',
@@ -351,6 +367,9 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 
 			if ( isset( $fields['thankyou_url'] ) && 0 !== strpos( $fields['thankyou_url'], 'http' ) ) {
 				$fields['thankyou_url'] = 'http://' . $fields['thankyou_url'];
+			} else {
+				$options              = get_option( 'planet4_options' );
+				$fields['donatelink'] = $options['donate_button'] ?? '#';
 			}
 
 			$data = array_merge(
