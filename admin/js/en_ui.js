@@ -10,7 +10,7 @@ jQuery(function ($) {
       view: 'editAttributeHeadingEN'
     };
 
-    var p4_en_blocks = {
+    const p4_en_blocks = {
       enform: {
 
         /**
@@ -22,7 +22,7 @@ jQuery(function ($) {
           this.toggleContentFields();
 
           // Get filtered fields.
-          var filtered = this.filter_enform_fields(shortcode);
+          const filtered = this.filter_enform_fields(shortcode);
 
           // Hide all mandatory checkboxes for new enforms.
           $('input[name$="__mandatory"]').parent().parent().hide();
@@ -65,7 +65,7 @@ jQuery(function ($) {
           this.toggleContentFields();
 
           // Get filtered fields
-          var filtered = this.filter_enform_fields(shortcode);
+          const filtered = this.filter_enform_fields(shortcode);
 
           // Hide all mandatory checkboxes for non selected en fields.
           filtered.forEach(function (element) {
@@ -105,7 +105,7 @@ jQuery(function ($) {
          * @param shortcode Shortcake backbone model.
          */
         render_destroy: function (shortcode) {
-          var required_is_empty = false;
+          let required_is_empty = false;
 
           $('[required]:visible', $('.edit-shortcode-form')).each( function() {
             if ( ! $(this).val() || ( $(this).is('select') && '0' === $(this).val() ) ) {
@@ -143,7 +143,7 @@ jQuery(function ($) {
           });
 
           // Get filtered fields names.
-          var filtered = this.filter_enform_fields(shortcode);
+          const filtered = this.filter_enform_fields(shortcode);
 
           // Remove click events for filtered en fields.
           this.remove_click_events_for_filtered_fields(filtered);
@@ -188,17 +188,17 @@ jQuery(function ($) {
         add_click_events_for_filtered_fields: function (filtered) {
 
           // Get filtered fields names.
-          var fields_names = this.get_filtered_names(filtered);
+          const fields_names = this.get_filtered_names(filtered);
 
           // Get jquery objects for each element.
-          var element_list = $.map(fields_names, function (el) {
+          const element_list = $.map(fields_names, function (el) {
             return $('input[name="' + el + '"]').get();
           });
 
           // Add click event handlers for the elements.
           $(element_list).on('click', function (event) {
-            var element_name = event.currentTarget.name;
-            var $element = $(event.currentTarget);
+            const element_name = event.currentTarget.name;
+            const $element = $(event.currentTarget);
 
             if ($element.attr('readonly') ) {
               return false;
@@ -220,10 +220,10 @@ jQuery(function ($) {
         remove_click_events_for_filtered_fields: function (filtered) {
 
           // Get filtered fields names.
-          var filtered_names = this.get_filtered_names(filtered);
+          const filtered_names = this.get_filtered_names(filtered);
 
           // Remove click events for filtered en fields.
-          var filtered_objects = $.map(filtered_names, function (element_name) {
+          const filtered_objects = $.map(filtered_names, function (element_name) {
             return $('input[name="' + element_name + '"]').get();
           });
           $(filtered_objects).off('click');

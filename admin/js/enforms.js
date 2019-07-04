@@ -9,7 +9,7 @@ jQuery(function ($) {
     e.preventDefault();
 
     $(this).prop('disabled', true);
-    var field_data = {
+    const field_data = {
       name: $(this).data('name'),
       en_type: $(this).data('type'),
       property: $(this).data('property'),
@@ -68,9 +68,9 @@ jQuery(function ($) {
 /**
  * Define models, collections, views for p4 en forms.
  */
-var p4_enform = (function ($) {
+const p4_enform = (function ($) {
 
-  var app = {
+  const app = {
     Models: {},
     Collections: {},
     Views: {},
@@ -132,7 +132,7 @@ var p4_enform = (function ($) {
      * @param field Field model.
      */
     renderOne: function (field) {
-      var fieldView = new app.Views.FieldsListItemView({model: field});
+      const fieldView = new app.Views.FieldsListItemView({model: field});
       this.views[field.id] = fieldView;
       $('#en_form_selected_fields_table > tbody').append(fieldView.render());
       $('.add-en-field').filter('*[data-id="' + field.id + '"]').prop('disabled', true);
@@ -156,8 +156,8 @@ var p4_enform = (function ($) {
     removeField: function (e) {
       e.preventDefault();
 
-      var $tr = $(e.target).closest('tr');
-      var id = $tr.data('en-id');
+      const $tr = $(e.target).closest('tr');
+      const id = $tr.data('en-id');
       $('.add-en-field').filter('*[data-id="' + id + '"]').prop('disabled', false);
       this.collection.remove(this.collection.findWhere({id: id}));
       this.views[id].destroy();
@@ -213,9 +213,9 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     inputChanged(event) {
-      var $target = $(event.target);
-      var value = $target.val();
-      var attr = $target.data('attribute');
+      const $target = $(event.target);
+      const value = $target.val();
+      const attr = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -225,9 +225,9 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     checkboxChanged(event) {
-      var $target = $(event.target);
-      var value = $target.is(':checked');
-      var attr = $target.data('attribute');
+      const $target = $(event.target);
+      const value = $target.is(':checked');
+      const attr = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -235,11 +235,11 @@ var p4_enform = (function ($) {
      * Register event listener for field type select box.
      */
     selectChanged(event) {
-      var value   = $(event.target).val();
-      var $tr     = $(event.target).closest('tr');
-      var id      = $tr.data('en-id');
-      var attr    = $(event.target).data('attribute');
-      var en_type = this.model.get('en_type');
+      const value = $(event.target).val();
+      const $tr = $(event.target).closest('tr');
+      const id = $tr.data('en-id');
+      const attr = $(event.target).data('attribute');
+      const en_type = this.model.get('en_type');
       this.model.set(attr, value);
 
       $tr.find('.dashicons-edit').parent().remove();
@@ -279,9 +279,9 @@ var p4_enform = (function ($) {
      * Create field dialog view.
      */
     createFieldDialog: function () {
-      var input_type = this.model.get('input_type');
-      var en_type    = this.model.get('en_type');
-      var tmpl       = '';
+      const input_type = this.model.get('input_type');
+      const en_type = this.model.get('en_type');
+      let tmpl = '';
 
       if ( 'Field' === en_type || 'GEN' === en_type ) {
         if ('hidden' === input_type) {
@@ -320,7 +320,7 @@ var p4_enform = (function ($) {
      * Render view.
      */
     render: function () {
-      var html = this.template(this.model.toJSON());
+      const html = this.template(this.model.toJSON());
       return html;
     },
 
@@ -364,9 +364,9 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     inputChanged(event) {
-      var $target = $(event.target);
-      var value   = $target.val();
-      var attr    = $target.data('attribute');
+      const $target = $(event.target);
+      const value = $target.val();
+      const attr = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -376,9 +376,9 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     checkboxChanged(event) {
-      var $target = $(event.target);
-      var value   = $target.is(':checked');
-      var attr    = $target.data('attribute');
+      const $target = $(event.target);
+      const value = $target.is(':checked');
+      const attr = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -388,9 +388,9 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     localeChanged(event) {
-      let $dialog  = $(event.target).closest('div.dialog');
-      let field_id = $dialog.attr('data-en-id');
-      let label    = $(event.target).val();
+      const $dialog = $(event.target).closest('div.dialog');
+      const field_id = $dialog.attr('data-en-id');
+      const label = $(event.target).val();
 
       $('.question-label', $dialog).html( $(event.target).val() );
       $('input[data-attribute="label"]', $('tr[data-en-id="' + field_id + '"]'))
@@ -439,7 +439,7 @@ var p4_enform = (function ($) {
       let label = $('.question-locale-select', this.$el).val();
       this.delegateEvents();
 
-      var dialog = this.dialog;
+      const dialog = this.dialog;
       $(this.row).find('.dashicons-edit').on('click', function (e) {
         e.preventDefault();
         dialog.dialog('open');
@@ -483,13 +483,12 @@ var p4_enform = (function ($) {
     app.fields = new app.Collections.EnformFields();
 
     // Instantiate fields collection.
-    var fields = $('#p4enform_fields').val();
+    let fields = $('#p4enform_fields').val();
 
     // If fields are set populate the fields collection.
     if ('' !== fields) {
-
       fields = JSON.parse(fields);
-      var fields_arr = [];
+      const fields_arr = [];
       _.each(fields, function (field) {
         fields_arr.push(new app.Models.EnformField(field));
       }, this);
