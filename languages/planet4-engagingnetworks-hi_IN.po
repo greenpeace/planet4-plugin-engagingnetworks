@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Planet4 - EngagingNetworks\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-07-04 13:53+0000\n"
-"PO-Revision-Date: 2019-07-04 13:54+0000\n"
+"PO-Revision-Date: 2019-07-04 13:57+0000\n"
 "Last-Translator: Sagar Deshmuk <sdeshmuk@greenpeace.org>\n"
 "Language-Team: Hindi\n"
 "Language: hi_IN\n"
@@ -497,11 +497,11 @@ msgstr ""
 
 #: includes/enform.twig:73 includes/enform_post.twig:31
 msgid "Please enter a valid e-mail address."
-msgstr ""
+msgstr "कृपया एक मान्य ई-मेल पता दर्ज करें।"
 
 #: includes/enform.twig:75 includes/enform_post.twig:33
 msgid "Please select a country."
-msgstr ""
+msgstr "कृपया एक देश का चयन करें।"
 
 #: includes/enform.twig:133 includes/selected_meta_box.twig:22
 #: includes/selected_meta_box.twig:48
