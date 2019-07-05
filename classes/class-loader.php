@@ -80,6 +80,8 @@ if ( ! class_exists( 'Loader' ) ) {
 			$this->load_files();
 			$this->load_services( $services, $view_class );
 			$this->check_requirements();
+
+			add_action( 'plugins_loaded', [ $this, 'load_i18n' ] );
 			add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_public_assets' ] );
 		}
 
