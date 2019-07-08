@@ -54,6 +54,10 @@
 										</button>
 										<div class="enform-notice"></div>
 									</div>
+
+									<div class="enform-legal {% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
+										<p>{{ fields.text_below_button|e('wp_kses_post')|raw }}</p>
+									</div>
 								</div>
 							</form>
 						</div>

@@ -269,6 +269,14 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					],
 				],
 				[
+					'label' => __( 'Text below Call to Action button', 'planet4-engagingnetworks' ),
+					'attr'  => 'text_below_button',
+					'type'  => 'textarea',
+					'meta'  => [
+						'placeholder' => __( 'Enter text to go below the button', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
 					'label' => __( '"Thank you" main text / Title (e.g. "Thank you for signing!")', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_title',
 					'type'  => 'text',
