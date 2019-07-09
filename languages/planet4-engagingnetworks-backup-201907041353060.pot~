@@ -1,0 +1,340 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Planet4 - EngagingNetworks\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-17 09:25+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.2.0; wp-4.9.8"
+
+#: classes/class-loader.php:133
+msgid " requires a newer version of PHP."
+msgstr ""
+
+#: classes/class-loader.php:118
+msgid " requires a newer version of the following plugin."
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:121
+msgid "- Select Page -"
+msgstr ""
+
+#: includes/fields_settings_templates.twig:12 includes/fields_settings2.twig:12
+msgid "Add New Field"
+msgstr ""
+
+#: classes/controller/menu/class-pages-datatable-controller.php:112
+msgid "Authentication failed"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:217
+msgid "Background"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:185
+msgid "Button text"
+msgstr ""
+
+#: classes/controller/menu/class-pages-datatable-controller.php:121
+msgid "Changes are not saved!"
+msgstr ""
+
+#: classes/controller/menu/class-pages-datatable-controller.php:174
+msgid "Changes saved!"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:144
+msgid "Check your EngagingNetworks settings!"
+msgstr ""
+
+#: classes/class-loader.php:246
+msgid "Class Loader already exists."
+msgstr ""
+
+#. Description of the plugin
+msgid "Connects Planet4 with the Engaging Networks platform."
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:177
+msgid "Description"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:143
+msgid "Engaging Network Live Pages"
+msgstr ""
+
+#: includes/fields_settings.twig:4
+msgid "Engaging Networks Fields Settings"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:275
+msgid "Engaging Networks Form"
+msgstr ""
+
+#: includes/questions_settings.twig:4
+msgid "Engaging Networks Questions/Optins Settings"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:181
+msgid "Enter description"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:205
+msgid "Enter Thank you Subtitle"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:197
+msgid "Enter Thank you Title"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:213
+msgid "Enter Thank you url"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:189
+msgid "Enter the text of the button"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:173
+msgid "Enter title"
+msgstr ""
+
+#: classes/controller/menu/class-controller.php:103
+msgid "Error"
+msgstr ""
+
+#: includes/fields_settings_templates.twig:45 includes/fields_settings2.twig:45
+msgid "Field name"
+msgstr ""
+
+#: classes/controller/menu/class-fields-settings-controller.php:25
+#: classes/controller/menu/class-fields-settings-controller.php:26
+msgid "Field Settings"
+msgstr ""
+
+#: includes/fields_settings_templates.twig:8 includes/fields_settings2.twig:8
+msgid "fields defined"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:156
+msgid "Full Width"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:162
+msgid "Full width background"
+msgstr ""
+
+#. Author of the plugin
+msgid "Greenpeace International"
+msgstr ""
+
+#. URI of the plugin
+msgid "http://github.com/greenpeace/planet4-plugin-engagingnetworks"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://www.greenpeace.org/"
+msgstr ""
+
+#: includes/fields_settings.twig:5
+msgid ""
+"In this page you can define engaging networks fields that you want to be "
+"used for the forms."
+msgstr ""
+
+#: includes/questions_settings.twig:5
+msgid ""
+"In this page you can define engaging networks questions and opt-ins that you "
+"want to be used for the forms."
+msgstr ""
+
+#: classes/class-loader.php:120
+msgid "Installed version of "
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:462
+msgid "Invalid input!"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:456
+msgid "Invalid nonce!"
+msgstr ""
+
+#: classes/controller/menu/class-settings-controller.php:109
+msgid "Invalid value for Private API"
+msgstr ""
+
+#: classes/controller/menu/class-settings-controller.php:100
+msgid "Invalid value for Public API"
+msgstr ""
+
+#: includes/fields_settings_templates.twig:51 includes/fields_settings2.twig:51
+msgid "Is Mandatory"
+msgstr ""
+
+#: includes/fields_settings_templates.twig:32
+#: includes/fields_settings_templates.twig:57 includes/fields_settings2.twig:32
+#: includes/fields_settings2.twig:57
+msgid "Label"
+msgstr ""
+
+#: includes/questions_settings_templates.twig:2
+msgid "List of available en questions and opt-ins"
+msgstr ""
+
+#: includes/fields_settings_templates.twig:2 includes/fields_settings2.twig:2
+msgid "List of fields"
+msgstr ""
+
+#: includes/questions_settings_templates.twig:14
+msgid "List of selected en questions and opt-ins"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:78
+msgid ""
+"Make sure to select the same fields of your Engaging Networks page / form"
+msgstr ""
+
+#: includes/fields_settings_templates.twig:30 includes/fields_settings2.twig:30
+msgid "Mandatory"
+msgstr ""
+
+#: classes/class-loader.php:119
+msgid "Minimum required version of "
+msgstr ""
+
+#: classes/class-loader.php:134
+msgid "Minimum required version of PHP: "
+msgstr ""
+
+#: classes/controller/menu/class-pages-datatable-controller.php:162
+msgid "Nonce verification failed!"
+msgstr ""
+
+#: classes/controller/menu/class-controller.php:143
+msgid "Notice"
+msgstr ""
+
+#. Name of the plugin
+msgid "Planet4 - EngagingNetworks"
+msgstr ""
+
+#: classes/class-loader.php:246
+msgid "Plugin Conflict Error!"
+msgstr ""
+
+#: classes/class-loader.php:118 classes/class-loader.php:133
+msgid "Plugin Requirements Error!"
+msgstr ""
+
+#: classes/controller/menu/class-pages-datatable-controller.php:115
+msgid "Plugin Settings are not configured well!"
+msgstr ""
+
+#: includes/questions_settings_templates.twig:39
+#: includes/questions_settings_templates.twig:63
+msgid "Question"
+msgstr ""
+
+#: includes/questions_settings_templates.twig:56
+msgid "Question name"
+msgstr ""
+
+#: includes/questions_settings_templates.twig:7
+msgid "questions available"
+msgstr ""
+
+#: includes/questions_settings_templates.twig:16
+msgid "questions selected"
+msgstr ""
+
+#: classes/controller/menu/class-questions-settings-controller.php:25
+#: classes/controller/menu/class-questions-settings-controller.php:26
+msgid "Questions Settings"
+msgstr ""
+
+#: includes/fields_settings_templates.twig:13
+#: includes/questions_settings_templates.twig:8
+#: includes/questions_settings_templates.twig:17
+msgid "Reload"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:240
+#: classes/controller/blocks/class-enform-controller.php:264
+msgid "required"
+msgstr ""
+
+#: classes/class-loader.php:135
+msgid "Running version of PHP: "
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:221
+#: classes/controller/blocks/class-enform-controller.php:222
+msgid "Select Background Image"
+msgstr ""
+
+#: classes/controller/menu/class-pages-datatable-controller.php:118
+msgid "Select Subtype"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:144
+msgid "Select the Live EN page that this form will be submitted to."
+msgstr ""
+
+#: classes/controller/menu/class-settings-controller.php:33
+#: classes/controller/menu/class-settings-controller.php:34
+msgid "Settings"
+msgstr ""
+
+#: classes/controller/menu/class-controller.php:163
+msgid "Success"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:201
+msgid "Thank you Subtitle"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:193
+msgid "Thank you Title"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:209
+msgid "Thank you Url"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:393
+msgid "Thanks for signing!"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:169
+msgid "Title"
+msgstr ""
+
+#: includes/fields_settings_templates.twig:34
+#: includes/fields_settings_templates.twig:63
+#: includes/questions_settings_templates.twig:28
+#: includes/questions_settings_templates.twig:41
+#: includes/questions_settings_templates.twig:70
+#: includes/fields_settings2.twig:34 includes/fields_settings2.twig:63
+msgid "Type"
+msgstr ""
+
+#: classes/controller/menu/class-controller.php:123
+msgid "Warning"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:77
+msgid "What kind of Information do you want to send to EN?"
+msgstr ""
+
+#: classes/controller/blocks/class-enform-controller.php:151
+msgid "What style of form do you need?"
+msgstr ""

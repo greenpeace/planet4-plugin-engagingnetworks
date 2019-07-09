@@ -1,19 +1,19 @@
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Planet4 - EngagingNetworks\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-07-04 13:53+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: \n"
-"Language: \n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"PO-Revision-Date: 2019-07-09 12:55+0000\n"
+"Last-Translator: Marianna Hoszowska <mhoszows@greenpeace.org>\n"
+"Language-Team: Polish\n"
+"Language: pl_PL\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10 >= 2 && n%10<=4 "
+"&&(n%100<10||n%100 >= 20)? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Loco https://localise.biz/\n"
-"X-Loco-Version: 2.2.0; wp-4.9.8"
+"X-Loco-Version: 2.3.0; wp-5.2.2"
 
 #: classes/class-loader.php:165 classes/class-loader.php:180
 msgid "Plugin Requirements Error!"
@@ -340,12 +340,12 @@ msgstr ""
 #: classes/controller/blocks/class-enform-controller.php:201
 #: classes/controller/blocks/class-enblock-controller.php:272
 msgid "\"Thank you\" main text / Title (e.g. \"Thank you for signing!\")"
-msgstr ""
+msgstr "Dzięki, Twój podpis został dodany!"
 
 #: classes/controller/blocks/class-enform-controller.php:205
 #: classes/controller/blocks/class-enblock-controller.php:276
 msgid "Enter \"Thank you\" main text / Title "
-msgstr ""
+msgstr "Enter \"Thank you\" main text / Title "
 
 #: classes/controller/blocks/class-enform-controller.php:209
 #: classes/controller/blocks/class-enblock-controller.php:280
@@ -372,7 +372,7 @@ msgstr ""
 #: classes/controller/blocks/class-enform-controller.php:240
 #: classes/controller/blocks/class-enform-controller.php:264
 msgid "required"
-msgstr ""
+msgstr "wymagane"
 
 #: classes/controller/blocks/class-enform-controller.php:275
 #: classes/controller/blocks/class-enblock-controller.php:309
@@ -381,7 +381,7 @@ msgstr ""
 
 #: classes/controller/blocks/class-enform-controller.php:397
 msgid "Thanks for signing!"
-msgstr ""
+msgstr "Dzięki za podpisanie!"
 
 #: classes/controller/blocks/class-enform-controller.php:455
 msgid "Invalid nonce!"
@@ -476,7 +476,7 @@ msgstr ""
 
 #: includes/enblock.twig:52 includes/enform.twig:137
 msgid "Sign"
-msgstr ""
+msgstr "Podpisz"
 
 #: includes/questions_settings.twig:4
 msgid "Engaging Networks Questions/Optins Settings"
@@ -490,24 +490,24 @@ msgstr ""
 
 #: includes/country_select.twig:9
 msgid "Select Country"
-msgstr ""
+msgstr "Kraj"
 
 #: includes/enform.twig:38 includes/enform_post.twig:20
 msgid "This field is required"
-msgstr ""
+msgstr "Pole wymagane"
 
 #: includes/enform.twig:73 includes/enform_post.twig:31
 msgid "Please enter a valid e-mail address."
-msgstr ""
+msgstr "Wpisz poprawny adres email"
 
 #: includes/enform.twig:75 includes/enform_post.twig:33
 msgid "Please select a country."
-msgstr ""
+msgstr "Wybierz kraj"
 
 #: includes/enform.twig:133 includes/selected_meta_box.twig:22
 #: includes/selected_meta_box.twig:48
 msgid "Required"
-msgstr ""
+msgstr "Wymagane"
 
 #: includes/fields_settings_templates.twig:2
 msgid "List of fields"
