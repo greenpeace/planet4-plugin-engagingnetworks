@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Planet4 - EngagingNetworks\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-07-04 13:53+0000\n"
-"PO-Revision-Date: 2019-07-09 12:50+0000\n"
+"PO-Revision-Date: 2019-07-09 12:51+0000\n"
 "Last-Translator: Marianna Hoszowska <mhoszows@greenpeace.org>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -353,8 +353,6 @@ msgid ""
 "\"Thank You\" secondary message / Subtitle (e.g. \"Your support means "
 "world\")"
 msgstr ""
-"\"Thank You\" secondary message / Subtitle (e.g. \"Your support means "
-"world\")"
 
 #: classes/controller/blocks/class-enform-controller.php:213
 #: classes/controller/blocks/class-enblock-controller.php:284
