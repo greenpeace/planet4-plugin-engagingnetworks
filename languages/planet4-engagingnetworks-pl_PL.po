@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Planet4 - EngagingNetworks\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-07-04 13:53+0000\n"
-"PO-Revision-Date: 2019-07-09 12:51+0000\n"
+"PO-Revision-Date: 2019-07-09 12:55+0000\n"
 "Last-Translator: Marianna Hoszowska <mhoszows@greenpeace.org>\n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -490,7 +490,7 @@ msgstr ""
 
 #: includes/country_select.twig:9
 msgid "Select Country"
-msgstr ""
+msgstr "Kraj"
 
 #: includes/enform.twig:38 includes/enform_post.twig:20
 msgid "This field is required"
