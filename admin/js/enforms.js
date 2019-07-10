@@ -14,11 +14,12 @@ jQuery(function ($) {
       en_type: $(this).data('type'),
       property: $(this).data('property'),
       id: $(this).data('id'),
+      htmlFieldType: '',
       locales: {},
     };
 
     // If we add an Opt-in then retrieve the labels for all locales that exist for it from EN.
-    if( 'OPT' === field_data.en_type ) {
+    if( 'OPT' === field_data.en_type || 'GEN' === field_data.en_type ) {
       $.ajax({
         url: ajaxurl,
         type: 'GET',
@@ -28,10 +29,14 @@ jQuery(function ($) {
         },
       }).done(function (response) {
         $.each(response, function (i, value) {
-          let label = value.content.data[0].label;
-          field_data['locales'][value.locale] = _.escape( label );
+          if ( value.content ) {
+            let label = value.content.data[0].label;
+            field_data['locales'][value.locale] = _.escape(label);
+            field_data['htmlFieldType'] = value.htmlFieldType;
+          }
         });
-        p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
+        let enform_field = new p4_enform.Models.EnformField(field_data);
+        p4_enform.fields.add(enform_field);
       }).fail(function (response) {
         console.log(response); //eslint-disable-line no-console
       });
@@ -93,6 +98,7 @@ var p4_enform = (function ($) {
       en_type: 'N',
       hidden: false,
       required: false,
+      htmlFieldType: '',
       input_type: '0',
       locales: {},
     }
@@ -172,7 +178,7 @@ var p4_enform = (function ($) {
      * @param position New index.
      */
     updateSort: function (event, model, position) {
-      this.collection.remove(model, {silent: true}); //
+      this.collection.remove(model, {silent: true});
       this.collection.add(model, {at: position, silent: true});
     },
 
@@ -243,14 +249,14 @@ var p4_enform = (function ($) {
       this.model.set(attr, value);
 
       $tr.find('.dashicons-edit').parent().remove();
-      if ('text' === value) {
+      if ('text' === value || 'checkbox' === value) {
         this.createFieldDialog();
       } else if ('hidden' === value) {
         this.$el.find('input[data-attribute="required"]').prop('checked', false).trigger('change').prop('disabled', true);
         this.$el.find('input[data-attribute="label"]').val('').trigger('change').prop('disabled', true);
         this.createFieldDialog();
-      } else if ('OPT' === en_type) {
-        this.$el.find('input[data-attribute="label"]').trigger('change').prop('disabled', true);
+      } else if ('OPT' === en_type || 'GEN' === en_type) {
+        this.$el.find('input[data-attribute="label"]').val('').trigger('change').prop('disabled', true);
         this.createFieldDialog();
       } else {
         if (null !== this.dialog_view) {
@@ -280,27 +286,20 @@ var p4_enform = (function ($) {
      */
     createFieldDialog: function () {
       var input_type = this.model.get('input_type');
-      var en_type    = this.model.get('en_type');
       var tmpl       = '';
 
-      if ( 'Field' === en_type || 'GEN' === en_type ) {
-        if ('hidden' === input_type) {
-          tmpl = '#tmpl-en-hidden-field-dialog';
-        } else if ('text' === input_type) {
-          tmpl = '#tmpl-en-text-field-dialog';
-        }
+      if ('hidden' === input_type) {
+        tmpl = '#tmpl-en-hidden-field-dialog';
+      } else if ( 'checkbox' === input_type) {
+        tmpl = '#tmpl-en-question-dialog';
+      } else if ('text' === input_type) {
+        tmpl = '#tmpl-en-text-field-dialog';
+      }
 
-        if (null !== this.dialog_view) {
-          this.dialog_view.destroy();
-          $('body').find('.dialog-' + this.model.id).remove();
-          this.$el.find('.dashicons-edit').parent().remove();
-        }
-      } else if ( 'OPT' === en_type ) {
-        if ('hidden' === input_type) {
-          tmpl = '#tmpl-en-hidden-field-dialog';
-        } else {
-          tmpl = '#tmpl-en-question-dialog';
-        }
+      if (null !== this.dialog_view) {
+        this.dialog_view.destroy();
+        $('body').find('.dialog-' + this.model.id).remove();
+        this.$el.find('.dashicons-edit').parent().remove();
       }
 
       if ( tmpl ) {
@@ -320,8 +319,7 @@ var p4_enform = (function ($) {
      * Render view.
      */
     render: function () {
-      var html = this.template(this.model.toJSON());
-      return html;
+      return this.template(this.model.toJSON());
     },
 
     /**

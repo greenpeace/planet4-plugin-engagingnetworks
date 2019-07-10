@@ -74,9 +74,8 @@
 
 <script type="text/html" id="tmpl-en-question-dialog">
 	<div style="display: none;" class="dialog" data-en-id="<%= id %>">
-		<p>{{ __( 'Opt-in customization', 'planet4-engagingnetworks' ) }}</p>
 		<p>
-			<label class="control-label">{{ __( 'Locale', 'planet4-engagingnetworks' ) }}</label>
+			<label class="control-label">{{ __( 'Locales', 'planet4-engagingnetworks' ) }}</label>
 			<div>
 				<select class="form-control question-locale-select" data-attribute="locales">
 					<% _.each( locales, function( label_option, locale ) { %>
@@ -84,7 +83,7 @@
 					<% }); %>
 				</select>
 			</div>
-			<br /><strong>{{ __( 'Opt-in label', 'planet4-engagingnetworks' ) }}</strong>
+			<br /><strong>{{ __( 'Labels', 'planet4-engagingnetworks' ) }}</strong>
 			<br /><label class="question-label"></label>
 		</p>
 	</div>
