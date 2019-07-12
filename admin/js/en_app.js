@@ -1,6 +1,6 @@
 /* global p4_data, jQuery, Backbone, _ */
 
-var p4_en = {
+const p4_en = {
   api_url: p4_data.api_url,
   Router: null,
   Models: {
@@ -19,7 +19,7 @@ var p4_en = {
 
 // Define custom event on #en_settings_notices element.
 $('#en_settings_notices').on('message:add', function (event, options) {
-  var $el = $('<div>', {'class': options.type, text: options.message});
+  const $el = $('<div>', {'class': options.type, text: options.message});
   $('#en_settings_notices').append($el);
   setTimeout(function () {
     $el.remove();
@@ -123,12 +123,12 @@ Backbone.$.ajaxSetup({
     },
 
     renderOne: function (question) {
-      var questionView = new p4_en.Views.QuestionsListItemView({model: question});
+      const questionView = new p4_en.Views.QuestionsListItemView({model: question});
       this.$('.questions-container').append(questionView.render().$el);
     },
 
     render: function () {
-      var html = this.template({col: this.collection});
+      const html = this.template({col: this.collection});
       this.$el.html(html);
       $('#new-question-div').html('');
 
@@ -145,11 +145,11 @@ Backbone.$.ajaxSetup({
     },
 
     validateFields: function() {
-      var name = $('#en_question_name').val();
-      var label = $('#en_question_label').val();
-      var type = $('#en_question_type').val();
-      var id = $('#en_question_id').val();
-      var questionId = $('#en_question__id').val();
+      const name = $('#en_question_name').val();
+      const label = $('#en_question_label').val();
+      const type = $('#en_question_type').val();
+      const id = $('#en_question_id').val();
+      const questionId = $('#en_question__id').val();
 
       if ('' === name || '' === label) {
         alert('Name and Question can\'t be empty');
@@ -168,12 +168,12 @@ Backbone.$.ajaxSetup({
     addQuestion: function (e) {
       e.preventDefault();
 
-      var attrs = this.validateFields();
+      const attrs = this.validateFields();
       if (false === attrs) {
         return;
       }
 
-      var question = new p4_en.Models.Question(attrs);
+      const question = new p4_en.Models.Question(attrs);
       p4_en.show_loader();
       question.save({}, {
         type: 'POST',
@@ -185,8 +185,8 @@ Backbone.$.ajaxSetup({
           p4_en.refresh_data();
         },
         error: function (model, xhr) {
-          var resp = xhr.responseJSON;
-          var messages = resp.messages;
+          const resp = xhr.responseJSON;
+          const messages = resp.messages;
           p4_en.add_message(messages.join('<br>'), 'error');
           p4_en.hide_loader();
         },
@@ -196,12 +196,12 @@ Backbone.$.ajaxSetup({
     editQuestion: function (e) {
       e.preventDefault();
 
-      var attrs = this.validateFields();
+      const attrs = this.validateFields();
       if (false === attrs) {
         return;
       }
 
-      var question = p4_en.questions.get(attrs.id);
+      const question = p4_en.questions.get(attrs.id);
       question.set(attrs);
       p4_en.show_loader();
       question.save({}, {
@@ -214,7 +214,7 @@ Backbone.$.ajaxSetup({
         },
         error: function (model, xhr) {
           console.log('Something went wrong while saving the model'); // eslint-disable-line no-console
-          var resp = xhr.responseJSON;
+          const resp = xhr.responseJSON;
           p4_en.add_message(resp.messages.join('<br>'), 'error');
           p4_en.hide_loader();
         }
@@ -241,14 +241,14 @@ Backbone.$.ajaxSetup({
     },
 
     render: function () {
-      var html = this.template(this.model.toJSON());
+      const html = this.template(this.model.toJSON());
       this.$el.html(html);
       return this;
     },
 
     edit: function (e) {
       e.preventDefault();
-      var newQuestionForm = new p4_en.Views.NewQuestionView({
+      const newQuestionForm = new p4_en.Views.NewQuestionView({
         model: this.model,
       });
 
@@ -267,7 +267,7 @@ Backbone.$.ajaxSetup({
           p4_en.add_message('Question has been deleted', 'updated');
         },
         error: function (model, xhr) {
-          var resp = xhr.responseJSON;
+          const resp = xhr.responseJSON;
           p4_en.add_message(resp.messages.join('<br>'), 'error');
         },
         wait: true
@@ -298,12 +298,12 @@ Backbone.$.ajaxSetup({
     },
 
     renderOne: function (question) {
-      var questionView = new p4_en.Views.AvailableQuestionsListItemView({model: question});
+      const questionView = new p4_en.Views.AvailableQuestionsListItemView({model: question});
       this.$('.available-questions-container').append(questionView.render().$el);
     },
 
     render: function () {
-      var html = this.template({col: this.collection});
+      const html = this.template({col: this.collection});
       this.$el.html(html);
       this.$el.find('.available-questions-container').fadeTo('fast', 0.33);
       this.collection.each(this.renderOne, this);
@@ -335,14 +335,14 @@ Backbone.$.ajaxSetup({
     },
 
     render: function () {
-      var html = this.template(this.model.toJSON());
+      const html = this.template(this.model.toJSON());
       this.$el.html(html);
       return this;
     },
 
     add: function (e) {
       e.preventDefault();
-      var newQuestionForm = new p4_en.Views.NewQuestionView({
+      const newQuestionForm = new p4_en.Views.NewQuestionView({
         model: this.model,
       });
       let $new_question_div = $('#new-question-div');
@@ -367,7 +367,7 @@ Backbone.$.ajaxSetup({
     },
 
     render: function () {
-      var html = this.template(this.model.toJSON());
+      const html = this.template(this.model.toJSON());
       this.$el.html(html);
       return this;
     }
