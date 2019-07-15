@@ -14,11 +14,13 @@ jQuery(function ($) {
       en_type: $(this).data('type'),
       property: $(this).data('property'),
       id: $(this).data('id'),
+      htmlFieldType: '',
       locales: {},
+      question_options: {},
     };
 
     // If we add an Opt-in then retrieve the labels for all locales that exist for it from EN.
-    if( 'OPT' === field_data.en_type ) {
+    if( 'OPT' === field_data.en_type || 'GEN' === field_data.en_type ) {
       $.ajax({
         url: ajaxurl,
         type: 'GET',
@@ -28,10 +30,27 @@ jQuery(function ($) {
         },
       }).done(function (response) {
         $.each(response, function (i, value) {
-          let label = value.content.data[0].label;
-          field_data['locales'][value.locale] = _.escape( label );
+          if ( value.content ) {
+            if ( 'checkbox' === value.htmlFieldType ) {
+              let label = '';
+
+              if ('OPT' === field_data['en_type']) {
+                label = value.content.data[0].label;
+
+              } else if ('GEN' === field_data['en_type']) {
+                label = value.label;
+                $.each(value.content.data, function (i, value) {
+                  let label = value.label;
+                  field_data['question_options'][value.value] = { 'label': _.escape(label), 'selected': value.selected };
+                });
+              }
+              field_data['locales'][value.locale] = _.escape(label);
+            }
+            field_data['htmlFieldType'] = value.htmlFieldType;
+          }
         });
-        p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
+        let enform_field = new p4_enform.Models.EnformField(field_data);
+        p4_enform.fields.add(enform_field);
       }).fail(function (response) {
         console.log(response); //eslint-disable-line no-console
       });
@@ -94,7 +113,9 @@ const p4_enform = (function ($) {
       hidden: false,
       required: false,
       input_type: '0',
+      htmlFieldType: '',
       locales: {},
+      question_options: {},
     }
   });
 
@@ -172,7 +193,7 @@ const p4_enform = (function ($) {
      * @param position New index.
      */
     updateSort: function (event, model, position) {
-      this.collection.remove(model, {silent: true}); //
+      this.collection.remove(model, {silent: true});
       this.collection.add(model, {at: position, silent: true});
     },
 
@@ -241,16 +262,19 @@ const p4_enform = (function ($) {
       const attr = $(event.target).data('attribute');
       const en_type = this.model.get('en_type');
       this.model.set(attr, value);
+      let $label  = this.$el.find('input[data-attribute="label"]');
 
       $tr.find('.dashicons-edit').parent().remove();
+      $label.val('').trigger('change');
       if ('text' === value) {
+        $label.prop('disabled', false);
         this.createFieldDialog();
       } else if ('hidden' === value) {
         this.$el.find('input[data-attribute="required"]').prop('checked', false).trigger('change').prop('disabled', true);
-        this.$el.find('input[data-attribute="label"]').val('').trigger('change').prop('disabled', true);
+        $label.prop('disabled', true);
         this.createFieldDialog();
-      } else if ('OPT' === en_type) {
-        this.$el.find('input[data-attribute="label"]').trigger('change').prop('disabled', true);
+      } else if ('checkbox' === value && ('OPT' === en_type || 'GEN' === en_type)) {
+        $label.prop('disabled', true);
         this.createFieldDialog();
       } else {
         if (null !== this.dialog_view) {
@@ -280,27 +304,20 @@ const p4_enform = (function ($) {
      */
     createFieldDialog: function () {
       const input_type = this.model.get('input_type');
-      const en_type = this.model.get('en_type');
       let tmpl = '';
 
-      if ( 'Field' === en_type || 'GEN' === en_type ) {
-        if ('hidden' === input_type) {
-          tmpl = '#tmpl-en-hidden-field-dialog';
-        } else if ('text' === input_type) {
-          tmpl = '#tmpl-en-text-field-dialog';
-        }
+      if ('hidden' === input_type) {
+        tmpl = '#tmpl-en-hidden-field-dialog';
+      } else if ( 'checkbox' === input_type) {
+        tmpl = '#tmpl-en-question-dialog';
+      } else if ('text' === input_type) {
+        tmpl = '#tmpl-en-text-field-dialog';
+      }
 
-        if (null !== this.dialog_view) {
-          this.dialog_view.destroy();
-          $('body').find('.dialog-' + this.model.id).remove();
-          this.$el.find('.dashicons-edit').parent().remove();
-        }
-      } else if ( 'OPT' === en_type ) {
-        if ('hidden' === input_type) {
-          tmpl = '#tmpl-en-hidden-field-dialog';
-        } else {
-          tmpl = '#tmpl-en-question-dialog';
-        }
+      if (null !== this.dialog_view) {
+        this.dialog_view.destroy();
+        $('body').find('.dialog-' + this.model.id).remove();
+        this.$el.find('.dashicons-edit').parent().remove();
       }
 
       if ( tmpl ) {
@@ -462,6 +479,7 @@ const p4_enform = (function ($) {
       this.model.set('js_validate_function', '');
       this.model.set('hidden', false);
       this.model.set('locales', {});
+      this.model.set('question_options', {});
       this.remove();
     }
   });
