@@ -11,7 +11,7 @@ $(document).ready(function() {
   $('.do_copy').off('click').on('click', function(e){
     e.preventDefault();
 
-    var $temp = $('<input>');
+    const $temp = $('<input>');
     $('body').append($temp);
     $temp.val( $(this).attr('data-href') ).select();
     document.execCommand('copy');

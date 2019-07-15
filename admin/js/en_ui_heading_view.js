@@ -1,6 +1,6 @@
 /* global _, sui, wp */
 
-var editAttributeHeadingEN = sui.views.editAttributeField.extend({
+const editAttributeHeadingEN = sui.views.editAttributeField.extend({
   tagName: 'span',
   className: 'en-attribute-wrapper',
   events: {
@@ -19,7 +19,7 @@ var editAttributeHeadingEN = sui.views.editAttributeField.extend({
   },
 
   inputChanged: function () {
-    var $el;
+    let $el;
 
     if (this.model.get('attr')) {
       $el = this.$el.find('[name="' + this.model.get('attr') + '"]');
@@ -37,12 +37,12 @@ var editAttributeHeadingEN = sui.views.editAttributeField.extend({
   },
 
   triggerCallbacks: function () {
-    var shortcodeName = this.shortcode.attributes.shortcode_tag,
-      attributeName   = this.model.get('attr'),
-      hookName        = [shortcodeName, attributeName].join('.'),
-      changed         = this.model.changed,
-      collection      = _.flatten(_.values(this.views.parent.views._views)),
-      shortcode       = this.shortcode;
+    const shortcodeName = this.shortcode.attributes.shortcode_tag;
+    const attributeName   = this.model.get('attr');
+    const hookName        = [shortcodeName, attributeName].join('.');
+    const changed         = this.model.changed;
+    const collection      = _.flatten(_.values(this.views.parent.views._views));
+    const shortcode       = this.shortcode;
 
     /*
 		 * Action run when an attribute value changes on a shortcode

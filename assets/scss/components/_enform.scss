@@ -386,3 +386,49 @@
     }
   }
 }
+
+.thankyou {
+  position: relative;
+  min-height: inherit;
+
+  @include mobile-only {
+    margin: 0 20px;
+  }
+
+  &.full-width {
+    max-width: 444px;
+    left: 33%;
+  }
+
+  .page-section-header {
+    line-height: 1.2;
+  }
+
+  .page-section-description {
+    line-height: 1.4;
+  }
+
+  .sub-section {
+    margin-bottom: 2em;
+    width: 100%;
+
+    .form-group {
+      margin-bottom: 2em;
+    }
+
+    .social-media {
+      .share-buttons {
+        float: none;
+      }
+
+      .share-btn {
+        width: 32.5%;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
+      }
+
+      .twitter {
+        background: #00acee none repeat scroll 0 0;
+      }
+    }
+  }
+}
