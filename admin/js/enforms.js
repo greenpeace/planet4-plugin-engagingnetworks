@@ -16,6 +16,7 @@ jQuery(function ($) {
       id: $(this).data('id'),
       htmlFieldType: '',
       locales: {},
+      question_options: {},
     };
 
     // If we add an Opt-in then retrieve the labels for all locales that exist for it from EN.
@@ -30,8 +31,21 @@ jQuery(function ($) {
       }).done(function (response) {
         $.each(response, function (i, value) {
           if ( value.content ) {
-            let label = value.content.data[0].label;
-            field_data['locales'][value.locale] = _.escape(label);
+            if ( 'checkbox' === value.htmlFieldType ) {
+              let label = '';
+
+              if ('OPT' === field_data['en_type']) {
+                label = value.content.data[0].label;
+
+              } else if ('GEN' === field_data['en_type']) {
+                label = value.label;
+                $.each(value.content.data, function (i, value) {
+                  let label = value.label;
+                  field_data['question_options'][value.value] = { 'label': _.escape(label), 'selected': value.selected };
+                });
+              }
+              field_data['locales'][value.locale] = _.escape(label);
+            }
             field_data['htmlFieldType'] = value.htmlFieldType;
           }
         });
@@ -98,9 +112,10 @@ var p4_enform = (function ($) {
       en_type: 'N',
       hidden: false,
       required: false,
-      htmlFieldType: '',
       input_type: '0',
+      htmlFieldType: '',
       locales: {},
+      question_options: {},
     }
   });
 
@@ -241,22 +256,25 @@ var p4_enform = (function ($) {
      * Register event listener for field type select box.
      */
     selectChanged(event) {
-      var value   = $(event.target).val();
-      var $tr     = $(event.target).closest('tr');
-      var id      = $tr.data('en-id');
-      var attr    = $(event.target).data('attribute');
-      var en_type = this.model.get('en_type');
+      const value = $(event.target).val();
+      const $tr = $(event.target).closest('tr');
+      const id = $tr.data('en-id');
+      const attr = $(event.target).data('attribute');
+      const en_type = this.model.get('en_type');
       this.model.set(attr, value);
+      let $label  = this.$el.find('input[data-attribute="label"]');
 
       $tr.find('.dashicons-edit').parent().remove();
-      if ('text' === value || 'checkbox' === value) {
+      $label.val('').trigger('change');
+      if ('text' === value) {
+        $label.prop('disabled', false);
         this.createFieldDialog();
       } else if ('hidden' === value) {
         this.$el.find('input[data-attribute="required"]').prop('checked', false).trigger('change').prop('disabled', true);
-        this.$el.find('input[data-attribute="label"]').val('').trigger('change').prop('disabled', true);
+        $label.prop('disabled', true);
         this.createFieldDialog();
-      } else if ('OPT' === en_type || 'GEN' === en_type) {
-        this.$el.find('input[data-attribute="label"]').val('').trigger('change').prop('disabled', true);
+      } else if ('checkbox' === value && ('OPT' === en_type || 'GEN' === en_type)) {
+        $label.prop('disabled', true);
         this.createFieldDialog();
       } else {
         if (null !== this.dialog_view) {
@@ -285,8 +303,8 @@ var p4_enform = (function ($) {
      * Create field dialog view.
      */
     createFieldDialog: function () {
-      var input_type = this.model.get('input_type');
-      var tmpl       = '';
+      const input_type = this.model.get('input_type');
+      let tmpl = '';
 
       if ('hidden' === input_type) {
         tmpl = '#tmpl-en-hidden-field-dialog';
@@ -319,7 +337,8 @@ var p4_enform = (function ($) {
      * Render view.
      */
     render: function () {
-      return this.template(this.model.toJSON());
+      const html = this.template(this.model.toJSON());
+      return html;
     },
 
     /**
@@ -460,6 +479,7 @@ var p4_enform = (function ($) {
       this.model.set('js_validate_function', '');
       this.model.set('hidden', false);
       this.model.set('locales', {});
+      this.model.set('question_options', {});
       this.remove();
     }
   });
