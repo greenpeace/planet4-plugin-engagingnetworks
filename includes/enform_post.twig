@@ -77,12 +77,16 @@
 									</span><br />
 									{% for value, question_option in field.question_options|cast_to_array %}
 										<input
-											id="en__field_supporter_{{ field.name }}"
-											name="{{ en_input_name }}"
-											type="checkbox"
-											class="en__field__input en__field__input--checkbox"
-											value="{{ value }}"
-										/>{{ question_option.label }}<br />
+												id="en__field_supporter_{{ field.name }}"
+												name="{{ en_input_name }}"
+												type="checkbox"
+												class="en__field__input en__field__input--checkbox"
+												value="{{ value }}"
+												{{ question_option.selected ?  ' checked' : '' }}
+										/>
+										<span class="custom-control-description">
+											{{ question_option.label|e('wp_kses_post')|raw }}
+										</span>
 									{% endfor %}
 								{% elseif 'OPT' == field.en_type %}
 									<input
