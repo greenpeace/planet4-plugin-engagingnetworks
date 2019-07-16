@@ -119,6 +119,10 @@
       }
     }
 
+    .custom-checkbox input {
+      height: auto;
+    }
+
     .formblock-flex {
       display: flex;
       flex-wrap: wrap;
@@ -155,7 +159,7 @@
     .form-check-label-block {
       display: inline-block;
       padding: $n10 0 0 0;
-      margin-bottom: $n20;
+      margin-bottom: $n5;
 
       .enform-full-width-bg & {
         color: $black;

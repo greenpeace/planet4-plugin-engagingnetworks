@@ -102,7 +102,7 @@ add_filter( 'timber/twig', 'add_to_twig' );
  */
 function add_to_twig( $twig ) {
 	// Adding functions as filters.
-	$twig->addFilter( new Twig_SimpleFilter( 'cast_to_array', function ( $std_class_object ) {
+	$twig->addFilter( new Twig_SimpleFilter( 'object_to_array', function ( $std_class_object ) {
 		$response = [];
 		foreach ( $std_class_object as $key => $value ) {
 			$response[ $key ] = $value;
@@ -123,7 +123,6 @@ P4EN\Loader::get_instance(
 	[
 		'P4EN\Controllers\Menu\Enform_Post_Controller',
 		'P4EN\Controllers\Menu\Settings_Controller',
-		'P4EN\Controllers\Blocks\ENForm_Controller',
 		'P4EN\Controllers\Blocks\ENBlock_Controller',
 		'P4EN\Controllers\Api\Rest_Controller',
 	],
