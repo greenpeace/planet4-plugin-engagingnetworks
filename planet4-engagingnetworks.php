@@ -81,6 +81,7 @@ if ( ! defined( 'P4EN_ALLOWED_PAGETYPE' ) ) {
 		'P4EN_ALLOWED_PAGETYPE',
 		[
 			'page',
+			'campaign',
 		]
 	);
 }
