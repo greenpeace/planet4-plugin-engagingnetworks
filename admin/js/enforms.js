@@ -9,16 +9,18 @@ jQuery(function ($) {
     e.preventDefault();
 
     $(this).prop('disabled', true);
-    var field_data = {
+    const field_data = {
       name: $(this).data('name'),
       en_type: $(this).data('type'),
       property: $(this).data('property'),
       id: $(this).data('id'),
+      htmlFieldType: '',
       locales: {},
+      question_options: {},
     };
 
     // If we add an Opt-in then retrieve the labels for all locales that exist for it from EN.
-    if( 'OPT' === field_data.en_type ) {
+    if( 'OPT' === field_data.en_type || 'GEN' === field_data.en_type ) {
       $.ajax({
         url: ajaxurl,
         type: 'GET',
@@ -28,10 +30,27 @@ jQuery(function ($) {
         },
       }).done(function (response) {
         $.each(response, function (i, value) {
-          let label = value.content.data[0].label;
-          field_data['locales'][value.locale] = _.escape( label );
+          if ( value.content ) {
+            if ( 'checkbox' === value.htmlFieldType ) {
+              let label = '';
+
+              if ('OPT' === field_data['en_type']) {
+                label = value.content.data[0].label;
+
+              } else if ('GEN' === field_data['en_type']) {
+                label = value.label;
+                $.each(value.content.data, function (i, value) {
+                  let label = value.label;
+                  field_data['question_options'][value.value] = { 'label': _.escape(label), 'selected': value.selected };
+                });
+              }
+              field_data['locales'][value.locale] = _.escape(label);
+            }
+            field_data['htmlFieldType'] = value.htmlFieldType;
+          }
         });
-        p4_enform.fields.add(new p4_enform.Models.EnformField(field_data));
+        let enform_field = new p4_enform.Models.EnformField(field_data);
+        p4_enform.fields.add(enform_field);
       }).fail(function (response) {
         console.log(response); //eslint-disable-line no-console
       });
@@ -68,9 +87,9 @@ jQuery(function ($) {
 /**
  * Define models, collections, views for p4 en forms.
  */
-var p4_enform = (function ($) {
+const p4_enform = (function ($) {
 
-  var app = {
+  const app = {
     Models: {},
     Collections: {},
     Views: {},
@@ -94,7 +113,9 @@ var p4_enform = (function ($) {
       hidden: false,
       required: false,
       input_type: '0',
+      htmlFieldType: '',
       locales: {},
+      question_options: {},
     }
   });
 
@@ -132,7 +153,7 @@ var p4_enform = (function ($) {
      * @param field Field model.
      */
     renderOne: function (field) {
-      var fieldView = new app.Views.FieldsListItemView({model: field});
+      const fieldView = new app.Views.FieldsListItemView({model: field});
       this.views[field.id] = fieldView;
       $('#en_form_selected_fields_table > tbody').append(fieldView.render());
       $('.add-en-field').filter('*[data-id="' + field.id + '"]').prop('disabled', true);
@@ -155,9 +176,9 @@ var p4_enform = (function ($) {
      */
     removeField: function (e) {
       e.preventDefault();
+      const $tr = $(e.target).closest('tr');
+      const id  = $tr.data('en-id');
 
-      var $tr = $(e.target).closest('tr');
-      var id = $tr.data('en-id');
       $('.add-en-field').filter('*[data-id="' + id + '"]').prop('disabled', false);
       this.collection.remove(this.collection.findWhere({id: id}));
       this.views[id].destroy();
@@ -172,7 +193,7 @@ var p4_enform = (function ($) {
      * @param position New index.
      */
     updateSort: function (event, model, position) {
-      this.collection.remove(model, {silent: true}); //
+      this.collection.remove(model, {silent: true});
       this.collection.add(model, {at: position, silent: true});
     },
 
@@ -213,9 +234,9 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     inputChanged(event) {
-      var $target = $(event.target);
-      var value = $target.val();
-      var attr = $target.data('attribute');
+      const $target = $(event.target);
+      const value   = $target.val();
+      const attr    = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -225,9 +246,9 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     checkboxChanged(event) {
-      var $target = $(event.target);
-      var value = $target.is(':checked');
-      var attr = $target.data('attribute');
+      const $target = $(event.target);
+      const value   = $target.is(':checked');
+      const attr    = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -235,22 +256,26 @@ var p4_enform = (function ($) {
      * Register event listener for field type select box.
      */
     selectChanged(event) {
-      var value   = $(event.target).val();
-      var $tr     = $(event.target).closest('tr');
-      var id      = $tr.data('en-id');
-      var attr    = $(event.target).data('attribute');
-      var en_type = this.model.get('en_type');
-      this.model.set(attr, value);
+      const value   = $(event.target).val();
+      const $tr     = $(event.target).closest('tr');
+      const id      = $tr.data('en-id');
+      const attr    = $(event.target).data('attribute');
+      const en_type = this.model.get('en_type');
+      let $label    = this.$el.find('input[data-attribute="label"]');
 
+      this.model.set(attr, value);
       $tr.find('.dashicons-edit').parent().remove();
+      $label.val('').trigger('change');
+
       if ('text' === value) {
+        $label.prop('disabled', false);
         this.createFieldDialog();
       } else if ('hidden' === value) {
         this.$el.find('input[data-attribute="required"]').prop('checked', false).trigger('change').prop('disabled', true);
-        this.$el.find('input[data-attribute="label"]').val('').trigger('change').prop('disabled', true);
+        $label.prop('disabled', true);
         this.createFieldDialog();
-      } else if ('OPT' === en_type) {
-        this.$el.find('input[data-attribute="label"]').trigger('change').prop('disabled', true);
+      } else if ('checkbox' === value && ('OPT' === en_type || 'GEN' === en_type)) {
+        $label.prop('disabled', true);
         this.createFieldDialog();
       } else {
         if (null !== this.dialog_view) {
@@ -279,28 +304,21 @@ var p4_enform = (function ($) {
      * Create field dialog view.
      */
     createFieldDialog: function () {
-      var input_type = this.model.get('input_type');
-      var en_type    = this.model.get('en_type');
-      var tmpl       = '';
+      const input_type = this.model.get('input_type');
+      let tmpl = '';
 
-      if ( 'Field' === en_type || 'GEN' === en_type ) {
-        if ('hidden' === input_type) {
-          tmpl = '#tmpl-en-hidden-field-dialog';
-        } else if ('text' === input_type) {
-          tmpl = '#tmpl-en-text-field-dialog';
-        }
+      if ('hidden' === input_type) {
+        tmpl = '#tmpl-en-hidden-field-dialog';
+      } else if ( 'checkbox' === input_type) {
+        tmpl = '#tmpl-en-question-dialog';
+      } else if ('text' === input_type) {
+        tmpl = '#tmpl-en-text-field-dialog';
+      }
 
-        if (null !== this.dialog_view) {
-          this.dialog_view.destroy();
-          $('body').find('.dialog-' + this.model.id).remove();
-          this.$el.find('.dashicons-edit').parent().remove();
-        }
-      } else if ( 'OPT' === en_type ) {
-        if ('hidden' === input_type) {
-          tmpl = '#tmpl-en-hidden-field-dialog';
-        } else {
-          tmpl = '#tmpl-en-question-dialog';
-        }
+      if (null !== this.dialog_view) {
+        this.dialog_view.destroy();
+        $('body').find('.dialog-' + this.model.id).remove();
+        this.$el.find('.dashicons-edit').parent().remove();
       }
 
       if ( tmpl ) {
@@ -320,8 +338,7 @@ var p4_enform = (function ($) {
      * Render view.
      */
     render: function () {
-      var html = this.template(this.model.toJSON());
-      return html;
+      return this.template(this.model.toJSON());
     },
 
     /**
@@ -364,9 +381,9 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     inputChanged(event) {
-      var $target = $(event.target);
-      var value   = $target.val();
-      var attr    = $target.data('attribute');
+      const $target = $(event.target);
+      const value   = $target.val();
+      const attr    = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -376,9 +393,9 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     checkboxChanged(event) {
-      var $target = $(event.target);
-      var value   = $target.is(':checked');
-      var attr    = $target.data('attribute');
+      const $target = $(event.target);
+      const value   = $target.is(':checked');
+      const attr    = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -388,11 +405,11 @@ var p4_enform = (function ($) {
      * @param event Event object.
      */
     localeChanged(event) {
-      let $dialog  = $(event.target).closest('div.dialog');
-      let field_id = $dialog.attr('data-en-id');
-      let label    = $(event.target).val();
+      const $dialog  = $(event.target).closest('div.dialog');
+      const field_id = $dialog.attr('data-en-id');
+      const label    = $(event.target).val();
 
-      $('.question-label', $dialog).html( $(event.target).val() );
+      $('.question-label', $dialog).html( label );
       $('input[data-attribute="label"]', $('tr[data-en-id="' + field_id + '"]'))
         .prop('disabled', false)
         .val( label )
@@ -439,7 +456,7 @@ var p4_enform = (function ($) {
       let label = $('.question-locale-select', this.$el).val();
       this.delegateEvents();
 
-      var dialog = this.dialog;
+      const dialog = this.dialog;
       $(this.row).find('.dashicons-edit').on('click', function (e) {
         e.preventDefault();
         dialog.dialog('open');
@@ -461,7 +478,6 @@ var p4_enform = (function ($) {
       this.model.set('js_validate_regex_msg', '');
       this.model.set('js_validate_function', '');
       this.model.set('hidden', false);
-      this.model.set('locales', {});
       this.remove();
     }
   });
@@ -483,13 +499,12 @@ var p4_enform = (function ($) {
     app.fields = new app.Collections.EnformFields();
 
     // Instantiate fields collection.
-    var fields = $('#p4enform_fields').val();
+    let fields = $('#p4enform_fields').val();
 
     // If fields are set populate the fields collection.
     if ('' !== fields) {
-
       fields = JSON.parse(fields);
-      var fields_arr = [];
+      const fields_arr = [];
       _.each(fields, function (field) {
         fields_arr.push(new app.Models.EnformField(field));
       }, this);
