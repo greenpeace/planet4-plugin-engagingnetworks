@@ -49,6 +49,8 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 			add_action( 'admin_print_footer_scripts-post.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_print_footer_scripts-post-new.php', [ $this, 'print_admin_footer_scripts' ], 1 );
 			add_action( 'admin_enqueue_scripts', [ $this, 'load_admin_assets' ] );
+			add_action( 'wp_ajax_get_en_session_token', [ $this, 'get_session_token' ] );
+			add_action( 'wp_ajax_nopriv_get_en_session_token', [ $this, 'get_session_token' ] );
 		}
 
 		/**
@@ -293,6 +295,22 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					],
 				],
 				[
+					'label' => __( '"Thank You" social media message', 'planet4-engagingnetworks' ),
+					'attr'  => 'thankyou_social_media_message',
+					'type'  => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter Social Media Message', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
+					'label' => __( '"Thank You" take action message', 'planet4-engagingnetworks' ),
+					'attr'  => 'thankyou_take_action_message',
+					'type'  => 'text',
+					'meta'  => [
+						'placeholder' => __( 'Enter Take Action Message', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
 					'label' => __( '"Thank you page" url (Title and Subtitle will not be shown)', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_url',
 					'type'  => 'url',
@@ -351,6 +369,9 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 
 			if ( isset( $fields['thankyou_url'] ) && 0 !== strpos( $fields['thankyou_url'], 'http' ) ) {
 				$fields['thankyou_url'] = 'http://' . $fields['thankyou_url'];
+			} else {
+				$options              = get_option( 'planet4_options' );
+				$fields['donatelink'] = $options['donate_button'] ?? '#';
 			}
 
 			$data = array_merge(
@@ -364,6 +385,32 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 			);
 
 			return $data;
+		}
+
+		/**
+		 * Get en session token for frontend api calls.
+		 */
+		public function get_session_token() {
+			// If this is an ajax call.
+			if ( wp_doing_ajax() ) {
+
+				$nonce    = filter_input( INPUT_POST, '_wpnonce', FILTER_SANITIZE_STRING );
+				$response = [];
+
+				// CSRF protection.
+				if ( ! wp_verify_nonce( $nonce, 'enform_submit' ) ) {
+					$response['message'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
+					$response['token']   = '';
+				} else {
+
+					$main_settings     = get_option( 'p4en_main_settings' );
+					$ens_private_token = $main_settings['p4en_frontend_private_api'];
+					$this->ens_api     = new Ensapi( $ens_private_token, false );
+					$token             = $this->ens_api->get_public_session_token();
+					$response['token'] = $token;
+				}
+				wp_send_json( $response );
+			}
 		}
 
 		/**
