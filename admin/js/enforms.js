@@ -176,9 +176,9 @@ const p4_enform = (function ($) {
      */
     removeField: function (e) {
       e.preventDefault();
-
       const $tr = $(e.target).closest('tr');
-      const id = $tr.data('en-id');
+      const id  = $tr.data('en-id');
+
       $('.add-en-field').filter('*[data-id="' + id + '"]').prop('disabled', false);
       this.collection.remove(this.collection.findWhere({id: id}));
       this.views[id].destroy();
@@ -235,8 +235,8 @@ const p4_enform = (function ($) {
      */
     inputChanged(event) {
       const $target = $(event.target);
-      const value = $target.val();
-      const attr = $target.data('attribute');
+      const value   = $target.val();
+      const attr    = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -247,8 +247,8 @@ const p4_enform = (function ($) {
      */
     checkboxChanged(event) {
       const $target = $(event.target);
-      const value = $target.is(':checked');
-      const attr = $target.data('attribute');
+      const value   = $target.is(':checked');
+      const attr    = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -256,16 +256,17 @@ const p4_enform = (function ($) {
      * Register event listener for field type select box.
      */
     selectChanged(event) {
-      const value = $(event.target).val();
-      const $tr = $(event.target).closest('tr');
-      const id = $tr.data('en-id');
-      const attr = $(event.target).data('attribute');
+      const value   = $(event.target).val();
+      const $tr     = $(event.target).closest('tr');
+      const id      = $tr.data('en-id');
+      const attr    = $(event.target).data('attribute');
       const en_type = this.model.get('en_type');
-      this.model.set(attr, value);
-      let $label  = this.$el.find('input[data-attribute="label"]');
+      let $label    = this.$el.find('input[data-attribute="label"]');
 
+      this.model.set(attr, value);
       $tr.find('.dashicons-edit').parent().remove();
       $label.val('').trigger('change');
+
       if ('text' === value) {
         $label.prop('disabled', false);
         this.createFieldDialog();
@@ -337,8 +338,7 @@ const p4_enform = (function ($) {
      * Render view.
      */
     render: function () {
-      const html = this.template(this.model.toJSON());
-      return html;
+      return this.template(this.model.toJSON());
     },
 
     /**
@@ -382,8 +382,8 @@ const p4_enform = (function ($) {
      */
     inputChanged(event) {
       const $target = $(event.target);
-      const value = $target.val();
-      const attr = $target.data('attribute');
+      const value   = $target.val();
+      const attr    = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -394,8 +394,8 @@ const p4_enform = (function ($) {
      */
     checkboxChanged(event) {
       const $target = $(event.target);
-      const value = $target.is(':checked');
-      const attr = $target.data('attribute');
+      const value   = $target.is(':checked');
+      const attr    = $target.data('attribute');
       this.model.set(attr, value);
     },
 
@@ -405,11 +405,11 @@ const p4_enform = (function ($) {
      * @param event Event object.
      */
     localeChanged(event) {
-      const $dialog = $(event.target).closest('div.dialog');
+      const $dialog  = $(event.target).closest('div.dialog');
       const field_id = $dialog.attr('data-en-id');
-      const label = $(event.target).val();
+      const label    = $(event.target).val();
 
-      $('.question-label', $dialog).html( $(event.target).val() );
+      $('.question-label', $dialog).html( label );
       $('input[data-attribute="label"]', $('tr[data-en-id="' + field_id + '"]'))
         .prop('disabled', false)
         .val( label )
@@ -478,8 +478,6 @@ const p4_enform = (function ($) {
       this.model.set('js_validate_regex_msg', '');
       this.model.set('js_validate_function', '');
       this.model.set('hidden', false);
-      this.model.set('locales', {});
-      this.model.set('question_options', {});
       this.remove();
     }
   });
