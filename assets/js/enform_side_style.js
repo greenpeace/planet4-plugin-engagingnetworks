@@ -1,21 +1,21 @@
 // Force wide blocks outside the container
 $(document).ready(function() {
   'use strict';
-  var $container = $('div.page-template, div.container').eq(0);
+  let $container = $('div.page-template, div.container').eq(0);
 
   if (!$container.length) {
     $container = $('div.page-template').eq(0);
   }
 
-  var $sideStyleForm = $('.enform-wrap.enform-side-style');
-  var $enform = $sideStyleForm.find('.enform');
+  const $sideStyleForm = $('.enform-wrap.enform-side-style');
+  const $enform = $sideStyleForm.find('.enform');
 
   function setContainerWidth() {
-    var isLarge = $(window).width() >= 992;
-    var vw = $(window).width();
+    const isLarge = $(window).width() >= 992;
+    const vw = $(window).width();
 
     if (!isLarge) {
-      var margin = ((vw - $container.innerWidth()) / 2);
+      const margin = ((vw - $container.innerWidth()) / 2);
 
       if ($('html').attr('dir') === 'rtl') {
         $enform.css('margin-left', 'auto');
@@ -28,7 +28,7 @@ $(document).ready(function() {
         $enform.css('padding-right', margin + 'px');
       }
 
-      var captionHeight = $sideStyleForm.find('.form-caption').outerHeight();
+      const captionHeight = $sideStyleForm.find('.form-caption').outerHeight();
       $sideStyleForm.find('picture img').css('height', captionHeight + 'px');
     } else {
       $enform.css('margin-left', '');

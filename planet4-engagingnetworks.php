@@ -81,6 +81,7 @@ if ( ! defined( 'P4EN_ALLOWED_PAGETYPE' ) ) {
 		'P4EN_ALLOWED_PAGETYPE',
 		[
 			'page',
+			'campaign',
 		]
 	);
 }
@@ -89,6 +90,27 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 }
 if ( ! defined( 'P4_REST_SLUG' ) ) {
 	define( 'P4_REST_SLUG', 'planet4-engaging-networks' );
+}
+
+add_filter( 'timber/twig', 'add_to_twig' );
+
+/**
+ * Adds functionality to Twig.
+ *
+ * @param \Twig\Environment $twig The Twig environment.
+ * @return \Twig\Environment
+ */
+function add_to_twig( $twig ) {
+	// Adding functions as filters.
+	$twig->addFilter( new Twig_SimpleFilter( 'object_to_array', function ( $std_class_object ) {
+		$response = [];
+		foreach ( $std_class_object as $key => $value ) {
+			$response[ $key ] = $value;
+		}
+		return $response;
+	}));
+
+	return $twig;
 }
 
 require_once __DIR__ . '/classes/class-loader.php';
@@ -101,7 +123,6 @@ P4EN\Loader::get_instance(
 	[
 		'P4EN\Controllers\Menu\Enform_Post_Controller',
 		'P4EN\Controllers\Menu\Settings_Controller',
-		'P4EN\Controllers\Blocks\ENForm_Controller',
 		'P4EN\Controllers\Blocks\ENBlock_Controller',
 		'P4EN\Controllers\Api\Rest_Controller',
 	],

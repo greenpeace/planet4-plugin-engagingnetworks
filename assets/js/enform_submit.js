@@ -1,8 +1,8 @@
 /* global en_vars, google_tag_value, dataLayer */
 
-var p4_enform_frontend = (function ($) {
+const p4_enform_frontend = (function ($) {
 
-  var enform = {};
+  const enform = {};
 
   enform.getFormData = function() {
     let supporter = {
@@ -43,7 +43,7 @@ var p4_enform_frontend = (function ($) {
 
   enform.validateEmail = function(email) {
     // Reference: https://stackoverflow.com/questions/46155/how-to-validate-an-email-address-in-javascript
-    var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
   };
 
@@ -56,7 +56,7 @@ var p4_enform_frontend = (function ($) {
       msg = $(element).data('errormessage');
     }
     $(element).addClass('is-invalid');
-    var $invalidDiv = $('<div>');
+    const $invalidDiv = $('<div>');
     $invalidDiv.addClass('invalid-feedback');
     $invalidDiv.html(msg);
     $invalidDiv.insertAfter(element);
@@ -64,18 +64,18 @@ var p4_enform_frontend = (function ($) {
 
   enform.removeErrorMessage = function(element) {
     $(element).removeClass('is-invalid');
-    var errorDiv = $(element).next();
+    const errorDiv = $(element).next();
     if (errorDiv.length && errorDiv.hasClass('invalid-feedback')) {
       $(errorDiv).remove();
     }
   };
 
   enform.validateForm = function(form) {
-    var formIsValid = true;
+    let formIsValid = true;
 
     $(form.elements).each(function () {
       enform.removeErrorMessage(this);
-      var formValue = $(this).val();
+      const formValue = $(this).val();
 
       if (
         $(this).attr('required') && !formValue ||
@@ -85,10 +85,10 @@ var p4_enform_frontend = (function ($) {
         formIsValid = false;
       }
 
-      var regexPattern = $(this).attr('data-validate_regex');
+      const regexPattern = $(this).attr('data-validate_regex');
       if (regexPattern) {
-        var regex = new RegExp(regexPattern);
-        var res = regex.test(formValue);
+        const regex = new RegExp(regexPattern);
+        const res = regex.test(formValue);
         if (!res) {
           enform.addErrorMessage(this, $(this).attr('data-validate_regex_msg'));
           formIsValid = false;
@@ -96,9 +96,9 @@ var p4_enform_frontend = (function ($) {
       }
 
 
-      var callbackFunction = $(this).attr('data-validate_callback');
+      const callbackFunction = $(this).attr('data-validate_callback');
       if ('function' === typeof window[callbackFunction]) {
-        var validateField = window[callbackFunction]($(this).val());
+        const validateField = window[callbackFunction]($(this).val());
         if (true !== validateField) {
           enform.addErrorMessage(this, validateField);
           formIsValid = false;
@@ -112,8 +112,8 @@ var p4_enform_frontend = (function ($) {
   // Submit to a en page process api endpoint.
   enform.submitToEn = function(formData, sessionToken) {
     const form = $('#enform');
-    var en_page_id = $('input[name=en_page_id]').val(),
-      uri = `https://e-activist.com/ens/service/page/${en_page_id}/process`;
+    const en_page_id = $('input[name=en_page_id]').val();
+    const uri = `https://e-activist.com/ens/service/page/${en_page_id}/process`;
     $.ajax({
       url: uri,
       type: 'POST',
@@ -126,11 +126,11 @@ var p4_enform_frontend = (function ($) {
     }).done(function () {
       // DataLayer push event on successful EN form submission.
       if ( typeof google_tag_value !== 'undefined' && google_tag_value ) {
-        var dataLayerPayload = {
+        let dataLayerPayload = {
           'event' : 'petitionSignup'
         };
 
-        var gGoal = $('#enform_goal').val();
+        const gGoal = $('#enform_goal').val();
         if ( gGoal ) {
           dataLayerPayload.gGoal = gGoal;
         }
@@ -138,18 +138,13 @@ var p4_enform_frontend = (function ($) {
         dataLayer.push(dataLayerPayload);
       }
 
-      var redirectURL = form.data('redirect-url');
+      const redirectURL = form.data('redirect-url');
 
       if (enform.validateUrl(redirectURL)) {
         window.location = redirectURL;
       } else {
-        var s =
-          '<h2 class="thankyou">' +
-          '<span class="thankyou-title">' + $('input[name=thankyou_title]').val() + '</span><br />' +
-          ' <span class="thankyou-subtitle">' + $('input[name=thankyou_subtitle]').val() + '</span> ' +
-          '</h2>';
-
-        form.html(s);
+        $('#enform-content').hide();
+        $('.thankyou').show();
       }
       $('.enform-notice').html('');
     }).fail(function (response) {
@@ -200,10 +195,10 @@ $(document).ready(function () {
           '_wpnonce': $('#_wpnonce', $(this)).val(),
         },
       }).done(function (response) {
-        var token = response.token;
+        const token = response.token;
 
         if ('' !== token) {
-          var values = p4_enform_frontend.getFormData();
+          const values = p4_enform_frontend.getFormData();
           p4_enform_frontend.submitToEn(values, token);
         } else {
           p4_enform_frontend.hideENSpinner();

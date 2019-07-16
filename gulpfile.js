@@ -1,23 +1,25 @@
 /* global require, exports */
 
-const gulp = require('gulp');
-const stylelint = require('gulp-stylelint');
-const eslint = require('gulp-eslint');
-const js = require('gulp-uglify-es').default;
-const concat = require('gulp-concat');
-const scss = require('gulp-sass');
+const babel = require('gulp-babel');
 const cleancss = require('gulp-clean-css');
-const sourcemaps = require('gulp-sourcemaps');
+const concat = require('gulp-concat');
+const eslint = require('gulp-eslint');
+const gulp = require('gulp');
+const js = require('gulp-uglify-es').default;
+const livereload = require('gulp-livereload');
 const notify = require('gulp-notify');
 const plumber = require('gulp-plumber');
-const livereload = require('gulp-livereload');
+const scss = require('gulp-sass');
+const sourcemaps = require('gulp-sourcemaps');
+const stylelint = require('gulp-stylelint');
 
-const path_js = 'assets/js/**/*.js';
 const path_css = 'admin/css/*.css';
+const path_dest = './';
+const path_git_hooks = '.githooks/*';
+const path_js = 'assets/js/**/*.js';
+const path_js_admin = 'admin/js/*.js';
 const path_scss = 'assets/scss/**/*.scss';
 const path_style = 'assets/scss/style.scss';
-const path_git_hooks = '.githooks/*';
-const path_dest = './';
 
 let error_handler = {
   errorHandler: notify.onError({
@@ -36,7 +38,7 @@ function lint_css() {
 }
 
 function lint_js() {
-  return gulp.src(path_js)
+  return gulp.src([path_js_admin, path_js])
     .pipe(plumber(error_handler))
     .pipe(eslint())
     .pipe(eslint.format())
@@ -60,6 +62,9 @@ function uglify() {
     .pipe(plumber(error_handler))
     .pipe(sourcemaps.init())
     .pipe(concat('main.js'))
+    .pipe(babel({
+      presets: ['@babel/env']
+    }))
     .pipe(js())
     .pipe(sourcemaps.write(path_dest))
     .pipe(gulp.dest(path_dest))
