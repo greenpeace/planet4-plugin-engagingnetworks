@@ -17,6 +17,7 @@ jQuery(function ($) {
       htmlFieldType: '',
       locales: {},
       question_options: {},
+      selected: '',
     };
 
     // If we add an Opt-in then retrieve the labels for all locales that exist for it from EN.
@@ -33,9 +34,11 @@ jQuery(function ($) {
           if ( value.content ) {
             if ( 'checkbox' === value.htmlFieldType ) {
               let label = '';
+              let selected = '';
 
               if ('OPT' === field_data['en_type']) {
                 label = value.content.data[0].label;
+                selected = value.content.data[0].selected;
 
               } else if ('GEN' === field_data['en_type']) {
                 label = value.label;
@@ -45,6 +48,7 @@ jQuery(function ($) {
                 });
               }
               field_data['locales'][value.locale] = _.escape(label);
+              field_data['selected'] = selected;
             }
             field_data['htmlFieldType'] = value.htmlFieldType;
           }
@@ -116,6 +120,7 @@ const p4_enform = (function ($) {
       htmlFieldType: '',
       locales: {},
       question_options: {},
+      selected: '',
     }
   });
 
