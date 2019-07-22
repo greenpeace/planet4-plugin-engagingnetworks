@@ -15,8 +15,10 @@ jQuery(function ($) {
       property: $(this).data('property'),
       id: $(this).data('id'),
       htmlFieldType: '',
+      selected_locale: '',
       locales: {},
       question_options: {},
+      radio_options: {},
       selected: '',
     };
 
@@ -30,31 +32,57 @@ jQuery(function ($) {
           id: $(this).data('id')
         },
       }).done(function (response) {
-        $.each(response, function (i, value) {
-          if ( value.content ) {
-            if ( 'checkbox' === value.htmlFieldType ) {
+
+        // Checking response type to avoid error if string was returned (in case of an error).
+        if ( 'object' === typeof response ) {
+          $.each(response, function (i, value) {
+            if (value.content && 'undefined' !== typeof value.content.data[0]) {
+              field_data['htmlFieldType'] = value.htmlFieldType;
               let label = '';
               let selected = '';
 
-              if ('OPT' === field_data['en_type']) {
-                label = value.content.data[0].label;
-                selected = value.content.data[0].selected;
+              switch ( field_data['htmlFieldType'] ) {
+              case 'checkbox':
+                if ('OPT' === field_data['en_type']) {
+                  label = value.content.data[0].label;
+                  selected = value.content.data[0].selected;
 
-              } else if ('GEN' === field_data['en_type']) {
+                } else if ('GEN' === field_data['en_type']) {
+                  label = value.label;
+                  field_data['question_options'][value.locale] = [];
+
+                  $.each(value.content.data, function (i, option) {
+                    field_data['question_options'][value.locale].push({
+                      'option_label': _.escape( option.label ),
+                      'option_value': _.escape( option.value ),
+                      'option_selected': option.selected
+                    });
+
+                  });
+                }
+                field_data['locales'][value.locale] = _.escape(label);
+                field_data['selected'] = selected;
+                break;
+
+              case 'radio':
                 label = value.label;
-                $.each(value.content.data, function (i, value) {
-                  let label = value.label;
-                  field_data['question_options'][value.value] = { 'label': _.escape(label), 'selected': value.selected };
+                field_data['locales'][value.locale] = _.escape(label);
+                field_data['radio_options'][value.locale] = [];
+
+                $.each(value.content.data, function (i, option) {
+                  field_data['radio_options'][value.locale].push({
+                    'option_label': _.escape( option.label ),
+                    'option_value': _.escape( option.value ),
+                    'option_selected': option.selected
+                  });
                 });
+                break;
               }
-              field_data['locales'][value.locale] = _.escape(label);
-              field_data['selected'] = selected;
             }
-            field_data['htmlFieldType'] = value.htmlFieldType;
-          }
-        });
-        let enform_field = new p4_enform.Models.EnformField(field_data);
-        p4_enform.fields.add(enform_field);
+          });
+          // Add new field.
+          p4_enform.fields.add( new p4_enform.Models.EnformField(field_data) );
+        }
       }).fail(function (response) {
         console.log(response); //eslint-disable-line no-console
       });
@@ -118,8 +146,10 @@ const p4_enform = (function ($) {
       required: false,
       input_type: '0',
       htmlFieldType: '',
+      selected_locale: '',
       locales: {},
       question_options: {},
+      radio_options: {},
       selected: '',
     }
   });
@@ -156,13 +186,24 @@ const p4_enform = (function ($) {
      * Render a single field.
      *
      * @param field Field model.
+     * @param collection Field model collection.
+     * @param actions Object with actions.
      */
-    renderOne: function (field) {
+    renderOne: function (field, collection, actions ) {
       const fieldView = new app.Views.FieldsListItemView({model: field});
+
       this.views[field.id] = fieldView;
       $('#en_form_selected_fields_table > tbody').append(fieldView.render());
       $('.add-en-field').filter('*[data-id="' + field.id + '"]').prop('disabled', true);
       fieldView._delegateEvents();
+
+      // If a field is being added and its html type has been retrieved from EN
+      // then auto-select the field type for Questions/Optins. Should happen after Delegate events.
+      if ( actions.add && field.attributes.htmlFieldType ) {
+        if( 'OPT' === field.attributes.en_type || 'GEN' === field.attributes.en_type ) {
+          $('.field-type-select', fieldView.$el).val( field.attributes.htmlFieldType ).change();
+        }
+      }
       fieldView.createFieldDialog();
     },
 
@@ -171,7 +212,7 @@ const p4_enform = (function ($) {
      */
     render: function () {
       _.each(this.collection.models, function (project) {
-        this.renderOne(project);
+        this.renderOne(project, this.collection, {'add': false});
       }, this);
       this.disableEmailField();
     },
@@ -211,7 +252,8 @@ const p4_enform = (function ($) {
       $('tr[data-en-name="Email"] select[data-attribute="input_type"]').val('email').prop('disabled', true);
       let emailModel = this.collection.findWhere({property: 'emailAddress'});
       if ('undefined' !== typeof emailModel) {
-        emailModel.set('input_type', 'email')
+        emailModel
+          .set('input_type', 'email')
           .set('required', true);
       }
     }
@@ -261,36 +303,57 @@ const p4_enform = (function ($) {
      * Register event listener for field type select box.
      */
     selectChanged(event) {
-      const value   = $(event.target).val();
-      const $tr     = $(event.target).closest('tr');
-      const id      = $tr.data('en-id');
-      const attr    = $(event.target).data('attribute');
-      const en_type = this.model.get('en_type');
-      let $label    = this.$el.find('input[data-attribute="label"]');
+      const input_type = $(event.target).val();
+      const $tr        = $(event.target).closest('tr');
+      const id         = $tr.data('en-id');
+      const attr       = $(event.target).data('attribute');
+      const en_type    = this.model.get('en_type');
+      let $label       = this.$el.find('input[data-attribute="label"]');
 
-      this.model.set(attr, value);
+      this.model.set(attr, input_type);
       $tr.find('.dashicons-edit').parent().remove();
       $label.val('').trigger('change');
 
-      if ('text' === value) {
+      switch ( input_type ) {
+      case 'text':
         $label.prop('disabled', false);
+        this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
         this.createFieldDialog();
-      } else if ('hidden' === value) {
+        break;
+
+      case 'hidden':
         this.$el.find('input[data-attribute="required"]').prop('checked', false).trigger('change').prop('disabled', true);
         $label.prop('disabled', true);
+        this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
         this.createFieldDialog();
-      } else if ('checkbox' === value && ('OPT' === en_type || 'GEN' === en_type)) {
-        $label.prop('disabled', true);
-        this.createFieldDialog();
-      } else {
+        break;
+
+      case 'checkbox':
+        if ( ('OPT' === en_type || 'GEN' === en_type) ) {
+          $label.prop('disabled', true);
+          this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
+          this.createFieldDialog();
+        }
+        break;
+
+      case 'radio':
+        if ( ('OPT' === en_type || 'GEN' === en_type) ) {
+          $label.prop('disabled', true);
+          this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
+          this.createFieldDialog();
+        }
+        break;
+
+      default:
         if (null !== this.dialog_view) {
           this.dialog_view.destroy();
           this.dialog_view = null;
         }
         $('body').find('.dialog-' + id).remove();
+        this.$el.find('.dashicons-edit').parent().remove();
       }
 
-      if ('hidden' !== value) {
+      if ('hidden' !== input_type) {
         this.$el.find('input[data-attribute="required"]').prop('disabled', false);
         if ('OPT' !== en_type) {
           this.$el.find('input[data-attribute="label"]').prop('disabled', false);
@@ -312,18 +375,24 @@ const p4_enform = (function ($) {
       const input_type = this.model.get('input_type');
       let tmpl = '';
 
-      if ('hidden' === input_type) {
-        tmpl = '#tmpl-en-hidden-field-dialog';
-      } else if ( 'checkbox' === input_type) {
-        tmpl = '#tmpl-en-question-dialog';
-      } else if ('text' === input_type) {
+      switch ( input_type ) {
+      case 'text':
         tmpl = '#tmpl-en-text-field-dialog';
+        break;
+      case 'hidden':
+        tmpl = '#tmpl-en-hidden-field-dialog';
+        break;
+      case 'checkbox':
+        tmpl = '#tmpl-en-checkbox-dialog';
+        break;
+      case 'radio':
+        tmpl = '#tmpl-en-radio-dialog';
+        break;
       }
 
       if (null !== this.dialog_view) {
         this.dialog_view.destroy();
         $('body').find('.dialog-' + this.model.id).remove();
-        this.$el.find('.dashicons-edit').parent().remove();
       }
 
       if ( tmpl ) {
@@ -410,16 +479,24 @@ const p4_enform = (function ($) {
      * @param event Event object.
      */
     localeChanged(event) {
-      const $dialog  = $(event.target).closest('div.dialog');
+      const $target  = $(event.target);
+      const $dialog  = $target.closest('div.dialog');
       const field_id = $dialog.attr('data-en-id');
       const label    = $(event.target).val();
+      const locale   = $('option:selected', $target).text();
 
-      $('.question-label', $dialog).html( label );
       $('input[data-attribute="label"]', $('tr[data-en-id="' + field_id + '"]'))
         .prop('disabled', false)
         .val( label )
         .trigger('change')
         .prop('disabled', true);
+
+      this.model.set('label', label);
+      this.model.set('selected_locale', locale);
+
+      // Get template's html, unwrap it to get rid of the most outer element and then update the dialog's html with it.
+      let dialog_html = $(this.template(this.model.toJSON())).unwrap().html();
+      $dialog.html( dialog_html );
     },
 
     /**
@@ -440,7 +517,6 @@ const p4_enform = (function ($) {
      */
     render: function () {
       $(this.row).find('.actions').prepend(this.template(this.model.toJSON()));
-      $(this.row).find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
 
       this.dialog = $(this.row).find('.dialog').dialog({
         autoOpen: false,
@@ -462,7 +538,7 @@ const p4_enform = (function ($) {
       this.delegateEvents();
 
       const dialog = this.dialog;
-      $(this.row).find('.dashicons-edit').on('click', function (e) {
+      $(this.row).find('.dashicons-edit').off('click').on('click', function (e) {
         e.preventDefault();
         dialog.dialog('open');
       });
