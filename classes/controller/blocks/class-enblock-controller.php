@@ -303,7 +303,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					],
 				],
 				[
-					'label' => __( '"Thank You" donate message (e.g. "or make a donation")', 'planet4-engagingnetworks' ),
+					'label' => __( '"Thank You" donate message (e.g. "Or make a donation")', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_donate_message',
 					'type'  => 'text',
 					'meta'  => [
