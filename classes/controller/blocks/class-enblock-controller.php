@@ -296,18 +296,18 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				],
 				[
 					'label' => __( '"Thank You" social media message (e.g. "Can you share it with your family and friends?")', 'planet4-engagingnetworks' ),
-					'attr'  => 'thankyou_donate_message',
+					'attr'  => 'thankyou_social_media_message',
 					'type'  => 'text',
 					'meta'  => [
-						'placeholder' => __( 'Enter Donate Message', 'planet4-engagingnetworks' ),
+						'placeholder' => __( 'Enter Social Media Message', 'planet4-engagingnetworks' ),
 					],
 				],
 				[
 					'label' => __( '"Thank You" donate message (e.g. "or make a donation")', 'planet4-engagingnetworks' ),
-					'attr'  => 'thankyou_take_action_message',
+					'attr'  => 'thankyou_donate_message',
 					'type'  => 'text',
 					'meta'  => [
-						'placeholder' => __( 'Enter Take Action Message', 'planet4-engagingnetworks' ),
+						'placeholder' => __( 'Enter Donate Message', 'planet4-engagingnetworks' ),
 					],
 				],
 				[
