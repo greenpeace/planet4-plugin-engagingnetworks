@@ -10,18 +10,28 @@ const p4_enform_frontend = (function ($) {
     };
 
     // Prepare the questions/optins values the way that ENS api expects them.
-    $('.en__field__input--checkbox:checked').val('Y');
+    $.each($('.en__field__input--checkbox:checked'), function (i, field) {
+      // If no value is set then use 'Y' as default value, otherwise keep the already set value.
+      if ( '' === field.value ) {
+        $(this).val('Y');
+      }
+    });
+
     $.each($('.en__field__input--checkbox:not(":checked")'), function (i, field) {
-      if (field.name.indexOf('supporter.questions.') >= 0) {
-        let id = field.name.split('.')[2];
-        supporter.questions['question.' + id] = 'N';
+      // If no value is set then use 'N' as default value, otherwise keep the already set value.
+      if ( '' === field.value ) {
+        $(this).val('N');
       }
     });
 
     $.each($('#p4en_form').serializeArray(), function (i, field) {
       if (field.name.indexOf('supporter.questions.') >= 0) {
         let id = field.name.split('.')[2];
-        supporter.questions['question.' + id] = field.value;
+        if ( 'undefined' === typeof supporter.questions['question.' + id] ) {
+          supporter.questions['question.' + id] = field.value;
+        } else {
+          supporter.questions['question.' + id] = supporter.questions['question.' + id] + '~' + field.value;
+        }
       } else if (field.name.indexOf('supporter.') >= 0 && '' !== field.value) {
         supporter[field.name.replace('supporter.', '')] = field.value;
       }
