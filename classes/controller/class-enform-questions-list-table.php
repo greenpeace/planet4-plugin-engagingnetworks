@@ -82,6 +82,15 @@ class Enform_Questions_List_Table extends \WP_List_Table {
 		$sortable              = [];
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
 		$this->items           = is_array( $supporter_questions ) ? $supporter_questions : [];
+
+		if ( $this->items ) {
+			uasort(
+				$this->items,
+				function ( $a, $b ) {
+					return strcasecmp( $a['name'], $b['name'] );
+				}
+			);
+		}
 	}
 
 	/**
