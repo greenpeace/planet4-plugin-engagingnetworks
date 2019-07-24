@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: Planet4 - EngagingNetworks\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-07-04 13:53+0000\n"
-"PO-Revision-Date: 2019-07-24 08:41+0000\n"
+"PO-Revision-Date: 2019-07-24 08:44+0000\n"
 "Last-Translator: Alessandro Lattecreative Dev Agency "
 "<alessandro@lattecreative.com>\n"
-"Language-Team: \n"
+"Language-Team: Chinese (Taiwan)\n"
 "Language: zh_TW\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
@@ -494,11 +494,11 @@ msgstr ""
 
 #: includes/enform.twig:38 includes/enform_post.twig:20
 msgid "This field is required"
-msgstr ""
+msgstr "此欄為必填"
 
 #: includes/enform.twig:73 includes/enform_post.twig:31
 msgid "Please enter a valid e-mail address."
-msgstr ""
+msgstr "電郵地址不正確"
 
 #: includes/enform.twig:75 includes/enform_post.twig:33
 msgid "Please select a country."
