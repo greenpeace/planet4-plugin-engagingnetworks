@@ -119,8 +119,14 @@
       }
     }
 
-    .custom-checkbox input {
-      height: auto;
+    .custom-checkbox {
+      input {
+        height: auto;
+      }
+
+      .invalid-feedback {
+        display: block;
+      }
     }
 
     .formblock-flex {
@@ -177,6 +183,10 @@
           .enform-full-width-bg & {
             border: 3px solid $med-blue;
           }
+        }
+
+        & + .is-invalid:before {
+          border: 1px solid #ff3333;
         }
       }
     }

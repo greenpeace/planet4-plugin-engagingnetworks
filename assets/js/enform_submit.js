@@ -87,8 +87,12 @@ const p4_enform_frontend = (function ($) {
       enform.removeErrorMessage(this);
       const formValue = $(this).val();
 
-      if (
-        $(this).attr('required') && !formValue ||
+      if ( 'checkbox' === $(this).attr('type') ) {
+        if (  $(this).attr('required') && !$(this)[0].checked ) {
+          enform.addErrorMessage( $('.custom-control-description'), $(this).data('errormessage') );
+          formIsValid = false;
+        }
+      } else if ( $(this).attr('required') && !formValue ||
         'email' === $(this).attr('type') && !enform.validateEmail(formValue)
       ) {
         enform.addErrorMessage(this);
