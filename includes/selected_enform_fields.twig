@@ -8,7 +8,7 @@
 		<td style="width:25%;"><%= name %></td>
 		<td><%= en_type %></td>
 		<td>
-			<input type="checkbox" data-attribute="required" <% print( required ?  'checked': '') %> <% print( input_type=='hidden' ?  ' disabled': '') %>	/>
+			<input type="checkbox" data-attribute="required" <% print( required ?  'checked': '') %> <% print( input_type=='hidden' || ( 'OPT'==en_type && 'checkbox'==input_type ) ?  ' disabled': '') %>	/>
 		</td>
 		<td>
 			<input type="text" data-attribute="label" value="<%- label %>" <% print( input_type=='hidden' || input_type=='checkbox' || input_type=='radio' ?  ' disabled': '') %> />
@@ -87,7 +87,14 @@
 					<% }); %>
 				</select>
 			</div>
-			<br /><strong>{{ __( 'Question/Opt-in', 'planet4-engagingnetworks' ) }}</strong>
+			<br />
+			<strong>
+			<% if ( 'GEN' == en_type )  { %>
+				{{ __( 'Question', 'planet4-engagingnetworks' ) }}
+			<% } else if ( 'OPT' == en_type )  { %>
+				{{ __( 'Opt-in', 'planet4-engagingnetworks' ) }}
+			<% } %>
+			</strong>
 			<br /><label class="question-label"><%= label %></label><br /><br />
 			<% if ( 'GEN' == en_type )  { %>
 				<% _.each( question_options[ selected_locale ], function( question_option ) { %>
@@ -109,7 +116,14 @@
 					<% }); %>
 				</select>
 			</div>
-			<br /><strong>{{ __( 'Question/Opt-in', 'planet4-engagingnetworks' ) }}</strong>
+			<br />
+			<strong>
+				<% if ( 'GEN' == en_type )  { %>
+				{{ __( 'Question', 'planet4-engagingnetworks' ) }}
+				<% } else if ( 'OPT' == en_type )  { %>
+				{{ __( 'Opt-in', 'planet4-engagingnetworks' ) }}
+				<% } %>
+			</strong>
 			<br /><label class="question-label"><%= label %></label><br /><br />
 			<% _.each( radio_options[ selected_locale ], function( radio_option ) { %>
 				<input

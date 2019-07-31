@@ -18,9 +18,9 @@ const p4_enform_frontend = (function ($) {
     });
 
     $.each($('.en__field__input--checkbox:not(":checked")'), function (i, field) {
-      // If no value is set then use 'N' as default value, otherwise keep the already set value.
-      if ( '' === field.value ) {
-        $(this).val('N');
+      if (field.name.indexOf('supporter.questions.') >= 0) {
+        let id = field.name.split('.')[2];
+        supporter.questions['question.' + id] = 'N';
       }
     });
 
@@ -62,20 +62,20 @@ const p4_enform_frontend = (function ($) {
   };
 
   enform.addErrorMessage = function(element,msg) {
-    if ('undefined' === typeof msg) {
-      msg = $(element).data('errormessage');
+    if ( 0 === $( '.invalid-feedback', $(element).parent() ).length ) {
+      if ('undefined' === typeof msg) {
+        msg = $(element).data('errormessage');
+      }
+      $(element).addClass('is-invalid');
+      const $invalidDiv = $('<div class="invalid-feedback">' + msg + '</div>');
+      $invalidDiv.appendTo($(element).parent()).show();
     }
-    $(element).addClass('is-invalid');
-    const $invalidDiv = $('<div>');
-    $invalidDiv.addClass('invalid-feedback');
-    $invalidDiv.html(msg);
-    $invalidDiv.insertAfter(element);
   };
 
   enform.removeErrorMessage = function(element) {
     $(element).removeClass('is-invalid');
-    const errorDiv = $(element).next();
-    if (errorDiv.length && errorDiv.hasClass('invalid-feedback')) {
+    const errorDiv = $( '.invalid-feedback', $(element).parent() );
+    if ( errorDiv.length ) {
       $(errorDiv).remove();
     }
   };
@@ -88,7 +88,8 @@ const p4_enform_frontend = (function ($) {
       const formValue = $(this).val();
 
       if (
-        $(this).attr('required') && !formValue ||
+        $(this).attr('required') && 'checkbox' !== $(this).attr('type') && !formValue ||
+        $(this).attr('required') && 'checkbox' === $(this).attr('type') && false === $(this).prop('checked') ||
         'email' === $(this).attr('type') && !enform.validateEmail(formValue)
       ) {
         enform.addErrorMessage(this);

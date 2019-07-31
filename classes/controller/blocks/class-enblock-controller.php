@@ -63,7 +63,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				return;
 			}
 
-			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4.4' );
+			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4.5' );
 			add_action(
 				'enqueue_shortcode_ui',
 				function () {
