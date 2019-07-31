@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: Planet4 - EngagingNetworks\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-07-04 13:53+0000\n"
-"PO-Revision-Date: 2019-07-24 08:33+0000\n"
+"PO-Revision-Date: 2019-07-31 14:35+0000\n"
 "Last-Translator: Alessandro Lattecreative Dev Agency "
 "<alessandro@lattecreative.com>\n"
 "Language-Team: Korean\n"
@@ -506,8 +506,7 @@ msgstr "Select Country"
 
 #: includes/enform.twig:38 includes/enform_post.twig:20
 msgid "This field is required"
-msgstr ""
-"개인정보 제공 필수 항목입니다\n"
+msgstr "개인정보 제공 필수 항목입니다"
 
 #: includes/enform.twig:73 includes/enform_post.twig:31
 msgid "Please enter a valid e-mail address."
