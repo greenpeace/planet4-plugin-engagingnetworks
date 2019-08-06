@@ -63,7 +63,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				return;
 			}
 
-			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4' );
+			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4.4' );
 			add_action(
 				'enqueue_shortcode_ui',
 				function () {
@@ -175,6 +175,13 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				'Other'           => 'Other',
 			];
 
+			$type_size_options = [
+				0    => __( ' - Select Text Size - ', 'planet4-engagingnetworks' ),
+				'h1' => 'h1',
+				'h2' => 'h2',
+				'h3' => 'h3',
+			];
+
 			$fields = [
 				[
 					'label'       => __( 'Engaging Network Live Pages', 'planet4-engagingnetworks' ),
@@ -251,6 +258,15 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					'type'  => 'text',
 					'meta'  => [
 						'placeholder' => __( 'Enter content title', 'planet4-engagingnetworks' ),
+					],
+				],
+				[
+					'label'   => __( 'Content Title text size', 'planet4-engagingnetworks' ),
+					'attr'    => 'content_title_size',
+					'type'    => 'select',
+					'options' => $type_size_options,
+					'meta'    => [
+						'required' => '',
 					],
 				],
 				[
