@@ -175,13 +175,6 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				'Other'           => 'Other',
 			];
 
-			$type_size_options = [
-				0    => __( ' - Select Text Size - ', 'planet4-engagingnetworks' ),
-				'h1' => 'h1',
-				'h2' => 'h2',
-				'h3' => 'h3',
-			];
-
 			$fields = [
 				[
 					'label'       => __( 'Engaging Network Live Pages', 'planet4-engagingnetworks' ),
@@ -264,7 +257,11 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					'label'   => __( 'Content Title text size', 'planet4-engagingnetworks' ),
 					'attr'    => 'content_title_size',
 					'type'    => 'select',
-					'options' => $type_size_options,
+					'options' => [
+						'h1' => 'h1',
+						'h2' => 'h2',
+						'h3' => 'h3',
+					],
 					'meta'    => [
 						'required' => '',
 					],
@@ -389,6 +386,8 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				$options              = get_option( 'planet4_options' );
 				$fields['donatelink'] = $options['donate_button'] ?? '#';
 			}
+
+			$fields['content_title_size'] = $fields['content_title_size'] ?? 'h1';
 
 			$data = array_merge(
 				$data,
