@@ -309,39 +309,57 @@ const p4_enform = (function ($) {
       const attr       = $(event.target).data('attribute');
       const en_type    = this.model.get('en_type');
       let $label       = this.$el.find('input[data-attribute="label"]');
+      let $required    = this.$el.find('input[data-attribute="required"]');
 
       this.model.set(attr, input_type);
       $tr.find('.dashicons-edit').parent().remove();
       $label.val('').trigger('change');
 
       switch ( input_type ) {
-      case 'text':
-        $label.prop('disabled', false);
+      case 'checkbox':
+        if ( 'OPT' === en_type || 'GEN' === en_type ) {
+          $required.prop('disabled', false);
+          $label.prop('disabled', true);
+        } else {
+          $label.prop('disabled', false);
+        }
         this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
         this.createFieldDialog();
         break;
 
+      case 'country':
+        $required.prop('disabled', false);
+        $label.prop('disabled', false);
+        break;
+
+      case 'email':
+        $required.prop('disabled', false);
+        $label.prop('disabled', false);
+        break;
+
       case 'hidden':
-        this.$el.find('input[data-attribute="required"]').prop('checked', false).trigger('change').prop('disabled', true);
+        $required.prop('checked', false).trigger('change').prop('disabled', true);
         $label.prop('disabled', true);
         this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
         this.createFieldDialog();
         break;
 
-      case 'checkbox':
-        if ( ('OPT' === en_type || 'GEN' === en_type) ) {
-          $label.prop('disabled', true);
-          this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
-          this.createFieldDialog();
-        }
+      case 'text':
+        $required.prop('disabled', false);
+        $label.prop('disabled', false);
+        this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
+        this.createFieldDialog();
         break;
 
       case 'radio':
-        if ( ('OPT' === en_type || 'GEN' === en_type) ) {
+        $required.prop('disabled', false);
+        if ( 'OPT' === en_type || 'GEN' === en_type ) {
           $label.prop('disabled', true);
-          this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
-          this.createFieldDialog();
+        } else {
+          $label.prop('disabled', false);
         }
+        this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
+        this.createFieldDialog();
         break;
 
       default:
@@ -351,13 +369,6 @@ const p4_enform = (function ($) {
         }
         $('body').find('.dialog-' + id).remove();
         this.$el.find('.dashicons-edit').parent().remove();
-      }
-
-      if ('hidden' !== input_type) {
-        this.$el.find('input[data-attribute="required"]').prop('disabled', false);
-        if ('OPT' !== en_type) {
-          this.$el.find('input[data-attribute="label"]').prop('disabled', false);
-        }
       }
     },
 
