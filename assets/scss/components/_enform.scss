@@ -476,14 +476,14 @@
 .single-campaign {
   .enform-side-style {
     img {
-      margin-top: 54px;
+      height: 55% !important;
 
       @include medium-and-up {
-        margin-top: 60px;
+        height: 55% !important;
       }
 
       @include large-and-up {
-        margin-top: 0;
+        height: 100% !important;
       }
     }
   }
