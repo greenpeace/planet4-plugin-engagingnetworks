@@ -71,6 +71,23 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 		$sortable              = [];
 		$this->_column_headers = [ $columns, $hidden, $sortable ];
 		$this->items           = is_array( $supporter_fields ) ? $supporter_fields : [];
+
+		if ( $this->items ) {
+			uasort(
+				$this->items,
+				function ( $a, $b ) {
+					return strcasecmp( $a['name'], $b['name'] );
+				}
+			);
+			$not_tagged_array_items = [];
+			foreach ( $this->items as $key => $value ) {
+				if ( 'Not Tagged' === $value['tag'] ) {
+					$not_tagged_array_items[ $key ] = $value;
+					unset( $this->items[ $key ] );
+				}
+			}
+			$this->items = array_merge( $this->items, $not_tagged_array_items );
+		}
 	}
 
 	/**
@@ -145,5 +162,20 @@ class Enform_Fields_List_Table extends \WP_List_Table {
 		if ( ! empty( $this->error ) && 'top' === $which ) {
 			echo '<div><p>' . esc_html( $this->error ) . '</p></div>';
 		}
+	}
+
+	/**
+	 * Generates content for a single row of the table.
+	 *
+	 * @param object $item The current item.
+	 */
+	public function single_row( $item ) {
+		if ( 'Not Tagged' === $item['tag'] ) {
+			echo '<tr class="not-tagged-field">';
+		} else {
+			echo '<tr>';
+		}
+		$this->single_row_columns( $item );
+		echo '</tr>';
 	}
 }

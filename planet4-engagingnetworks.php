@@ -3,7 +3,7 @@
  * Plugin Name: Planet4 - EngagingNetworks
  * Description: Connects Planet4 with the Engaging Networks platform.
  * Plugin URI: http://github.com/greenpeace/planet4-plugin-engagingnetworks
- * Version: 2.6
+ * Version: 2.8
  * Php Version: 7.0
  *
  * Author: Greenpeace International
@@ -102,13 +102,18 @@ add_filter( 'timber/twig', 'add_to_twig' );
  */
 function add_to_twig( $twig ) {
 	// Adding functions as filters.
-	$twig->addFilter( new Twig_SimpleFilter( 'object_to_array', function ( $std_class_object ) {
-		$response = [];
-		foreach ( $std_class_object as $key => $value ) {
-			$response[ $key ] = $value;
-		}
-		return $response;
-	}));
+	$twig->addFilter(
+		new Twig_SimpleFilter(
+			'object_to_array',
+			function ( $std_class_object ) {
+				$response = [];
+				foreach ( $std_class_object as $key => $value ) {
+					$response[ $key ] = $value;
+				}
+				return $response;
+			}
+		)
+	);
 
 	return $twig;
 }

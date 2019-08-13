@@ -63,7 +63,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				return;
 			}
 
-			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4' );
+			wp_enqueue_style( 'p4en_admin_style_blocks', P4EN_ADMIN_DIR . 'css/admin_en.css', [], '0.4.5' );
 			add_action(
 				'enqueue_shortcode_ui',
 				function () {
@@ -254,6 +254,19 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					],
 				],
 				[
+					'label'   => __( 'Content Title text size', 'planet4-engagingnetworks' ),
+					'attr'    => 'content_title_size',
+					'type'    => 'select',
+					'options' => [
+						'h1' => 'h1',
+						'h2' => 'h2',
+						'h3' => 'h3',
+					],
+					'meta'    => [
+						'required' => '',
+					],
+				],
+				[
 					'label' => __( 'Content Description', 'planet4-engagingnetworks' ),
 					'attr'  => 'content_description',
 					'type'  => 'textarea',
@@ -373,6 +386,8 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				$options              = get_option( 'planet4_options' );
 				$fields['donatelink'] = $options['donate_button'] ?? '#';
 			}
+
+			$fields['content_title_size'] = $fields['content_title_size'] ?? 'h1';
 
 			$data = array_merge(
 				$data,

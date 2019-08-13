@@ -81,6 +81,7 @@
 												value="{{ question_option.option_value }}"
 												data-errormessage="{{ errorMessage }}"
 												{{ question_option.option_selected ?  ' checked' : '' }}
+												{{ 'true' == field.required ? 'required' : '' }}
 											/>
 											<span class="custom-control-description">
 												{{ question_option.option_label|e('wp_kses_post')|raw }}
@@ -133,6 +134,7 @@
 											value="{{ radio_option.option_value }}"
 											data-errormessage="{{ errorMessage }}"
 											{{ radio_option.option_selected ?  ' checked' : '' }}
+											{{ 'true' == field.required ? 'required' : '' }}
 										/>
 										<span class="custom-control-description">
 											{{ radio_option.option_label|e('wp_kses_post')|raw }}
