@@ -167,6 +167,7 @@
 
     .submit {
       margin: 0;
+      margin-top: 19px;
       line-height: 1;
 
       @include medium-and-up {
@@ -227,7 +228,7 @@
 
     @include medium-and-up {
       font-size: 1.75rem;
-      line-height: 34px;
+      line-height: 2.5rem;
     }
 
     @include large-and-up {
@@ -332,10 +333,13 @@
       max-width: 444px;
       box-sizing: content-box;
       box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
-      padding: 28px 30px 24px 30px;
+      padding: 32px 30px 24px 30px;
     }
 
     .enform-legal {
+      padding-top: 32px;
+      margin-bottom: 18px;
+
       p {
         float: none;
       }
@@ -348,6 +352,29 @@
 
     @include large-and-up {
       padding: 0;
+    }
+
+    .enform-extra-header-placeholder {
+      .container {
+        padding-top: 0;
+      }
+
+      .counter-block {
+        margin-bottom: 0;
+        margin-top: 32px;
+      }
+
+      .progress-container {
+        margin-bottom: 16pt;
+      }
+
+      .counter-text {
+        margin-bottom: 0;
+      }
+    }
+
+    p {
+      margin-bottom: 32px;
     }
   }
 
@@ -469,6 +496,22 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
+    }
+  }
+}
+
+.single-campaign {
+  .enform-side-style {
+    img {
+      margin-top: 54px;
+
+      @include medium-and-up {
+        margin-top: 60px;
+      }
+
+      @include large-and-up {
+        margin-top: 0;
+      }
     }
   }
 }
