@@ -65,7 +65,7 @@
     line-height: 1.1;
 
     @include large-and-up {
-      margin-bottom: 32px;
+      margin-bottom: $space-lg;
     }
   }
 
@@ -125,7 +125,7 @@
       height: 46px;
       border-radius: 0;
       border-color: transparent;
-      margin-bottom: 16px;
+      margin-bottom: $space-md;
       min-width: 200px;
 
       @include medium-and-up {
@@ -333,11 +333,11 @@
       max-width: 444px;
       box-sizing: content-box;
       box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
-      padding: 32px 30px 24px 30px;
+      padding: $space-lg 30px 24px 30px;
     }
 
     .enform-legal {
-      padding-top: 32px;
+      padding-top: $space-lg;
       margin-bottom: 18px;
 
       p {
@@ -365,7 +365,7 @@
       }
 
       .progress-container {
-        margin-bottom: 16pt;
+        margin-bottom: $space-md;
       }
 
       .counter-text {
@@ -374,7 +374,7 @@
     }
 
     p {
-      margin-bottom: 32px;
+      margin-bottom: $space-lg;
     }
   }
 
