@@ -246,6 +246,12 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					],
 				],
 				[
+					'label' => __( 'Use Campaign Logo?', 'planet4-engagingnetworks' ),
+					'attr'  => 'campaign_logo',
+					'type'  => 'checkbox',
+					'value' => 'false',
+				],
+				[
 					'label' => __( 'Content Title', 'planet4-engagingnetworks' ),
 					'attr'  => 'content_title',
 					'type'  => 'text',
@@ -258,12 +264,10 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					'attr'    => 'content_title_size',
 					'type'    => 'select',
 					'options' => [
+						''   => __( 'Select title size', 'planet4-engagingnetworks' ),
 						'h1' => 'h1',
 						'h2' => 'h2',
 						'h3' => 'h3',
-					],
-					'meta'    => [
-						'required' => '',
 					],
 				],
 				[
@@ -408,6 +412,23 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 
 			$fields['content_title_size'] = $fields['content_title_size'] ?? 'h1';
 
+			$campaign_data = array();
+
+			if ( 'campaign' === get_post_type() && isset( $fields['campaign_logo'] ) ) {
+				if ( 'true' == $fields['campaign_logo'] ) {
+					$page_meta_data    = get_post_meta( $post->ID );
+					$campaign_template = ! empty( $page_meta_data['_campaign_page_template'][0] ) ? $page_meta_data['_campaign_page_template'][0] : false;
+					if ( $campaign_template ) {
+						$campaign_logo_path = get_bloginfo( 'template_directory' ) . '/images/' . $campaign_template . '/logo-light.png';
+						$campaign_data      = [
+							'template'  => $campaign_template,
+							'logo_path' => $campaign_logo_path,
+							'logo'      => $fields['campaign_logo'],
+						];
+					}
+				}
+			}
+
 			$data = array_merge(
 				$data,
 				[
@@ -417,6 +438,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					'form'            => '[' . Enform_Post_Controller::POST_TYPE . ' id="' . $fields['en_form_id'] . '" en_form_style="' . $fields['en_form_style'] . '" /]',
 					'social'          => $social,
 					'social_accounts' => $social_accounts,
+					'campaign_data'   => $campaign_data,
 				]
 			);
 

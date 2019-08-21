@@ -1,7 +1,10 @@
-@mixin campaign-en-block($form-caption-heading-font, $en-form-content-heading-font) {
+@mixin campaign-en-block($form-caption-heading-font, $en-form-content-heading-font, $form-caption-transform: false, $gradient-color: false, $first-line: false) {
   .form-caption {
     h1, h2, h3 {
       font-family: $form-caption-heading-font !important;
+      @if $form-caption-transform {
+        text-transform: $form-caption-transform;
+      }
     }
 
     h1 {
@@ -16,6 +19,14 @@
     h3 {
       margin-bottom: 16px;
     }
+
+    .campaign-logo {
+      width: 380px;
+      max-width: 100%;
+      padding-bottom: 30px;
+      padding-top: 10px;
+      display: block;
+    }
   }
 
   .enform {
@@ -24,6 +35,36 @@
         h2 {
           font-family: $en-form-content-heading-font !important;
         }
+      }
+    }
+  }
+
+  @if $gradient-color {
+    .enform-side-style {
+      &::after {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        z-index: 1;
+        background: $gradient-color;
+        background: linear-gradient(135deg, rgba($gradient-color, 1) 0%, rgba($gradient-color, 0) 100%);
+      }
+    }
+  }
+
+  @if $first-line {
+    .form-description {
+      overflow: auto;
+
+      .first-line {
+        font-weight: bold;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        font-family: $en-form-content-heading-font;
+        margin-bottom: 4px;
+        display: inline-block;
       }
     }
   }
