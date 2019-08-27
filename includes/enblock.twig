@@ -55,17 +55,16 @@
 										</div>
 
 										<div class="{% if fields.en_form_style == 'full-width-bg' %}col-md-4{% endif %} submit">
-											<button type="submit" form="p4en_form" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style == 'full-width' %}w-auto{% endif %}" >{{ '' != fields.button_text ? fields.button_text : __( 'Sign', 'planet4-engagingnetworks' ) }}
-												<div class="three-quarters en-spinner" id="spinner" style="display:none;">...</div>
-											</button>
-											<div class="enform-notice"></div>
+											<div class="submit-container">
+												<button type="submit" form="p4en_form" name="p4en_form_save_button" id="p4en_form_save_button" class="btn btn-primary btn-block {% if fields.en_form_style == 'full-width' %}w-auto{% endif %}" >{{ '' != fields.button_text ? fields.button_text : __( 'Sign', 'planet4-engagingnetworks' ) }}
+													<div class="three-quarters en-spinner" id="spinner" style="display:none;">...</div>
+												</button>
+												<div class="enform-notice"></div>
+												<div class="enform-legal">
+													<p>{{ fields.text_below_button|e('wp_kses_post')|raw }}</p>
+												</div>
+											</div>
 										</div>
-
-										{% if fields.text_below_button %}
-										<div class="enform-legal {% if fields.en_form_style == 'full-width-bg' %}col-md-8{% endif %}">
-												<p>{{ fields.text_below_button|e('wp_kses_post')|raw }}</p>
-										</div>
-										{% endif %}
 									</div>
 								</form>
 							</div>
