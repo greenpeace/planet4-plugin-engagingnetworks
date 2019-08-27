@@ -29,11 +29,10 @@ div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+9):nth-child(odd) {
   margin-right: 40%;
 }
 
-.shortcode-ui-attribute-content_title {
-  display: none;
-}
-
-.shortcode-ui-attribute-content_description {
+.shortcode-ui-attribute-content_title,
+.shortcode-ui-attribute-content_description,
+.shortcode-ui-attribute-campaign_logo,
+.shortcode-ui-attribute-content_title_size {
   display: none;
 }
 
@@ -66,4 +65,9 @@ div.shortcode-ui-edit-shortcake_enform > div:nth-child(n+9):nth-child(odd) {
 
 tr.not-tagged-field {
   background-color: #faffd3 !important;
+}
+
+/* Show Campaigns options */
+body.post-type-campaign .shortcode-ui-attribute-campaign_logo {
+  display: block;
 }

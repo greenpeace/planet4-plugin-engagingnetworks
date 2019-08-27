@@ -11,10 +11,14 @@ const editAttributeHeadingEN = sui.views.editAttributeField.extend({
     const en_form_style = $('input[name=en_form_style]:checked').val();
     if ('side-style' === en_form_style) {
       $('.field-block.shortcode-ui-attribute-content_title').show();
+      $('.field-block.shortcode-ui-attribute-content_title_size').show();
       $('.field-block.shortcode-ui-attribute-content_description').show();
+      $('body.post-type-campaign .field-block.shortcode-ui-attribute-campaign_logo').show();
     } else {
       $('.field-block.shortcode-ui-attribute-content_title').hide();
+      $('.field-block.shortcode-ui-attribute-content_title_size').hide();
       $('.field-block.shortcode-ui-attribute-content_description').hide();
+      $('body.post-type-campaign .field-block.shortcode-ui-attribute-campaign_logo').hide();
     }
   },
 

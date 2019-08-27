@@ -259,6 +259,10 @@
   display: flex;
   align-items: center;
 
+  &:only-child {
+    margin-bottom: 0;
+  }
+
   .caption-overlay {
     display: block;
     background: url("public/images/carousel-blurred-overlay.png");
@@ -373,7 +377,7 @@
       }
     }
 
-    p {
+    .form-description {
       margin-bottom: $space-lg;
     }
   }
