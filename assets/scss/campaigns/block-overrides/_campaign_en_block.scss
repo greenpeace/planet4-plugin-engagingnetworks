@@ -56,7 +56,6 @@
 
   @if $first-line {
     .form-description {
-      overflow: auto;
       font-family: $en-form-content-heading-font;
 
       .first-line {
