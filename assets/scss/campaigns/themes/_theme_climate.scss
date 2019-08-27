@@ -1,0 +1,7 @@
+body.theme-climate {
+  $jost: "Jost", sans-serif;
+  $gradient-color: red;
+  $first-line: true;
+  $form-caption-transform: uppercase;
+  @include campaign-en-block($jost, $jost, $form-caption-transform, $gradient-color, $first-line);
+}
