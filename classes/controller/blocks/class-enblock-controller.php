@@ -249,7 +249,7 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					'label' => __( 'Use Campaign Logo?', 'planet4-engagingnetworks' ),
 					'attr'  => 'campaign_logo',
 					'type'  => 'checkbox',
-					'value' => 'false',
+					'value' => '',
 				],
 				[
 					'label' => __( 'Content Title', 'planet4-engagingnetworks' ),
