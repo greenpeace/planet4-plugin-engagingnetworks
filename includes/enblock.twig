@@ -32,7 +32,9 @@
 						<div id="enform-content">
 
 							<div class="title-and-description">
-								<h2>{{ fields.title }}</h2>
+								{% if fields.title %}
+									<h2>{{ fields.title }}</h2>
+								{% endif %}
 								{% if fields.en_form_style == 'side-style' %}
 									<div class="enform-extra-header-placeholder"></div>
 								{% endif %}
