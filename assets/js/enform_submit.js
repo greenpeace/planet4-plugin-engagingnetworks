@@ -203,7 +203,6 @@ $(document).ready(function () {
         type: 'POST',
         data: {
           action: 'get_en_session_token',
-          '_wpnonce': $('#_wpnonce', $(this)).val(),
         },
       }).done(function (response) {
         const token = response.token;
