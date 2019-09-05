@@ -434,7 +434,6 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 				[
 					'fields'          => $fields,
 					'redirect_url'    => isset( $fields['thankyou_url'] ) ? filter_var( $fields['thankyou_url'], FILTER_VALIDATE_URL ) : '',
-					'nonce_action'    => 'enform_submit',
 					'form'            => '[' . Enform_Post_Controller::POST_TYPE . ' id="' . $fields['en_form_id'] . '" en_form_style="' . $fields['en_form_style'] . '" /]',
 					'social'          => $social,
 					'social_accounts' => $social_accounts,
@@ -452,21 +451,13 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 			// If this is an ajax call.
 			if ( wp_doing_ajax() ) {
 
-				$nonce    = filter_input( INPUT_POST, '_wpnonce', FILTER_SANITIZE_STRING );
-				$response = [];
+				$response          = [];
+				$main_settings     = get_option( 'p4en_main_settings' );
+				$ens_private_token = $main_settings['p4en_frontend_private_api'];
+				$this->ens_api     = new Ensapi( $ens_private_token, false );
+				$token             = $this->ens_api->get_public_session_token();
+				$response['token'] = $token;
 
-				// CSRF protection.
-				if ( ! wp_verify_nonce( $nonce, 'enform_submit' ) ) {
-					$response['message'] = __( 'Invalid nonce!', 'planet4-engagingnetworks' );
-					$response['token']   = '';
-				} else {
-
-					$main_settings     = get_option( 'p4en_main_settings' );
-					$ens_private_token = $main_settings['p4en_frontend_private_api'];
-					$this->ens_api     = new Ensapi( $ens_private_token, false );
-					$token             = $this->ens_api->get_public_session_token();
-					$response['token'] = $token;
-				}
 				wp_send_json( $response );
 			}
 		}
