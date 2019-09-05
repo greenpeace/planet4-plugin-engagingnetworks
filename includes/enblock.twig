@@ -42,7 +42,6 @@
 							</div>
 							<div class="form-container">
 								<form id="p4en_form" name="p4en_form" method="post" novalidate>
-									{{ fn( 'wp_nonce_field', nonce_action, '_wpnonce', true, false )|raw }}
 									<input type="hidden" name="enblock_submit" value="{{ enblock_submit }}">
 									<input type="hidden" name="en_page_id" value="{{ fields.en_page_id }}">
 									<input type="hidden" name="thankyou_title" value="{{ fields.thankyou_title }}">
