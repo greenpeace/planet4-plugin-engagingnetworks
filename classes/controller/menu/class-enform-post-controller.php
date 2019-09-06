@@ -385,7 +385,7 @@ if ( ! class_exists( 'Enform_Post_Controller' ) ) {
 					'jquery',
 					'wp-backbone',
 				],
-				'0.9.1',
+				'0.9.2',
 				true
 			);
 		}
