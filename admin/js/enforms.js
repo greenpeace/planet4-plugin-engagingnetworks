@@ -313,7 +313,6 @@ const p4_enform = (function ($) {
 
       this.model.set(attr, input_type);
       $tr.find('.dashicons-edit').parent().remove();
-      $label.val('').trigger('change');
 
       switch ( input_type ) {
       case 'checkbox':
@@ -340,6 +339,7 @@ const p4_enform = (function ($) {
       case 'hidden':
         $required.prop('checked', false).trigger('change').prop('disabled', true);
         $label.prop('disabled', true);
+        $label.val('').trigger('change');
         this.$el.find('.actions').prepend('<a><span class="dashicons dashicons-edit pointer"></span></a>');
         this.createFieldDialog();
         break;
