@@ -135,6 +135,12 @@ const p4_enform_frontend = (function ($) {
       },
       data: JSON.stringify(formData),
     }).done(function () {
+
+      // Submit Hotjar success
+      if ( typeof hj === 'function' ) {
+        hj('formSubmitSuccessful'); // eslint-disable-line no-undef
+      }
+
       // DataLayer push event on successful EN form submission.
       if ( typeof google_tag_value !== 'undefined' && google_tag_value ) {
         let dataLayerPayload = {
@@ -162,6 +168,12 @@ const p4_enform_frontend = (function ($) {
       }
       $('.enform-notice').html('');
     }).fail(function (response) {
+
+      // Submit Hotjar failure
+      if ( typeof hj === 'function' ) {
+        hj('formSubmitFailed'); // eslint-disable-line no-undef
+      }
+
       $('.enform-notice').html('<span class="enform-error">There was a problem with the submission</span>');
       console.log(response); //eslint-disable-line no-console
     }).always(function () {
@@ -216,12 +228,25 @@ $(document).ready(function () {
         } else {
           p4_enform_frontend.hideENSpinner();
           $('.enform-notice').html('There was a problem with the submission');
+
+          // Submit Hotjar failure
+          if ( typeof hj === 'function' ) {
+            hj('formSubmitFailed'); // eslint-disable-line no-undef
+          }
+
         }
       }).fail(function (response) {
         p4_enform_frontend.hideENSpinner();
         $('.enform-notice').html('There was a problem with the submission');
         console.log(response); //eslint-disable-line no-console
+
+        // Submit Hotjar failure
+        if ( typeof hj === 'function' ) {
+          hj('formSubmitFailed'); // eslint-disable-line no-undef
+        }
       });
     }
   });
 });
+
+
