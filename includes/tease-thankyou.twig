@@ -18,11 +18,13 @@
 				{% include "blocks/share_buttons.twig" with {post:social} %}
 			</div>
 
-			<div class="form-group">
-				<h5>{{ fields.thankyou_donate_message }}</h5>
-			</div>
+			{% if 'false' == fields.donate_button_checkbox %}
+				<div class="form-group">
+					<h5>{{ fields.thankyou_donate_message }}</h5>
+				</div>
 
-			<a href="{{ fields.donatelink }}" class="btn btn-primary btn-block">{{ __( 'Donate', 'planet4-engagingnetworks' ) }}</a>
+				<a href="{{ fields.donatelink }}" class="btn btn-primary btn-block">{{ __( 'Donate', 'planet4-engagingnetworks' ) }}</a>
+			{% endif %}
 
 		</div>
 	{% endif %}
