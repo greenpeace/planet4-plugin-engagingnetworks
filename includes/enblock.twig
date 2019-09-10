@@ -1,5 +1,5 @@
 {% block enblock %}
-	<section class="block enform-wrap enform-{{ fields.en_form_style }} {% if fields.en_form_style == 'side-style' %}block-header block-wide{% endif %} {%if fields.en_form_style == 'full-width-bg' %}block-footer block-wide{% endif %} {% if campaign_data.template %}campaign-{{ campaign_data.template }}{% endif %}">
+	<section id="enform-wrap" class="block enform-wrap enform-{{ fields.en_form_style }} {% if fields.en_form_style == 'side-style' %}block-header block-wide{% endif %} {%if fields.en_form_style == 'full-width-bg' %}block-footer block-wide{% endif %} {% if campaign_data.template %}campaign-{{ campaign_data.template }}{% endif %}">
 		{% if fields.en_form_style == 'full-width-bg' or fields.en_form_style == 'side-style' %}
 			<picture>
 				<img src="{{ fields.background_src.0|default(fields.default_image) }}"
@@ -42,7 +42,6 @@
 							</div>
 							<div class="form-container">
 								<form id="p4en_form" name="p4en_form" method="post" novalidate>
-									{{ fn( 'wp_nonce_field', nonce_action, '_wpnonce', true, false )|raw }}
 									<input type="hidden" name="enblock_submit" value="{{ enblock_submit }}">
 									<input type="hidden" name="en_page_id" value="{{ fields.en_page_id }}">
 									<input type="hidden" name="thankyou_title" value="{{ fields.thankyou_title }}">

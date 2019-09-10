@@ -156,6 +156,9 @@ const p4_enform_frontend = (function ($) {
       } else {
         $('#enform-content').hide();
         $('.thankyou').show();
+        $('html, body').animate({
+          scrollTop:$('#enform-wrap').offset().top
+        }, 'slow');
       }
       $('.enform-notice').html('');
     }).fail(function (response) {
@@ -203,7 +206,6 @@ $(document).ready(function () {
         type: 'POST',
         data: {
           action: 'get_en_session_token',
-          '_wpnonce': $('#_wpnonce', $(this)).val(),
         },
       }).done(function (response) {
         const token = response.token;
