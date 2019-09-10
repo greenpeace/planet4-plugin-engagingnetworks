@@ -1,74 +1,3 @@
-.enform-full-width-bg {
-  @include background-before-opacity($light-blue-bg);
-  width: 100vw;
-  min-height: 444px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-
-  picture {
-    align-self: start;
-
-    img {
-      position: absolute;
-      height: auto;
-      width: 100%;
-      object-fit: cover;
-      object-position: center center;
-      opacity: 0.3;
-
-      @supports (object-fit: cover) {
-        & {
-          height: 100%;
-        }
-      }
-    }
-  }
-
-  .enform {
-    background: none;
-
-    .form-description {
-      margin-bottom: 16px;
-    }
-
-    .title-and-description {
-      h2 {
-        margin-bottom: $space-lg;
-      }
-
-      p {
-        margin-bottom: $space-lg;
-      }
-    }
-
-    form {
-      .submit {
-        @include medium-and-up() {
-          margin-top: 0;
-        }
-
-        @include large-and-up {
-          padding-left: 0;
-          margin-top: 0;
-        }
-
-        @include medium-and-up {
-          flex-direction: unset;
-        }
-      }
-
-      .formblock-flex {
-        .en__field {
-          @include large-and-up {
-            width: 49%;
-          }
-        }
-      }
-    }
-  }
-}
-
 .form-caption {
   float: none;
   width: 100%;
@@ -139,6 +68,10 @@
     font-family: $roboto;
     font-size: 1rem;
     line-height: 1.37rem;
+
+    html[dir="rtl"] & {
+      font-size: 1rem;
+    }
   }
 }
 
@@ -217,9 +150,16 @@
       button {
         min-width: 200px;
         margin-bottom: 0;
+        margin-top: $space-lg;
 
         @include  large-and-up {
           min-width: 330px;
+        }
+
+        html[dir="rtl"] & {
+          line-height: 1;
+          font-size: 1.375rem;
+          font-weight: bold;
         }
       }
     }
@@ -263,8 +203,16 @@
     .enform-legal {
       margin-top: $space-md;
 
+      html[dir="rtl"] & {
+        margin-top: $space-xl;
+
+        @include large-and-up {
+          margin-top: $space-lg;
+        }
+      }
+
       p {
-        font-size: 0.75rem;
+        font-size: .625rem;
         line-height: 1rem;
         margin-bottom: 0;
         float: none;
@@ -275,6 +223,14 @@
   h2 {
     .enform-full-width & {
       color: white;
+
+      html[dir="rtl"] & {
+        font-size: 2rem;
+
+        @include large-and-up {
+          font-size: 1.75rem;
+        }
+      }
     }
 
     &.thankyou {
@@ -305,246 +261,6 @@
   border-right-color: transparent!important;
   display: none;
   vertical-align: middle;
-}
-
-.enform-side-style {
-  width: 100vw;
-  min-height: 444px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-
-  &:only-child {
-    margin-bottom: 0;
-  }
-
-  .caption-overlay {
-    display: block;
-    background: url("public/images/carousel-blurred-overlay.png");
-    background-position: bottom right;
-    background-size: cover;
-    height: 100%;
-    width: 90%;
-    position: absolute;
-    margin-left: 0;
-    z-index: 1;
-
-    html[dir="rtl"] & {
-      background-position: bottom left;
-    }
-
-    @include medium-and-up {
-      width: 50%;
-    }
-  }
-
-  // Darken background
-  &::after {
-    @include fill-container;
-    content: "";
-    background: rgba(30, 30, 30, 0.45);
-  }
-
-  picture {
-    align-self: start;
-
-    @include large-and-up {
-      display: block;
-    }
-
-    img {
-      position: absolute;
-      height: auto;
-      width: 100%;
-      object-fit: cover;
-      object-position: center center;
-      opacity: 1;
-
-      @supports (object-fit: cover) {
-        & {
-          height: 100%;
-        }
-      }
-    }
-  }
-
-  .enform {
-    overflow: hidden;
-    align-items: center;
-    min-height: 444px;
-    background: white;
-    padding-top: 28px;
-    float: none;
-    width: 100vw;
-    margin-top: 0;
-    margin-bottom: 0;
-
-    input,
-    .custom-select,
-    select.form-control.en__field__input--select {
-      height: 40px;
-    }
-
-    @include large-and-up {
-      margin-top: 96px;
-      margin-bottom: 60px;
-      float: right;
-
-      html[dir="rtl"] & {
-        float: left;
-      }
-
-      width: 40%;
-      max-width: 444px;
-      box-sizing: content-box;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, .25);
-      padding: $space-xl 30px 34px 30px;
-    }
-
-    .en__field--check {
-      margin-top: $space-md;
-
-      .form-group {
-        padding-top: 0;
-        margin-bottom: 0;
-      }
-
-      label {
-        margin-bottom: 0;
-      }
-    }
-
-    .submit {
-      margin-top: 32px;
-    }
-  }
-
-  .title-and-description {
-    color: #1a1a1a;
-    padding: $n15;
-
-    @include large-and-up {
-      padding: 0;
-    }
-
-    .enform-extra-header-placeholder {
-      .container {
-        padding-top: 0;
-      }
-
-      .counter-block {
-        margin-bottom: 0;
-        margin-top: 32px;
-      }
-
-      .progress-container {
-        margin-bottom: $space-md;
-      }
-
-      .counter-text {
-        margin-bottom: 0;
-      }
-    }
-
-    .form-description {
-      margin-bottom: $space-lg;
-    }
-  }
-
-  .form-container {
-    background: $white;
-    padding: $n15;
-
-    @include large-and-up {
-      padding: 0;
-    }
-
-    .formblock-flex .en__field {
-      width: 100%;
-    }
-
-    .en__field__element {
-      position: relative;
-
-      input[type=text],
-      select,
-      input[type=email],
-      input[type=tel] {
-        border: 1px solid #1a1a1a;
-        margin-bottom: 20px;
-        padding: $n10;
-
-        &.is-invalid {
-          border: 1px solid #ff3333;
-          margin-bottom: 6px;
-        }
-      }
-    }
-
-    .invalid-feedback {
-      color: #ff3333;
-      font-weight: bold;
-      margin: 0;
-      padding: 0;
-      background: none;
-    }
-  }
-
-  .en__field__top__label {
-    position: absolute;
-    top: -.6rem;
-    background: white;
-    left: $n10;
-    padding: 0 8px;
-    font-weight: 600;
-    font-size: .75rem;
-
-    html[dir="rtl"] & {
-      left: auto;
-      right: $n10;
-    }
-  }
-}
-
-.enform-full-width {
-  .enform {
-    color: white;
-    padding: $space-lg;
-    padding-bottom: 42px;
-
-    .form-description {
-      margin-bottom: 16px;
-    }
-
-    form {
-      .en__field--check {
-        @include medium-and-up {
-          width: 100%;
-        }
-
-        label {
-          margin-bottom: 0;
-        }
-
-        .form-group {
-          margin-top: 16px;
-          margin-bottom: 0;
-        }
-      }
-
-      .form-check-label-block {
-        padding: 0;
-      }
-
-      .submit-container {
-        width: min-content;
-      }
-
-      .enform-legal {
-        overflow: hidden;
-      }
-    }
-  }
 }
 
 .thankyou {
