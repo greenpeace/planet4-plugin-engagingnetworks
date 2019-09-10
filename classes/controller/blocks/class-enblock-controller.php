@@ -320,6 +320,11 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 					],
 				],
 				[
+					'label' => __( 'Hide "Thank You" donate button', 'planet4-engagingnetworks' ),
+					'attr'  => 'donate_button_checkbox',
+					'type'  => 'checkbox',
+				],
+				[
 					'label' => __( '"Thank You" donate message (e.g. "Or make a donation")', 'planet4-engagingnetworks' ),
 					'attr'  => 'thankyou_donate_message',
 					'type'  => 'text',
@@ -406,8 +411,9 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 			if ( isset( $fields['thankyou_url'] ) && 0 !== strpos( $fields['thankyou_url'], 'http' ) ) {
 				$fields['thankyou_url'] = 'http://' . $fields['thankyou_url'];
 			} else {
-				$options              = get_option( 'planet4_options' );
-				$fields['donatelink'] = $options['donate_button'] ?? '#';
+				$options                          = get_option( 'planet4_options' );
+				$fields['donatelink']             = $options['donate_button'] ?? '#';
+				$fields['donate_button_checkbox'] = isset( $fields['donate_button_checkbox'] ) ? $fields['donate_button_checkbox'] : 'false';
 			}
 
 			$fields['content_title_size'] = $fields['content_title_size'] ?? 'h1';
