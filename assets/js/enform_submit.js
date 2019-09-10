@@ -156,6 +156,9 @@ const p4_enform_frontend = (function ($) {
       } else {
         $('#enform-content').hide();
         $('.thankyou').show();
+        $('html, body').animate({
+          scrollTop:$('#enform-wrap').offset().top
+        }, 'slow');
       }
       $('.enform-notice').html('');
     }).fail(function (response) {

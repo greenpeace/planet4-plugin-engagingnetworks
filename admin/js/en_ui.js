@@ -214,6 +214,21 @@ jQuery(function ($) {
               $('input[name="' + element_name + '__mandatory"]').prop('checked', false).parent().parent().hide();
             }
           });
+
+          // Add click event for show donate button checkbox and check state
+          if( $('[name=donate_button_checkbox]')[0].checked ) {
+            $('input[name=thankyou_donate_message]').prop('disabled', true);
+          } else {
+            $('input[name=thankyou_donate_message]').prop('disabled', false);
+          }
+
+          $('[name=donate_button_checkbox]').change(function() {
+            if(this.checked) {
+              $('input[name=thankyou_donate_message]').prop('disabled', true);
+            } else {
+              $('input[name=thankyou_donate_message]').prop('disabled', false);
+            }
+          });
         },
 
         /**
