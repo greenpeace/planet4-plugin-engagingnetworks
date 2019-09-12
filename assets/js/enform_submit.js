@@ -157,7 +157,7 @@ const p4_enform_frontend = (function ($) {
         $('#enform-content').hide();
         $('.thankyou').show();
         $('html, body').animate({
-          scrollTop:$('#enform-wrap').offset().top
+          scrollTop:($('#enform').offset().top - 80)
         }, 'slow');
       }
       $('.enform-notice').html('');
