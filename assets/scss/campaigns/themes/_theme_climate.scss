@@ -22,7 +22,7 @@ body.theme-climate {
         padding-top: 33px;
 
         @include large-and-up {
-          padding-top: 117px;  
+          padding-top: 117px;
         }
       }
 
@@ -34,7 +34,7 @@ body.theme-climate {
         .form-description {
           font-family: $jost;
           margin-bottom: $space-md;
- 
+
           @include large-and-up {
             margin-bottom: $space-lg;
           }
