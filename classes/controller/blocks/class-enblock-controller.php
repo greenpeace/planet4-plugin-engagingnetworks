@@ -400,10 +400,21 @@ if ( ! class_exists( 'ENBlock_Controller' ) ) {
 			}
 			$fields['default_image'] = get_bloginfo( 'template_directory' ) . '/images/happy-point-block-bg.jpg';
 
-			$social_title = $fields['title'] ?? $post->post_title;
-			$social       = array(
-				'title' => $social_title,
-				'link'  => $post->link,
+			$og_title       = get_post_meta( $post->ID, 'p4_og_title', true );
+			$og_description = get_post_meta( $post->ID, 'p4_og_description', true );
+			$link           = get_permalink( $post->ID );
+
+			if ( '' === $og_title ) {
+				$title = get_the_title( $post->ID );
+				if ( '' !== $title ) {
+					$og_title = $title;
+				}
+			}
+
+			$social = array(
+				'title'       => $og_title,
+				'description' => $og_description,
+				'link'        => $link,
 			);
 
 			$data = [];
